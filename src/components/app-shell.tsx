@@ -33,6 +33,7 @@ const groups: NavGroup[] = [
   ]},
   { label: "Clinic — Atendimento", items: [
     { to: "/agenda", label: "Agenda", icon: Calendar, pkg: "clinic" },
+    { to: "/recepcao", label: "Recepção", icon: ClipboardCheck, pkg: "clinic" },
     { to: "/pacientes", label: "Pacientes", icon: Users, pkg: "clinic" },
     { to: "/prontuario", label: "Prontuário", icon: Stethoscope, pkg: "clinic" },
     { to: "/anamnese", label: "Anamnese", icon: ClipboardList, pkg: "clinic" },
