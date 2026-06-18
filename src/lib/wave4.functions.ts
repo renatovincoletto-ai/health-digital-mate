@@ -236,28 +236,36 @@ export const syncOpenFinance = createServerFn({ method: "POST" })
     let account_id = account?.id;
     if (!account_id) {
       const { data: created } = await context.supabase.from("financial_accounts").insert({
-        tenant_id, name: "Conta Principal (Open Finance)", kind: "bank", currency: "BRL", balance: 0,
+        tenant_id, name: "Conta Principal (Open Finance)", account_type: "bank", balance: 0, is_active: true,
       } as any).select("id").single();
       account_id = created!.id;
     }
 
     const samples = isSandbox ? [
-      { description: "PIX recebido - Consulta", amount: 250, kind: "income" },
-      { description: "PIX recebido - Procedimento", amount: 480, kind: "income" },
-      { description: "Tarifa bancária", amount: -19.9, kind: "expense" },
-      { description: "Aluguel", amount: -2800, kind: "expense" },
+      { description: "PIX recebido - Consulta", amount: 250, direction: "in", category: "consulta" },
+      { description: "PIX recebido - Procedimento", amount: 480, direction: "in", category: "procedimento" },
+      { description: "Tarifa bancária", amount: 19.9, direction: "out", category: "tarifa" },
+      { description: "Aluguel", amount: 2800, direction: "out", category: "aluguel" },
     ] : [];
 
     if (samples.length) {
+      const now = new Date().toISOString();
       const rows = samples.map((s) => ({
         tenant_id,
         account_id,
         description: s.description,
-        amount: Math.abs(s.amount),
-        kind: s.kind,
-        status: "reconciled",
-        occurred_at: new Date().toISOString(),
-        source: "open_finance",
+        amount: s.amount,
+        direction: s.direction,
+        category: s.category,
+        status: "paid",
+        paid_at: now,
+      }));
+      await context.supabase.from("financial_transactions").insert(rows as any);
+      await context.supabase.from("integration_accounts")
+        .update({ last_sync_at: now }).eq("tenant_id", tenant_id).eq("provider", "pluggy");
+    }
+    return { ok: true, imported: samples.length, sandbox: isSandbox };
+  });
       }));
       await context.supabase.from("financial_transactions").insert(rows as any);
       await context.supabase.from("integration_accounts")
