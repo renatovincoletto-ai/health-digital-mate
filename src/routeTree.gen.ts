@@ -18,9 +18,12 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
 import { Route as AuthenticatedUnidadesRouteImport } from './routes/_authenticated/unidades'
+import { Route as AuthenticatedTributosRouteImport } from './routes/_authenticated/tributos'
+import { Route as AuthenticatedTissRouteImport } from './routes/_authenticated/tiss'
 import { Route as AuthenticatedTeleconsultaRouteImport } from './routes/_authenticated/teleconsulta'
 import { Route as AuthenticatedSiteRouteImport } from './routes/_authenticated/site'
 import { Route as AuthenticatedReputacaoRouteImport } from './routes/_authenticated/reputacao'
+import { Route as AuthenticatedRepassesRouteImport } from './routes/_authenticated/repasses'
 import { Route as AuthenticatedProntuarioRouteImport } from './routes/_authenticated/prontuario'
 import { Route as AuthenticatedPrescricoesRouteImport } from './routes/_authenticated/prescricoes'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated/planos'
@@ -29,13 +32,18 @@ import { Route as AuthenticatedPacientesRouteImport } from './routes/_authentica
 import { Route as AuthenticatedOrcamentosRouteImport } from './routes/_authenticated/orcamentos'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedNpsRouteImport } from './routes/_authenticated/nps'
+import { Route as AuthenticatedMaquininhasRouteImport } from './routes/_authenticated/maquininhas'
 import { Route as AuthenticatedLembretesRouteImport } from './routes/_authenticated/lembretes'
+import { Route as AuthenticatedJornadasRouteImport } from './routes/_authenticated/jornadas'
 import { Route as AuthenticatedIndicacoesRouteImport } from './routes/_authenticated/indicacoes'
+import { Route as AuthenticatedFiscalRouteImport } from './routes/_authenticated/fiscal'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedEstoqueRouteImport } from './routes/_authenticated/estoque'
 import { Route as AuthenticatedEmailRouteImport } from './routes/_authenticated/email'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedConveniosRouteImport } from './routes/_authenticated/convenios'
 import { Route as AuthenticatedConteudoRouteImport } from './routes/_authenticated/conteudo'
+import { Route as AuthenticatedContadorRouteImport } from './routes/_authenticated/contador'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
 import { Route as AuthenticatedCallcenterRouteImport } from './routes/_authenticated/callcenter'
 import { Route as AuthenticatedBiRouteImport } from './routes/_authenticated/bi'
@@ -89,6 +97,16 @@ const AuthenticatedUnidadesRoute = AuthenticatedUnidadesRouteImport.update({
   path: '/unidades',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTributosRoute = AuthenticatedTributosRouteImport.update({
+  id: '/tributos',
+  path: '/tributos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTissRoute = AuthenticatedTissRouteImport.update({
+  id: '/tiss',
+  path: '/tiss',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTeleconsultaRoute =
   AuthenticatedTeleconsultaRouteImport.update({
     id: '/teleconsulta',
@@ -103,6 +121,11 @@ const AuthenticatedSiteRoute = AuthenticatedSiteRouteImport.update({
 const AuthenticatedReputacaoRoute = AuthenticatedReputacaoRouteImport.update({
   id: '/reputacao',
   path: '/reputacao',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRepassesRoute = AuthenticatedRepassesRouteImport.update({
+  id: '/repasses',
+  path: '/repasses',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProntuarioRoute = AuthenticatedProntuarioRouteImport.update({
@@ -146,14 +169,30 @@ const AuthenticatedNpsRoute = AuthenticatedNpsRouteImport.update({
   path: '/nps',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMaquininhasRoute =
+  AuthenticatedMaquininhasRouteImport.update({
+    id: '/maquininhas',
+    path: '/maquininhas',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedLembretesRoute = AuthenticatedLembretesRouteImport.update({
   id: '/lembretes',
   path: '/lembretes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedJornadasRoute = AuthenticatedJornadasRouteImport.update({
+  id: '/jornadas',
+  path: '/jornadas',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedIndicacoesRoute = AuthenticatedIndicacoesRouteImport.update({
   id: '/indicacoes',
   path: '/indicacoes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFiscalRoute = AuthenticatedFiscalRouteImport.update({
+  id: '/fiscal',
+  path: '/fiscal',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedFinanceiroRoute = AuthenticatedFinanceiroRouteImport.update({
@@ -176,9 +215,19 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedConveniosRoute = AuthenticatedConveniosRouteImport.update({
+  id: '/convenios',
+  path: '/convenios',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedConteudoRoute = AuthenticatedConteudoRouteImport.update({
   id: '/conteudo',
   path: '/conteudo',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedContadorRoute = AuthenticatedContadorRouteImport.update({
+  id: '/contador',
+  path: '/contador',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
@@ -234,13 +283,18 @@ export interface FileRoutesByFullPath {
   '/bi': typeof AuthenticatedBiRoute
   '/callcenter': typeof AuthenticatedCallcenterRoute
   '/chat': typeof AuthenticatedChatRoute
+  '/contador': typeof AuthenticatedContadorRoute
   '/conteudo': typeof AuthenticatedConteudoRoute
+  '/convenios': typeof AuthenticatedConveniosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/email': typeof AuthenticatedEmailRoute
   '/estoque': typeof AuthenticatedEstoqueRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
+  '/fiscal': typeof AuthenticatedFiscalRoute
   '/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/jornadas': typeof AuthenticatedJornadasRoute
   '/lembretes': typeof AuthenticatedLembretesRoute
+  '/maquininhas': typeof AuthenticatedMaquininhasRoute
   '/nps': typeof AuthenticatedNpsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orcamentos': typeof AuthenticatedOrcamentosRoute
@@ -249,9 +303,12 @@ export interface FileRoutesByFullPath {
   '/planos': typeof AuthenticatedPlanosRoute
   '/prescricoes': typeof AuthenticatedPrescricoesRoute
   '/prontuario': typeof AuthenticatedProntuarioRoute
+  '/repasses': typeof AuthenticatedRepassesRoute
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/site': typeof AuthenticatedSiteRoute
   '/teleconsulta': typeof AuthenticatedTeleconsultaRoute
+  '/tiss': typeof AuthenticatedTissRoute
+  '/tributos': typeof AuthenticatedTributosRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
@@ -270,13 +327,18 @@ export interface FileRoutesByTo {
   '/bi': typeof AuthenticatedBiRoute
   '/callcenter': typeof AuthenticatedCallcenterRoute
   '/chat': typeof AuthenticatedChatRoute
+  '/contador': typeof AuthenticatedContadorRoute
   '/conteudo': typeof AuthenticatedConteudoRoute
+  '/convenios': typeof AuthenticatedConveniosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/email': typeof AuthenticatedEmailRoute
   '/estoque': typeof AuthenticatedEstoqueRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
+  '/fiscal': typeof AuthenticatedFiscalRoute
   '/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/jornadas': typeof AuthenticatedJornadasRoute
   '/lembretes': typeof AuthenticatedLembretesRoute
+  '/maquininhas': typeof AuthenticatedMaquininhasRoute
   '/nps': typeof AuthenticatedNpsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orcamentos': typeof AuthenticatedOrcamentosRoute
@@ -285,9 +347,12 @@ export interface FileRoutesByTo {
   '/planos': typeof AuthenticatedPlanosRoute
   '/prescricoes': typeof AuthenticatedPrescricoesRoute
   '/prontuario': typeof AuthenticatedProntuarioRoute
+  '/repasses': typeof AuthenticatedRepassesRoute
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/site': typeof AuthenticatedSiteRoute
   '/teleconsulta': typeof AuthenticatedTeleconsultaRoute
+  '/tiss': typeof AuthenticatedTissRoute
+  '/tributos': typeof AuthenticatedTributosRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal': typeof PortalIndexRoute
@@ -308,13 +373,18 @@ export interface FileRoutesById {
   '/_authenticated/bi': typeof AuthenticatedBiRoute
   '/_authenticated/callcenter': typeof AuthenticatedCallcenterRoute
   '/_authenticated/chat': typeof AuthenticatedChatRoute
+  '/_authenticated/contador': typeof AuthenticatedContadorRoute
   '/_authenticated/conteudo': typeof AuthenticatedConteudoRoute
+  '/_authenticated/convenios': typeof AuthenticatedConveniosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/email': typeof AuthenticatedEmailRoute
   '/_authenticated/estoque': typeof AuthenticatedEstoqueRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
+  '/_authenticated/fiscal': typeof AuthenticatedFiscalRoute
   '/_authenticated/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/_authenticated/jornadas': typeof AuthenticatedJornadasRoute
   '/_authenticated/lembretes': typeof AuthenticatedLembretesRoute
+  '/_authenticated/maquininhas': typeof AuthenticatedMaquininhasRoute
   '/_authenticated/nps': typeof AuthenticatedNpsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/orcamentos': typeof AuthenticatedOrcamentosRoute
@@ -323,9 +393,12 @@ export interface FileRoutesById {
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/prescricoes': typeof AuthenticatedPrescricoesRoute
   '/_authenticated/prontuario': typeof AuthenticatedProntuarioRoute
+  '/_authenticated/repasses': typeof AuthenticatedRepassesRoute
   '/_authenticated/reputacao': typeof AuthenticatedReputacaoRoute
   '/_authenticated/site': typeof AuthenticatedSiteRoute
   '/_authenticated/teleconsulta': typeof AuthenticatedTeleconsultaRoute
+  '/_authenticated/tiss': typeof AuthenticatedTissRoute
+  '/_authenticated/tributos': typeof AuthenticatedTributosRoute
   '/_authenticated/unidades': typeof AuthenticatedUnidadesRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
@@ -346,13 +419,18 @@ export interface FileRouteTypes {
     | '/bi'
     | '/callcenter'
     | '/chat'
+    | '/contador'
     | '/conteudo'
+    | '/convenios'
     | '/dashboard'
     | '/email'
     | '/estoque'
     | '/financeiro'
+    | '/fiscal'
     | '/indicacoes'
+    | '/jornadas'
     | '/lembretes'
+    | '/maquininhas'
     | '/nps'
     | '/onboarding'
     | '/orcamentos'
@@ -361,9 +439,12 @@ export interface FileRouteTypes {
     | '/planos'
     | '/prescricoes'
     | '/prontuario'
+    | '/repasses'
     | '/reputacao'
     | '/site'
     | '/teleconsulta'
+    | '/tiss'
+    | '/tributos'
     | '/unidades'
     | '/s/$slug'
     | '/portal/'
@@ -382,13 +463,18 @@ export interface FileRouteTypes {
     | '/bi'
     | '/callcenter'
     | '/chat'
+    | '/contador'
     | '/conteudo'
+    | '/convenios'
     | '/dashboard'
     | '/email'
     | '/estoque'
     | '/financeiro'
+    | '/fiscal'
     | '/indicacoes'
+    | '/jornadas'
     | '/lembretes'
+    | '/maquininhas'
     | '/nps'
     | '/onboarding'
     | '/orcamentos'
@@ -397,9 +483,12 @@ export interface FileRouteTypes {
     | '/planos'
     | '/prescricoes'
     | '/prontuario'
+    | '/repasses'
     | '/reputacao'
     | '/site'
     | '/teleconsulta'
+    | '/tiss'
+    | '/tributos'
     | '/unidades'
     | '/s/$slug'
     | '/portal'
@@ -419,13 +508,18 @@ export interface FileRouteTypes {
     | '/_authenticated/bi'
     | '/_authenticated/callcenter'
     | '/_authenticated/chat'
+    | '/_authenticated/contador'
     | '/_authenticated/conteudo'
+    | '/_authenticated/convenios'
     | '/_authenticated/dashboard'
     | '/_authenticated/email'
     | '/_authenticated/estoque'
     | '/_authenticated/financeiro'
+    | '/_authenticated/fiscal'
     | '/_authenticated/indicacoes'
+    | '/_authenticated/jornadas'
     | '/_authenticated/lembretes'
+    | '/_authenticated/maquininhas'
     | '/_authenticated/nps'
     | '/_authenticated/onboarding'
     | '/_authenticated/orcamentos'
@@ -434,9 +528,12 @@ export interface FileRouteTypes {
     | '/_authenticated/planos'
     | '/_authenticated/prescricoes'
     | '/_authenticated/prontuario'
+    | '/_authenticated/repasses'
     | '/_authenticated/reputacao'
     | '/_authenticated/site'
     | '/_authenticated/teleconsulta'
+    | '/_authenticated/tiss'
+    | '/_authenticated/tributos'
     | '/_authenticated/unidades'
     | '/s/$slug'
     | '/portal/'
@@ -520,6 +617,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUnidadesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/tributos': {
+      id: '/_authenticated/tributos'
+      path: '/tributos'
+      fullPath: '/tributos'
+      preLoaderRoute: typeof AuthenticatedTributosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/tiss': {
+      id: '/_authenticated/tiss'
+      path: '/tiss'
+      fullPath: '/tiss'
+      preLoaderRoute: typeof AuthenticatedTissRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/teleconsulta': {
       id: '/_authenticated/teleconsulta'
       path: '/teleconsulta'
@@ -539,6 +650,13 @@ declare module '@tanstack/react-router' {
       path: '/reputacao'
       fullPath: '/reputacao'
       preLoaderRoute: typeof AuthenticatedReputacaoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/repasses': {
+      id: '/_authenticated/repasses'
+      path: '/repasses'
+      fullPath: '/repasses'
+      preLoaderRoute: typeof AuthenticatedRepassesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/prontuario': {
@@ -597,6 +715,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNpsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/maquininhas': {
+      id: '/_authenticated/maquininhas'
+      path: '/maquininhas'
+      fullPath: '/maquininhas'
+      preLoaderRoute: typeof AuthenticatedMaquininhasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/lembretes': {
       id: '/_authenticated/lembretes'
       path: '/lembretes'
@@ -604,11 +729,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLembretesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/jornadas': {
+      id: '/_authenticated/jornadas'
+      path: '/jornadas'
+      fullPath: '/jornadas'
+      preLoaderRoute: typeof AuthenticatedJornadasRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/indicacoes': {
       id: '/_authenticated/indicacoes'
       path: '/indicacoes'
       fullPath: '/indicacoes'
       preLoaderRoute: typeof AuthenticatedIndicacoesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/fiscal': {
+      id: '/_authenticated/fiscal'
+      path: '/fiscal'
+      fullPath: '/fiscal'
+      preLoaderRoute: typeof AuthenticatedFiscalRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/financeiro': {
@@ -639,11 +778,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/convenios': {
+      id: '/_authenticated/convenios'
+      path: '/convenios'
+      fullPath: '/convenios'
+      preLoaderRoute: typeof AuthenticatedConveniosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/conteudo': {
       id: '/_authenticated/conteudo'
       path: '/conteudo'
       fullPath: '/conteudo'
       preLoaderRoute: typeof AuthenticatedConteudoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/contador': {
+      id: '/_authenticated/contador'
+      path: '/contador'
+      fullPath: '/contador'
+      preLoaderRoute: typeof AuthenticatedContadorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/chat': {
@@ -712,13 +865,18 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBiRoute: typeof AuthenticatedBiRoute
   AuthenticatedCallcenterRoute: typeof AuthenticatedCallcenterRoute
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
+  AuthenticatedContadorRoute: typeof AuthenticatedContadorRoute
   AuthenticatedConteudoRoute: typeof AuthenticatedConteudoRoute
+  AuthenticatedConveniosRoute: typeof AuthenticatedConveniosRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEmailRoute: typeof AuthenticatedEmailRoute
   AuthenticatedEstoqueRoute: typeof AuthenticatedEstoqueRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
+  AuthenticatedFiscalRoute: typeof AuthenticatedFiscalRoute
   AuthenticatedIndicacoesRoute: typeof AuthenticatedIndicacoesRoute
+  AuthenticatedJornadasRoute: typeof AuthenticatedJornadasRoute
   AuthenticatedLembretesRoute: typeof AuthenticatedLembretesRoute
+  AuthenticatedMaquininhasRoute: typeof AuthenticatedMaquininhasRoute
   AuthenticatedNpsRoute: typeof AuthenticatedNpsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedOrcamentosRoute: typeof AuthenticatedOrcamentosRoute
@@ -727,9 +885,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedPrescricoesRoute: typeof AuthenticatedPrescricoesRoute
   AuthenticatedProntuarioRoute: typeof AuthenticatedProntuarioRoute
+  AuthenticatedRepassesRoute: typeof AuthenticatedRepassesRoute
   AuthenticatedReputacaoRoute: typeof AuthenticatedReputacaoRoute
   AuthenticatedSiteRoute: typeof AuthenticatedSiteRoute
   AuthenticatedTeleconsultaRoute: typeof AuthenticatedTeleconsultaRoute
+  AuthenticatedTissRoute: typeof AuthenticatedTissRoute
+  AuthenticatedTributosRoute: typeof AuthenticatedTributosRoute
   AuthenticatedUnidadesRoute: typeof AuthenticatedUnidadesRoute
 }
 
@@ -740,13 +901,18 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBiRoute: AuthenticatedBiRoute,
   AuthenticatedCallcenterRoute: AuthenticatedCallcenterRoute,
   AuthenticatedChatRoute: AuthenticatedChatRoute,
+  AuthenticatedContadorRoute: AuthenticatedContadorRoute,
   AuthenticatedConteudoRoute: AuthenticatedConteudoRoute,
+  AuthenticatedConveniosRoute: AuthenticatedConveniosRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEmailRoute: AuthenticatedEmailRoute,
   AuthenticatedEstoqueRoute: AuthenticatedEstoqueRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
+  AuthenticatedFiscalRoute: AuthenticatedFiscalRoute,
   AuthenticatedIndicacoesRoute: AuthenticatedIndicacoesRoute,
+  AuthenticatedJornadasRoute: AuthenticatedJornadasRoute,
   AuthenticatedLembretesRoute: AuthenticatedLembretesRoute,
+  AuthenticatedMaquininhasRoute: AuthenticatedMaquininhasRoute,
   AuthenticatedNpsRoute: AuthenticatedNpsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedOrcamentosRoute: AuthenticatedOrcamentosRoute,
@@ -755,9 +921,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedPrescricoesRoute: AuthenticatedPrescricoesRoute,
   AuthenticatedProntuarioRoute: AuthenticatedProntuarioRoute,
+  AuthenticatedRepassesRoute: AuthenticatedRepassesRoute,
   AuthenticatedReputacaoRoute: AuthenticatedReputacaoRoute,
   AuthenticatedSiteRoute: AuthenticatedSiteRoute,
   AuthenticatedTeleconsultaRoute: AuthenticatedTeleconsultaRoute,
+  AuthenticatedTissRoute: AuthenticatedTissRoute,
+  AuthenticatedTributosRoute: AuthenticatedTributosRoute,
   AuthenticatedUnidadesRoute: AuthenticatedUnidadesRoute,
 }
 
