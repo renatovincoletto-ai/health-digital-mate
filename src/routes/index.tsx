@@ -1,9 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  Sparkles, Globe, Calendar, Megaphone, Star, CreditCard, CheckCircle2, ArrowRight,
-  Stethoscope, ShieldCheck, MessageSquare, ClipboardList, Mail, Building2,
-  Image as ImageIcon, Users, Video, FileText, ClipboardCheck, Wallet, Link2,
-  FileSignature, Package, Phone, Bell, Gift, Smile, TrendingUp,
+  Sparkles, CheckCircle2, ArrowRight, Stethoscope, ShieldCheck,
+  Heart, TrendingUp, Wallet, Receipt, Layers,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 
@@ -94,30 +92,70 @@ function LandingPage() {
         <div className="container-page">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              Funcionalidades
+              Pacotes
             </p>
             <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-              Uma plataforma. Toda a presença digital.
+              Escolha por dor. Combine quando crescer.
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Cada módulo conversa com os outros. Um paciente que clicou no anúncio chega ao seu
-              site, agenda direto na sua agenda e recebe lembrete no WhatsApp.
+              Quatro pacotes especializados — ou tudo junto no SaúdeOS One. Painel e BI estão
+              inclusos em qualquer combinação.
             </p>
           </div>
 
-          <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
+          <div className="mt-14 grid gap-5 md:grid-cols-2">
+            {packages.map((p) => (
               <div
-                key={f.title}
+                key={p.title}
                 className="group rounded-2xl border border-border/70 bg-surface-elevated p-7 transition hover:border-primary/30 hover:shadow-lift"
               >
-                <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <f.icon className="h-5 w-5" />
+                <div className="flex items-center gap-3">
+                  <div className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${p.tone}`}>
+                    <p.icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                      {p.tagline}
+                    </p>
+                    <h3 className="font-display text-2xl font-semibold leading-tight">{p.title}</h3>
+                  </div>
                 </div>
-                <h3 className="font-display text-xl font-semibold">{f.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+                <ul className="mt-5 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+                  {p.items.map((it) => (
+                    <li key={it} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-success" />
+                      <span>{it}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-primary/30 bg-cta-gradient p-7 text-primary-foreground shadow-lift md:p-9">
+            <div className="flex flex-col items-start gap-5 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white/15">
+                  <Layers className="h-6 w-6 text-accent" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-80">
+                    Bundle completo
+                  </p>
+                  <h3 className="font-display text-2xl font-semibold">SaúdeOS One</h3>
+                  <p className="mt-1 text-sm opacity-90">
+                    Clinic + Grow + Pay + Fiscal, com onboarding guiado e suporte prioritário.
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/precos"
+                className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-primary shadow-soft transition hover:opacity-90"
+              >
+                Ver planos <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -217,77 +255,63 @@ function LandingPage() {
   );
 }
 
-const features = [
-  {
-    icon: Globe,
-    title: "Site profissional gerado por IA",
-    body: "Converse com a IA como aqui no Lovable. Em minutos seu site está no ar, otimizado para SEO local e em conformidade.",
-  },
-  {
-    icon: Calendar,
-    title: "Agenda automatizada",
-    body: "Sincronização bidirecional com Google Agenda e Outlook. Paciente agenda online, confirmação por WhatsApp.",
-  },
-  {
-    icon: ImageIcon,
-    title: "Peças automáticas para redes",
-    body: "Upload da sua marca → IA gera posts, stories e carrosséis com seu visual e seu tom de voz.",
-  },
-  {
-    icon: MessageSquare,
-    title: "Agente de conteúdo",
-    body: "Calendário editorial mensal criado e agendado automaticamente no Instagram, Facebook e LinkedIn.",
-  },
-  {
-    icon: Megaphone,
-    title: "Google Ads + Meta Ads",
-    body: "Campanhas criadas, otimizadas e relatadas. Dashboard único com leads, consultas e ROI por canal.",
-  },
-  {
-    icon: Star,
-    title: "Reputação no Google",
-    body: "Pedido automático de avaliação após consulta. Respostas com IA. Score do consultório sempre em alta.",
-  },
-  {
-    icon: ClipboardList,
-    title: "Anamnese digital",
-    body: "Paciente preenche antes da consulta com consentimento LGPD. Modelos gerados por IA para cada especialidade.",
-  },
+const packages = [
   {
     icon: Stethoscope,
-    title: "Prontuário com IA (SOAP)",
-    body: "Dite a consulta no navegador. A IA transcreve e estrutura em S/O/A/P. Você só revisa.",
+    title: "Clinic",
+    tagline: "Operar a clínica",
+    tone: "bg-primary/10 text-primary",
+    body: "Tudo que sua equipe usa do agendamento ao atendimento — com prontuário inteligente e teleconsulta.",
+    items: [
+      "Agenda + Pacientes/CRM",
+      "Prontuário (SOAP) + Anamnese",
+      "Teleconsulta + Prescrições",
+      "Planos, Estoque, Unidades",
+      "Chat interno + Call center",
+      "Portal do paciente",
+    ],
   },
   {
-    icon: Mail,
-    title: "E-mail marketing",
-    body: "Campanhas criadas por IA, base de contatos própria e relatórios — tudo dentro do compliance.",
+    icon: TrendingUp,
+    title: "Grow",
+    tagline: "Crescer e fidelizar",
+    tone: "bg-accent/15 text-accent",
+    body: "Atrai pacientes novos e mantém os atuais voltando, com IA cuidando da presença digital ponta a ponta.",
+    items: [
+      "Site + Conteúdo + SEO",
+      "Anúncios Google e Meta",
+      "E-mail marketing + Reputação",
+      "Jornadas IA + Lembretes",
+      "Indicações + NPS",
+    ],
   },
   {
-    icon: CreditCard,
-    title: "Pix e sinal de consulta",
-    body: "Reduza no-show com cobrança de sinal por Pix. Recorrência para tratamentos longos.",
+    icon: Wallet,
+    title: "Pay",
+    tagline: "Receber, repassar, faturar",
+    tone: "bg-success/15 text-success",
+    body: "Do orçamento ao repasse do profissional — incluindo maquininha TEF e faturamento de convênios.",
+    items: [
+      "Caixa + Pagamentos online",
+      "Maquininhas TEF",
+      "Orçamentos + Contratos",
+      "Repasses automatizados",
+      "Convênios + Guias TISS",
+    ],
   },
   {
-    icon: ShieldCheck,
-    title: "Compliance CFM/CFO/LGPD",
-    body: "Guardrails que bloqueiam conteúdo vetado. Anamnese digital com consentimento. Dados protegidos.",
+    icon: Receipt,
+    title: "Fiscal",
+    tagline: "Ficar legal",
+    tone: "bg-warning/15 text-warning",
+    body: "Notas, impostos e painel do contador integrados ao financeiro — sem planilha, sem retrabalho.",
+    items: [
+      "Emissão de NFS-e",
+      "Tributos (DAS, ISS, IR)",
+      "Painel do contador",
+      "Documentos compartilhados",
+    ],
   },
-  { icon: Building2, title: "Multi-unidade", body: "Clínicas com vários profissionais, salas e endereços. Dashboard consolidado." },
-  { icon: Users, title: "CRM de pacientes", body: "Cadastro completo, segmentação por tags, histórico e LTV." },
-  { icon: Video, title: "Teleconsulta integrada", body: "Sala de vídeo com link único, sem instalação, dentro do prontuário." },
-  { icon: FileText, title: "Prescrição digital", body: "Receita, atestado e exame com QR de validação e assinatura ICP-Brasil." },
-  { icon: ClipboardCheck, title: "Planos & odontograma", body: "Etapas com valores, status e ligação direta com financeiro." },
-  { icon: Wallet, title: "Financeiro completo", body: "Fluxo de caixa, contas a pagar/receber, repasse automático a profissionais." },
-  { icon: Link2, title: "Pagamentos online", body: "Pix, cartão e boleto. Link único de cobrança enviado por WhatsApp." },
-  { icon: FileSignature, title: "Orçamentos & contratos", body: "Geração, envio e aceite digital." },
-  { icon: Package, title: "Controle de estoque", body: "Materiais e medicamentos com alerta de mínimo e validade." },
-  { icon: MessageSquare, title: "Chat interno", body: "Conversa em tempo real entre profissionais e secretária." },
-  { icon: Phone, title: "Call center", body: "Fila, registro de chamadas e múltiplas agendas em paralelo." },
-  { icon: Bell, title: "Lembretes inteligentes", body: "WhatsApp, SMS e e-mail com confirmação de presença automática." },
-  { icon: Gift, title: "Programa de indicação", body: "Paciente indica, ganha desconto. Código único gerado pela plataforma." },
-  { icon: Smile, title: "NPS automatizado", body: "Pesquisa pós-consulta que alimenta diretamente a sua reputação." },
-  { icon: TrendingUp, title: "BI avançado", body: "Benchmarks por especialidade e cidade. Você sabe onde está e para onde ir." },
 ];
 
 const steps = [
@@ -296,11 +320,11 @@ const steps = [
     body: "Diga seu nome, CRM ou CRO, especialidade e cidade. Leva 2 minutos.",
   },
   {
-    title: "Converse com a IA",
-    body: "Como aqui no Lovable: peça mudanças, adicione seções, escolha o tom. A IA respeita as regras do conselho.",
+    title: "Escolha seu pacote",
+    body: "Comece pelo que mais dói — Clinic, Grow, Pay ou Fiscal. Adicione os outros quando quiser, ou vá direto no One.",
   },
   {
     title: "Publique e conecte",
-    body: "Site no ar. Conecte sua agenda, redes sociais e contas de anúncios. Pronto.",
+    body: "Site no ar, agenda sincronizada, cobranças e notas funcionando. Pronto.",
   },
 ];
