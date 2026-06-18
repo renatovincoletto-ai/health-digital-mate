@@ -201,16 +201,20 @@ export const createMemedPrescription = createServerFn({ method: "POST" })
       .eq("tenant_id", tenant_id).eq("provider", "memed").maybeSingle();
     const isSandbox = !acc || acc.status === "sandbox";
     const external_id = `memed_${Math.random().toString(36).slice(2, 12)}`;
+    const content = [
+      ...data.medications.map((m) => `${m.name} — ${m.dosage}${m.duration ? ` (${m.duration})` : ""}`),
+      data.notes ? `\nObservações: ${data.notes}` : "",
+    ].join("\n");
     const { data: row, error } = await context.supabase.from("prescriptions").insert({
       tenant_id,
       patient_id: data.patient_id,
-      provider: "memed",
-      external_id,
+      doc_type: "prescription",
+      signature_provider: "memed",
+      signature_id: external_id,
       status: isSandbox ? "signed" : "draft",
-      content: { medications: data.medications, notes: data.notes ?? null },
+      content,
       pdf_url: isSandbox ? `https://sandbox.memed.local/rx/${external_id}.pdf` : null,
       qr_code: isSandbox ? `MEMED-${external_id.toUpperCase()}` : null,
-      signed_at: isSandbox ? new Date().toISOString() : null,
     } as any).select().single();
     if (error) throw error;
     return { ...row, sandbox: isSandbox };
