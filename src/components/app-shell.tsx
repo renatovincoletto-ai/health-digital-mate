@@ -40,6 +40,7 @@ const groups: NavGroup[] = [
     { to: "/anamnese", label: "Anamnese", icon: ClipboardList, pkg: "clinic" },
     { to: "/teleconsulta", label: "Teleconsulta", icon: Video, pkg: "clinic" },
     { to: "/prescricoes", label: "Prescrições", icon: FileText, pkg: "clinic" },
+    { to: "/modelos", label: "Modelos de documentos", icon: FileText, pkg: "clinic" },
     { to: "/planos", label: "Planos de tratamento", icon: ClipboardCheck, pkg: "clinic" },
     { to: "/estoque", label: "Estoque", icon: Package, pkg: "clinic" },
     { to: "/unidades", label: "Unidades", icon: Building2, pkg: "clinic" },
