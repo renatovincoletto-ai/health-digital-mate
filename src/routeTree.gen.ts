@@ -17,6 +17,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
+import { Route as PortalRecuperarRouteImport } from './routes/portal.recuperar'
 import { Route as PortalAcessoRouteImport } from './routes/portal.acesso'
 import { Route as PortalSlugRouteImport } from './routes/portal.$slug'
 import { Route as AuthenticatedWhatsappAgenteRouteImport } from './routes/_authenticated/whatsapp-agente'
@@ -103,6 +104,11 @@ const PortalIndexRoute = PortalIndexRouteImport.update({
 const SSlugRoute = SSlugRouteImport.update({
   id: '/s/$slug',
   path: '/s/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalRecuperarRoute = PortalRecuperarRouteImport.update({
+  id: '/portal/recuperar',
+  path: '/portal/recuperar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortalAcessoRoute = PortalAcessoRouteImport.update({
@@ -402,6 +408,7 @@ export interface FileRoutesByFullPath {
   '/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
   '/portal/$slug': typeof PortalSlugRoute
   '/portal/acesso': typeof PortalAcessoRoute
+  '/portal/recuperar': typeof PortalRecuperarRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -459,6 +466,7 @@ export interface FileRoutesByTo {
   '/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
   '/portal/$slug': typeof PortalSlugRoute
   '/portal/acesso': typeof PortalAcessoRoute
+  '/portal/recuperar': typeof PortalRecuperarRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -518,6 +526,7 @@ export interface FileRoutesById {
   '/_authenticated/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
   '/portal/$slug': typeof PortalSlugRoute
   '/portal/acesso': typeof PortalAcessoRoute
+  '/portal/recuperar': typeof PortalRecuperarRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -577,6 +586,7 @@ export interface FileRouteTypes {
     | '/whatsapp-agente'
     | '/portal/$slug'
     | '/portal/acesso'
+    | '/portal/recuperar'
     | '/s/$slug'
     | '/portal/'
     | '/s/$slug/agendar'
@@ -634,6 +644,7 @@ export interface FileRouteTypes {
     | '/whatsapp-agente'
     | '/portal/$slug'
     | '/portal/acesso'
+    | '/portal/recuperar'
     | '/s/$slug'
     | '/portal'
     | '/s/$slug/agendar'
@@ -692,6 +703,7 @@ export interface FileRouteTypes {
     | '/_authenticated/whatsapp-agente'
     | '/portal/$slug'
     | '/portal/acesso'
+    | '/portal/recuperar'
     | '/s/$slug'
     | '/portal/'
     | '/s/$slug/agendar'
@@ -709,6 +721,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   PortalSlugRoute: typeof PortalSlugRoute
   PortalAcessoRoute: typeof PortalAcessoRoute
+  PortalRecuperarRoute: typeof PortalRecuperarRoute
   SSlugRoute: typeof SSlugRouteWithChildren
   PortalIndexRoute: typeof PortalIndexRoute
   ApiPublicHooksAsaasRoute: typeof ApiPublicHooksAsaasRoute
@@ -771,6 +784,13 @@ declare module '@tanstack/react-router' {
       path: '/s/$slug'
       fullPath: '/s/$slug'
       preLoaderRoute: typeof SSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/recuperar': {
+      id: '/portal/recuperar'
+      path: '/portal/recuperar'
+      fullPath: '/portal/recuperar'
+      preLoaderRoute: typeof PortalRecuperarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portal/acesso': {
@@ -1226,6 +1246,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   PortalSlugRoute: PortalSlugRoute,
   PortalAcessoRoute: PortalAcessoRoute,
+  PortalRecuperarRoute: PortalRecuperarRoute,
   SSlugRoute: SSlugRouteWithChildren,
   PortalIndexRoute: PortalIndexRoute,
   ApiPublicHooksAsaasRoute: ApiPublicHooksAsaasRoute,
