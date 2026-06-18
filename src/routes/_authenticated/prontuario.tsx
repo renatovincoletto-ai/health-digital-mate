@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef } from "react";
-import { Mic, Square, Sparkles, Loader2, Stethoscope, MessageCircle, Check } from "lucide-react";
+import { Mic, Square, Sparkles, Loader2, Stethoscope, MessageCircle, Check, History, Search } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import {
@@ -11,9 +11,12 @@ import {
   transcribeConsultationAudio,
   markConsultationWhatsappSent,
 } from "@/lib/wave5.functions";
+import { listProfessionalsForNote, patientTimeline } from "@/lib/waveE.functions";
 
 export const Route = createFileRoute("/_authenticated/prontuario")({
   component: ProntuarioPage,
+  errorComponent: ({ error }) => <div className="p-6 text-sm text-destructive">{error.message}</div>,
+  notFoundComponent: () => <div className="p-6">Não encontrado</div>,
 });
 
 function blobToBase64(blob: Blob): Promise<string> {
@@ -33,18 +36,31 @@ function ProntuarioPage() {
   const genFn = useServerFn(generateSoapNote);
   const sttFn = useServerFn(transcribeConsultationAudio);
   const markWaFn = useServerFn(markConsultationWhatsappSent);
+  const prosFn = useServerFn(listProfessionalsForNote);
+  const timelineFn = useServerFn(patientTimeline);
   const qc = useQueryClient();
+
   const { data: notes } = useQuery({ queryKey: ["consultation-notes"], queryFn: () => fetchNotes() });
+  const { data: pros } = useQuery({ queryKey: ["pros-for-note"], queryFn: () => prosFn() });
 
   const [patient, setPatient] = useState("");
   const [phone, setPhone] = useState("");
   const [transcript, setTranscript] = useState("");
   const [specialty, setSpecialty] = useState("");
+  const [professionalId, setProfessionalId] = useState<string>("");
   const [recording, setRecording] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
   const recRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
-  const streamRef = useRef<MediaStream | null>(null);
+
+  // History panel state
+  const [historyQuery, setHistoryQuery] = useState("");
+  const [historyPatient, setHistoryPatient] = useState("");
+  const history = useQuery({
+    queryKey: ["patient-timeline", historyPatient],
+    queryFn: () => timelineFn({ data: { patient_name: historyPatient } }),
+    enabled: !!historyPatient,
+  });
 
   const startRecording = async () => {
     try {
@@ -75,7 +91,6 @@ function ProntuarioPage() {
         }
       };
       recRef.current = rec;
-      streamRef.current = stream;
       rec.start();
       setRecording(true);
     } catch {
@@ -89,7 +104,15 @@ function ProntuarioPage() {
   };
 
   const genMut = useMutation({
-    mutationFn: () => genFn({ data: { patient_name: patient, patient_phone: phone || null, transcript, specialty } }),
+    mutationFn: () => genFn({
+      data: {
+        patient_name: patient,
+        patient_phone: phone || null,
+        transcript,
+        specialty,
+        professional_id: professionalId || null,
+      },
+    }),
     onSuccess: () => {
       toast.success("Nota SOAP + resumo gerados");
       setPatient(""); setPhone(""); setTranscript("");
@@ -107,20 +130,37 @@ function ProntuarioPage() {
     try { await markWaFn({ data: { id: note.id } }); qc.invalidateQueries({ queryKey: ["consultation-notes"] }); } catch { /* ignore */ }
   };
 
+  const proName = (id: string | null | undefined) =>
+    id ? (pros?.find((p: any) => p.id === id)?.full_name ?? "Profissional") : "—";
+
   return (
     <AppShell>
       <div className="container-page py-10">
         <header className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Prontuário</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Gravação, nota SOAP & resumo no WhatsApp</h1>
-          <p className="mt-1.5 text-muted-foreground">Grave a consulta, a IA transcreve, gera a nota SOAP para a ficha e um resumo amigável para enviar ao paciente.</p>
+          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Gravação, nota SOAP & histórico do paciente</h1>
+          <p className="mt-1.5 text-muted-foreground">Grave a consulta, vincule ao profissional atendente e veja todo o histórico do paciente entre profissionais da clínica.</p>
         </header>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
           <section className="rounded-2xl border border-border bg-surface-elevated p-6">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <input value={patient} onChange={(e) => setPatient(e.target.value)} placeholder="Paciente" className="rounded-lg border border-border bg-background px-3 py-2 text-sm sm:col-span-1" />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <input value={patient} onChange={(e) => setPatient(e.target.value)} placeholder="Paciente" className="rounded-lg border border-border bg-background px-3 py-2 text-sm" />
               <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="WhatsApp (DDI+DDD+nº)" className="rounded-lg border border-border bg-background px-3 py-2 text-sm" />
+              <select
+                value={professionalId}
+                onChange={(e) => {
+                  setProfessionalId(e.target.value);
+                  const p = pros?.find((x: any) => x.id === e.target.value);
+                  if (p?.specialty && !specialty) setSpecialty(p.specialty);
+                }}
+                className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              >
+                <option value="">Profissional atendente…</option>
+                {pros?.filter((p: any) => p.is_active !== false).map((p: any) => (
+                  <option key={p.id} value={p.id}>{p.full_name}{p.specialty ? ` — ${p.specialty}` : ""}</option>
+                ))}
+              </select>
               <input value={specialty} onChange={(e) => setSpecialty(e.target.value)} placeholder="Especialidade" className="rounded-lg border border-border bg-background px-3 py-2 text-sm" />
             </div>
             <div className="mt-3 flex items-center gap-2">
@@ -136,19 +176,73 @@ function ProntuarioPage() {
               {recording && <span className="text-xs text-muted-foreground">Gravando…</span>}
               {transcribing && <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"><Loader2 className="h-3 w-3 animate-spin" /> Transcrevendo com IA…</span>}
             </div>
-            <textarea value={transcript} onChange={(e) => setTranscript(e.target.value)} placeholder="A transcrição aparece aqui — você pode editar antes de gerar a nota." rows={14} className="mt-3 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm" />
+            <textarea value={transcript} onChange={(e) => setTranscript(e.target.value)} placeholder="A transcrição aparece aqui — você pode editar antes de gerar a nota." rows={12} className="mt-3 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm" />
             <button onClick={() => genMut.mutate()} disabled={genMut.isPending || !patient || transcript.length < 20} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50">
               {genMut.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />} Gerar SOAP + resumo
             </button>
+
+            {/* Patient history search */}
+            <div className="mt-8 rounded-xl border border-dashed border-border bg-background/40 p-4">
+              <h3 className="flex items-center gap-2 text-sm font-semibold"><History className="h-4 w-4" /> Histórico do paciente entre profissionais</h3>
+              <p className="mt-1 text-xs text-muted-foreground">Pesquise pelo nome do paciente para ver todos os atendimentos anteriores, com profissional, data e orientações.</p>
+              <form
+                onSubmit={(e) => { e.preventDefault(); setHistoryPatient(historyQuery.trim()); }}
+                className="mt-3 flex gap-2"
+              >
+                <input
+                  value={historyQuery}
+                  onChange={(e) => setHistoryQuery(e.target.value)}
+                  placeholder="Nome do paciente…"
+                  className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                />
+                <button type="submit" className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground">
+                  <Search className="h-3.5 w-3.5" /> Buscar
+                </button>
+              </form>
+
+              {history.isFetching && <p className="mt-3 text-xs text-muted-foreground">Carregando…</p>}
+              {history.data && (
+                <div className="mt-4 space-y-3">
+                  {history.data.providers.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {history.data.providers.map((p: any, i: number) => (
+                        <span key={i} className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-[11px]">
+                          <span className="inline-block h-2 w-2 rounded-full" style={{ background: p.professional?.color ?? "#999" }} />
+                          {p.professional?.full_name ?? "Sem profissional"} · {p.count} atend.
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {history.data.notes.length === 0 && <p className="text-xs text-muted-foreground">Sem atendimentos para este paciente.</p>}
+                  {history.data.notes.map((n: any) => (
+                    <details key={n.id} className="rounded-lg border border-border bg-background p-3 text-xs">
+                      <summary className="cursor-pointer">
+                        <span className="font-medium">{new Date(n.created_at).toLocaleString("pt-BR")}</span>
+                        <span className="ml-2 text-muted-foreground">com {n.professional?.full_name ?? "—"}{n.professional?.specialty ? ` (${n.professional.specialty})` : ""}</span>
+                      </summary>
+                      <div className="mt-2 space-y-1">
+                        {n.soap_assessment && <p><strong>Avaliação:</strong> {n.soap_assessment}</p>}
+                        {n.soap_plan && <p><strong>Conduta/Orientações:</strong> {n.soap_plan}</p>}
+                        {n.patient_summary && <p className="text-muted-foreground italic">Resumo enviado: {n.patient_summary}</p>}
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              )}
+            </div>
           </section>
 
           <aside className="rounded-2xl border border-border bg-surface-elevated p-6">
             <h3 className="font-display font-semibold flex items-center gap-2"><Stethoscope className="h-4 w-4" /> Notas recentes</h3>
             <div className="mt-3 space-y-3">
               {notes?.length === 0 && <p className="text-sm text-muted-foreground">Nenhuma nota ainda.</p>}
-              {notes?.map((n) => (
+              {notes?.map((n: any) => (
                 <details key={n.id} className="rounded-lg border border-border bg-background p-3 text-sm">
-                  <summary className="cursor-pointer font-medium">{n.patient_name} <span className="text-xs text-muted-foreground">· {new Date(n.created_at).toLocaleDateString("pt-BR")}</span></summary>
+                  <summary className="cursor-pointer font-medium">
+                    {n.patient_name}
+                    <span className="ml-1 text-xs text-muted-foreground">· {new Date(n.created_at).toLocaleDateString("pt-BR")}</span>
+                    <span className="ml-1 text-[10px] text-muted-foreground">· {proName(n.professional_id)}</span>
+                  </summary>
                   <div className="mt-3 space-y-2 text-xs">
                     {n.soap_subjective && <p><strong>S:</strong> {n.soap_subjective}</p>}
                     {n.soap_objective && <p><strong>O:</strong> {n.soap_objective}</p>}
@@ -163,7 +257,7 @@ function ProntuarioPage() {
                   </div>
                   <div className="mt-3 flex items-center justify-between gap-2">
                     <button
-                      onClick={() => sendWhats(n as { id: string; patient_phone: string | null; patient_summary: string | null; patient_name: string })}
+                      onClick={() => sendWhats(n)}
                       disabled={!n.patient_phone || !n.patient_summary}
                       className="inline-flex items-center gap-1.5 rounded-md bg-success px-3 py-1.5 text-xs font-medium text-success-foreground disabled:opacity-50"
                     >
