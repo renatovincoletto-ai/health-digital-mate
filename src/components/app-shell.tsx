@@ -70,11 +70,6 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <Icon className="h-4 w-4" />
                   {item.label}
                 </span>
-                {item.soon ? (
-                  <span className="rounded-full bg-accent/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent-foreground">
-                    em breve
-                  </span>
-                ) : null}
               </Link>
             );
           })}
