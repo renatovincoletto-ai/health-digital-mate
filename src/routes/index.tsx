@@ -92,30 +92,70 @@ function LandingPage() {
         <div className="container-page">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              Funcionalidades
+              Pacotes
             </p>
             <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight md:text-5xl">
-              Uma plataforma. Toda a presença digital.
+              Escolha por dor. Combine quando crescer.
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Cada módulo conversa com os outros. Um paciente que clicou no anúncio chega ao seu
-              site, agenda direto na sua agenda e recebe lembrete no WhatsApp.
+              Quatro pacotes especializados — ou tudo junto no SaúdeOS One. Painel e BI estão
+              inclusos em qualquer combinação.
             </p>
           </div>
 
-          <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
+          <div className="mt-14 grid gap-5 md:grid-cols-2">
+            {packages.map((p) => (
               <div
-                key={f.title}
+                key={p.title}
                 className="group rounded-2xl border border-border/70 bg-surface-elevated p-7 transition hover:border-primary/30 hover:shadow-lift"
               >
-                <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <f.icon className="h-5 w-5" />
+                <div className="flex items-center gap-3">
+                  <div className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${p.tone}`}>
+                    <p.icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                      {p.tagline}
+                    </p>
+                    <h3 className="font-display text-2xl font-semibold leading-tight">{p.title}</h3>
+                  </div>
                 </div>
-                <h3 className="font-display text-xl font-semibold">{f.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+                <ul className="mt-5 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+                  {p.items.map((it) => (
+                    <li key={it} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-success" />
+                      <span>{it}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-primary/30 bg-cta-gradient p-7 text-primary-foreground shadow-lift md:p-9">
+            <div className="flex flex-col items-start gap-5 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white/15">
+                  <Layers className="h-6 w-6 text-accent" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-80">
+                    Bundle completo
+                  </p>
+                  <h3 className="font-display text-2xl font-semibold">SaúdeOS One</h3>
+                  <p className="mt-1 text-sm opacity-90">
+                    Clinic + Grow + Pay + Fiscal, com onboarding guiado e suporte prioritário.
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/precos"
+                className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-primary shadow-soft transition hover:opacity-90"
+              >
+                Ver planos <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
