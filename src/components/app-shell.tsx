@@ -54,6 +54,7 @@ const groups: NavGroup[] = [
   ]},
   { label: "Flow — Relacionamento", items: [
     { to: "/whatsapp-agente", label: "Agente WhatsApp", icon: MessageSquare, pkg: "flow" },
+    { to: "/automacoes", label: "Automações", icon: Workflow, pkg: "flow" },
     { to: "/jornadas", label: "Jornadas IA", icon: Workflow, pkg: "flow" },
     { to: "/lembretes", label: "Lembretes", icon: Bell, pkg: "flow" },
     { to: "/indicacoes", label: "Indicações", icon: Gift, pkg: "flow" },

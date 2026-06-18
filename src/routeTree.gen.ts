@@ -50,11 +50,13 @@ import { Route as AuthenticatedContadorRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
 import { Route as AuthenticatedCallcenterRouteImport } from './routes/_authenticated/callcenter'
 import { Route as AuthenticatedBiRouteImport } from './routes/_authenticated/bi'
+import { Route as AuthenticatedAutomacoesRouteImport } from './routes/_authenticated/automacoes'
 import { Route as AuthenticatedAnunciosRouteImport } from './routes/_authenticated/anuncios'
 import { Route as AuthenticatedAnamneseRouteImport } from './routes/_authenticated/anamnese'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
 import { Route as SSlugAnamneseRouteImport } from './routes/s.$slug.anamnese'
 import { Route as SSlugAgendarRouteImport } from './routes/s.$slug.agendar'
+import { Route as ApiPublicHooksRunAutomationsRouteImport } from './routes/api/public/hooks/run-automations'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -264,6 +266,11 @@ const AuthenticatedBiRoute = AuthenticatedBiRouteImport.update({
   path: '/bi',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAutomacoesRoute = AuthenticatedAutomacoesRouteImport.update({
+  id: '/automacoes',
+  path: '/automacoes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAnunciosRoute = AuthenticatedAnunciosRouteImport.update({
   id: '/anuncios',
   path: '/anuncios',
@@ -289,6 +296,12 @@ const SSlugAgendarRoute = SSlugAgendarRouteImport.update({
   path: '/agendar',
   getParentRoute: () => SSlugRoute,
 } as any)
+const ApiPublicHooksRunAutomationsRoute =
+  ApiPublicHooksRunAutomationsRouteImport.update({
+    id: '/api/public/hooks/run-automations',
+    path: '/api/public/hooks/run-automations',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -299,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/agenda': typeof AuthenticatedAgendaRoute
   '/anamnese': typeof AuthenticatedAnamneseRoute
   '/anuncios': typeof AuthenticatedAnunciosRoute
+  '/automacoes': typeof AuthenticatedAutomacoesRoute
   '/bi': typeof AuthenticatedBiRoute
   '/callcenter': typeof AuthenticatedCallcenterRoute
   '/chat': typeof AuthenticatedChatRoute
@@ -336,6 +350,7 @@ export interface FileRoutesByFullPath {
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
+  '/api/public/hooks/run-automations': typeof ApiPublicHooksRunAutomationsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -346,6 +361,7 @@ export interface FileRoutesByTo {
   '/agenda': typeof AuthenticatedAgendaRoute
   '/anamnese': typeof AuthenticatedAnamneseRoute
   '/anuncios': typeof AuthenticatedAnunciosRoute
+  '/automacoes': typeof AuthenticatedAutomacoesRoute
   '/bi': typeof AuthenticatedBiRoute
   '/callcenter': typeof AuthenticatedCallcenterRoute
   '/chat': typeof AuthenticatedChatRoute
@@ -383,6 +399,7 @@ export interface FileRoutesByTo {
   '/portal': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
+  '/api/public/hooks/run-automations': typeof ApiPublicHooksRunAutomationsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -395,6 +412,7 @@ export interface FileRoutesById {
   '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
   '/_authenticated/anamnese': typeof AuthenticatedAnamneseRoute
   '/_authenticated/anuncios': typeof AuthenticatedAnunciosRoute
+  '/_authenticated/automacoes': typeof AuthenticatedAutomacoesRoute
   '/_authenticated/bi': typeof AuthenticatedBiRoute
   '/_authenticated/callcenter': typeof AuthenticatedCallcenterRoute
   '/_authenticated/chat': typeof AuthenticatedChatRoute
@@ -432,6 +450,7 @@ export interface FileRoutesById {
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
+  '/api/public/hooks/run-automations': typeof ApiPublicHooksRunAutomationsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -444,6 +463,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/anamnese'
     | '/anuncios'
+    | '/automacoes'
     | '/bi'
     | '/callcenter'
     | '/chat'
@@ -481,6 +501,7 @@ export interface FileRouteTypes {
     | '/portal/'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
+    | '/api/public/hooks/run-automations'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -491,6 +512,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/anamnese'
     | '/anuncios'
+    | '/automacoes'
     | '/bi'
     | '/callcenter'
     | '/chat'
@@ -528,6 +550,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
+    | '/api/public/hooks/run-automations'
   id:
     | '__root__'
     | '/'
@@ -539,6 +562,7 @@ export interface FileRouteTypes {
     | '/_authenticated/agenda'
     | '/_authenticated/anamnese'
     | '/_authenticated/anuncios'
+    | '/_authenticated/automacoes'
     | '/_authenticated/bi'
     | '/_authenticated/callcenter'
     | '/_authenticated/chat'
@@ -576,6 +600,7 @@ export interface FileRouteTypes {
     | '/portal/'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
+    | '/api/public/hooks/run-automations'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -587,6 +612,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SSlugRoute: typeof SSlugRouteWithChildren
   PortalIndexRoute: typeof PortalIndexRoute
+  ApiPublicHooksRunAutomationsRoute: typeof ApiPublicHooksRunAutomationsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -878,6 +904,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBiRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/automacoes': {
+      id: '/_authenticated/automacoes'
+      path: '/automacoes'
+      fullPath: '/automacoes'
+      preLoaderRoute: typeof AuthenticatedAutomacoesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/anuncios': {
       id: '/_authenticated/anuncios'
       path: '/anuncios'
@@ -913,6 +946,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SSlugAgendarRouteImport
       parentRoute: typeof SSlugRoute
     }
+    '/api/public/hooks/run-automations': {
+      id: '/api/public/hooks/run-automations'
+      path: '/api/public/hooks/run-automations'
+      fullPath: '/api/public/hooks/run-automations'
+      preLoaderRoute: typeof ApiPublicHooksRunAutomationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -920,6 +960,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
   AuthenticatedAnamneseRoute: typeof AuthenticatedAnamneseRoute
   AuthenticatedAnunciosRoute: typeof AuthenticatedAnunciosRoute
+  AuthenticatedAutomacoesRoute: typeof AuthenticatedAutomacoesRoute
   AuthenticatedBiRoute: typeof AuthenticatedBiRoute
   AuthenticatedCallcenterRoute: typeof AuthenticatedCallcenterRoute
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
@@ -959,6 +1000,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAgendaRoute: AuthenticatedAgendaRoute,
   AuthenticatedAnamneseRoute: AuthenticatedAnamneseRoute,
   AuthenticatedAnunciosRoute: AuthenticatedAnunciosRoute,
+  AuthenticatedAutomacoesRoute: AuthenticatedAutomacoesRoute,
   AuthenticatedBiRoute: AuthenticatedBiRoute,
   AuthenticatedCallcenterRoute: AuthenticatedCallcenterRoute,
   AuthenticatedChatRoute: AuthenticatedChatRoute,
@@ -1018,6 +1060,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SSlugRoute: SSlugRouteWithChildren,
   PortalIndexRoute: PortalIndexRoute,
+  ApiPublicHooksRunAutomationsRoute: ApiPublicHooksRunAutomationsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
