@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      accountant_documents: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          file_url: string | null
+          id: string
+          shared_with_accountant: boolean | null
+          tenant_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          shared_with_accountant?: boolean | null
+          tenant_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          shared_with_accountant?: boolean | null
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accountant_documents_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ad_campaigns: {
         Row: {
           audience: string | null
@@ -873,6 +917,53 @@ export type Database = {
           },
         ]
       }
+      insurance_plans: {
+        Row: {
+          active: boolean | null
+          ans_code: string | null
+          contract_number: string | null
+          created_at: string
+          id: string
+          operator_name: string
+          plan_name: string
+          rate_table: Json | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean | null
+          ans_code?: string | null
+          contract_number?: string | null
+          created_at?: string
+          id?: string
+          operator_name: string
+          plan_name: string
+          rate_table?: Json | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean | null
+          ans_code?: string | null
+          contract_number?: string | null
+          created_at?: string
+          id?: string
+          operator_name?: string
+          plan_name?: string
+          rate_table?: Json | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_plans_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integration_accounts: {
         Row: {
           account_email: string | null
@@ -1082,6 +1173,121 @@ export type Database = {
           },
         ]
       }
+      journey_enrollments: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          current_step: number
+          id: string
+          journey_id: string
+          next_run_at: string | null
+          patient_id: string
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          current_step?: number
+          id?: string
+          journey_id: string
+          next_run_at?: string | null
+          patient_id: string
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          current_step?: number
+          id?: string
+          journey_id?: string
+          next_run_at?: string | null
+          patient_id?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_enrollments_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "patient_journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journey_enrollments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journey_enrollments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journey_steps: {
+        Row: {
+          action: string | null
+          channel: string
+          created_at: string
+          delay_hours: number
+          id: string
+          journey_id: string
+          step_order: number
+          template: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          action?: string | null
+          channel: string
+          created_at?: string
+          delay_hours?: number
+          id?: string
+          journey_id: string
+          step_order?: number
+          template: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          action?: string | null
+          channel?: string
+          created_at?: string
+          delay_hours?: number
+          id?: string
+          journey_id?: string
+          step_order?: number
+          template?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journey_steps_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "patient_journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journey_steps_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           active: boolean
@@ -1131,6 +1337,90 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "locations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nfse_invoices: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          iss_amount: number | null
+          iss_rate: number | null
+          issued_at: string | null
+          metadata: Json | null
+          number: string | null
+          patient_id: string | null
+          pdf_url: string | null
+          rps_number: string | null
+          service_code: string | null
+          status: string
+          taker_document: string | null
+          taker_email: string | null
+          taker_name: string | null
+          tenant_id: string
+          updated_at: string
+          xml_url: string | null
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          iss_amount?: number | null
+          iss_rate?: number | null
+          issued_at?: string | null
+          metadata?: Json | null
+          number?: string | null
+          patient_id?: string | null
+          pdf_url?: string | null
+          rps_number?: string | null
+          service_code?: string | null
+          status?: string
+          taker_document?: string | null
+          taker_email?: string | null
+          taker_name?: string | null
+          tenant_id: string
+          updated_at?: string
+          xml_url?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          iss_amount?: number | null
+          iss_rate?: number | null
+          issued_at?: string | null
+          metadata?: Json | null
+          number?: string | null
+          patient_id?: string | null
+          pdf_url?: string | null
+          rps_number?: string | null
+          service_code?: string | null
+          status?: string
+          taker_document?: string | null
+          taker_email?: string | null
+          taker_name?: string | null
+          tenant_id?: string
+          updated_at?: string
+          xml_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nfse_invoices_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nfse_invoices_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1249,6 +1539,47 @@ export type Database = {
           },
           {
             foreignKeyName: "odontogram_entries_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_journeys: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          tenant_id: string
+          trigger_event: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          tenant_id: string
+          trigger_event: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          tenant_id?: string
+          trigger_event?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_journeys_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -1391,6 +1722,60 @@ export type Database = {
           },
         ]
       }
+      pos_terminals: {
+        Row: {
+          acquirer: string
+          active: boolean | null
+          created_at: string
+          id: string
+          label: string | null
+          location_id: string | null
+          model: string | null
+          serial_number: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          acquirer: string
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          model?: string | null
+          serial_number?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          acquirer?: string
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          label?: string | null
+          location_id?: string | null
+          model?: string | null
+          serial_number?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pos_terminals_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pos_terminals_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prescriptions: {
         Row: {
           appointment_id: string | null
@@ -1467,6 +1852,72 @@ export type Database = {
           },
           {
             foreignKeyName: "prescriptions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_payouts: {
+        Row: {
+          created_at: string
+          fees_amount: number
+          gross_amount: number
+          id: string
+          net_amount: number
+          notes: string | null
+          paid_at: string | null
+          payment_method: string | null
+          period_end: string
+          period_start: string
+          professional_id: string
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          fees_amount?: number
+          gross_amount?: number
+          id?: string
+          net_amount?: number
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          period_end: string
+          period_start: string
+          professional_id: string
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          fees_amount?: number
+          gross_amount?: number
+          id?: string
+          net_amount?: number
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          period_end?: string
+          period_start?: string
+          professional_id?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_payouts_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_payouts_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -2125,6 +2576,132 @@ export type Database = {
           },
         ]
       }
+      tax_obligations: {
+        Row: {
+          amount: number
+          created_at: string
+          due_date: string | null
+          id: string
+          kind: string
+          notes: string | null
+          paid_at: string | null
+          period: string
+          receipt_url: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          kind: string
+          notes?: string | null
+          paid_at?: string | null
+          period: string
+          receipt_url?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          kind?: string
+          notes?: string | null
+          paid_at?: string | null
+          period?: string
+          receipt_url?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tax_obligations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tef_transactions: {
+        Row: {
+          amount: number
+          authorization_code: string | null
+          brand: string | null
+          captured_at: string | null
+          created_at: string
+          id: string
+          installments: number | null
+          net_amount: number | null
+          nsu: string | null
+          patient_id: string | null
+          status: string
+          tenant_id: string
+          terminal_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          authorization_code?: string | null
+          brand?: string | null
+          captured_at?: string | null
+          created_at?: string
+          id?: string
+          installments?: number | null
+          net_amount?: number | null
+          nsu?: string | null
+          patient_id?: string | null
+          status?: string
+          tenant_id: string
+          terminal_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          authorization_code?: string | null
+          brand?: string | null
+          captured_at?: string | null
+          created_at?: string
+          id?: string
+          installments?: number | null
+          net_amount?: number | null
+          nsu?: string | null
+          patient_id?: string | null
+          status?: string
+          tenant_id?: string
+          terminal_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tef_transactions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tef_transactions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tef_transactions_terminal_id_fkey"
+            columns: ["terminal_id"]
+            isOneToOne: false
+            referencedRelation: "pos_terminals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       telemedicine_sessions: {
         Row: {
           appointment_id: string | null
@@ -2261,6 +2838,85 @@ export type Database = {
           whatsapp?: string | null
         }
         Relationships: []
+      }
+      tiss_guides: {
+        Row: {
+          amount: number
+          authorization_number: string | null
+          created_at: string
+          glosa_amount: number | null
+          guide_number: string | null
+          guide_type: string
+          id: string
+          insurance_plan_id: string | null
+          notes: string | null
+          paid_amount: number | null
+          patient_id: string | null
+          service_date: string | null
+          status: string
+          submitted_at: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          authorization_number?: string | null
+          created_at?: string
+          glosa_amount?: number | null
+          guide_number?: string | null
+          guide_type: string
+          id?: string
+          insurance_plan_id?: string | null
+          notes?: string | null
+          paid_amount?: number | null
+          patient_id?: string | null
+          service_date?: string | null
+          status?: string
+          submitted_at?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          authorization_number?: string | null
+          created_at?: string
+          glosa_amount?: number | null
+          guide_number?: string | null
+          guide_type?: string
+          id?: string
+          insurance_plan_id?: string | null
+          notes?: string | null
+          paid_amount?: number | null
+          patient_id?: string | null
+          service_date?: string | null
+          status?: string
+          submitted_at?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tiss_guides_insurance_plan_id_fkey"
+            columns: ["insurance_plan_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tiss_guides_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tiss_guides_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       treatment_plan_items: {
         Row: {
