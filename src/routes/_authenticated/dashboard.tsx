@@ -8,7 +8,10 @@ import {
   Sparkles,
   Megaphone,
   Star,
-  CreditCard,
+  ClipboardList,
+  Stethoscope,
+  Mail,
+  Building2,
   ArrowRight,
   ExternalLink,
   Loader2,
@@ -123,15 +126,41 @@ function DashboardPage() {
             to="/reputacao"
             icon={Star}
             title="Reputação no Google"
-            body="Pedido automático de avaliação pós-consulta. Respostas com IA."
-            cta="Em desenvolvimento"
+            body="Avaliações automatizadas, respostas com IA e score em alta."
+            cta="Abrir reputação"
+            ready
           />
           <ModuleCard
-            to="/dashboard"
-            icon={CreditCard}
-            title="Pagamentos & Pix"
-            body="Sinal de consulta, recorrência para tratamentos longos."
-            cta="Em desenvolvimento"
+            to="/anamnese"
+            icon={ClipboardList}
+            title="Anamnese digital"
+            body="Paciente preenche antes da consulta com consentimento LGPD."
+            cta="Abrir anamnese"
+            ready
+          />
+          <ModuleCard
+            to="/prontuario"
+            icon={Stethoscope}
+            title="Prontuário & SOAP por IA"
+            body="Dite a consulta. A IA estrutura em S/O/A/P automaticamente."
+            cta="Abrir prontuário"
+            ready
+          />
+          <ModuleCard
+            to="/email"
+            icon={Mail}
+            title="E-mail marketing"
+            body="Campanhas com IA, base de contatos e relatórios."
+            cta="Abrir e-mail"
+            ready
+          />
+          <ModuleCard
+            to="/unidades"
+            icon={Building2}
+            title="Multi-unidade"
+            body="Cadastre filiais e salas. Aparecem no site e na agenda."
+            cta="Abrir unidades"
+            ready
           />
         </div>
       </div>

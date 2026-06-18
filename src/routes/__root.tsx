@@ -98,7 +98,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { name: "theme-color", content: "#3B82F6" } as unknown as { rel: string; href: string },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
