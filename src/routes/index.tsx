@@ -1,20 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  Sparkles,
-  Globe,
-  Calendar,
-  Megaphone,
-  Star,
-  CreditCard,
-  CheckCircle2,
-  ArrowRight,
-  Stethoscope,
-  ShieldCheck,
-  MessageSquare,
-  ClipboardList,
-  Mail,
-  Building2,
-  Image as ImageIcon,
+  Sparkles, Globe, Calendar, Megaphone, Star, CreditCard, CheckCircle2, ArrowRight,
+  Stethoscope, ShieldCheck, MessageSquare, ClipboardList, Mail, Building2,
+  Image as ImageIcon, Users, Video, FileText, ClipboardCheck, Wallet, Link2,
+  FileSignature, Package, Phone, Bell, Gift, Smile, TrendingUp,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 
@@ -284,11 +273,21 @@ const features = [
     title: "Compliance CFM/CFO/LGPD",
     body: "Guardrails que bloqueiam conteúdo vetado. Anamnese digital com consentimento. Dados protegidos.",
   },
-  {
-    icon: Building2,
-    title: "Multi-unidade",
-    body: "Clínicas com vários profissionais, salas e endereços. Permissões por papel. Dashboard consolidado.",
-  },
+  { icon: Building2, title: "Multi-unidade", body: "Clínicas com vários profissionais, salas e endereços. Dashboard consolidado." },
+  { icon: Users, title: "CRM de pacientes", body: "Cadastro completo, segmentação por tags, histórico e LTV." },
+  { icon: Video, title: "Teleconsulta integrada", body: "Sala de vídeo com link único, sem instalação, dentro do prontuário." },
+  { icon: FileText, title: "Prescrição digital", body: "Receita, atestado e exame com QR de validação e assinatura ICP-Brasil." },
+  { icon: ClipboardCheck, title: "Planos & odontograma", body: "Etapas com valores, status e ligação direta com financeiro." },
+  { icon: Wallet, title: "Financeiro completo", body: "Fluxo de caixa, contas a pagar/receber, repasse automático a profissionais." },
+  { icon: Link2, title: "Pagamentos online", body: "Pix, cartão e boleto. Link único de cobrança enviado por WhatsApp." },
+  { icon: FileSignature, title: "Orçamentos & contratos", body: "Geração, envio e aceite digital." },
+  { icon: Package, title: "Controle de estoque", body: "Materiais e medicamentos com alerta de mínimo e validade." },
+  { icon: MessageSquare, title: "Chat interno", body: "Conversa em tempo real entre profissionais e secretária." },
+  { icon: Phone, title: "Call center", body: "Fila, registro de chamadas e múltiplas agendas em paralelo." },
+  { icon: Bell, title: "Lembretes inteligentes", body: "WhatsApp, SMS e e-mail com confirmação de presença automática." },
+  { icon: Gift, title: "Programa de indicação", body: "Paciente indica, ganha desconto. Código único gerado pela plataforma." },
+  { icon: Smile, title: "NPS automatizado", body: "Pesquisa pós-consulta que alimenta diretamente a sua reputação." },
+  { icon: TrendingUp, title: "BI avançado", body: "Benchmarks por especialidade e cidade. Você sabe onde está e para onde ir." },
 ];
 
 const steps = [
