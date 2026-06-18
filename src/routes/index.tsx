@@ -303,7 +303,7 @@ const packages: Pkg[] = [
 
 function PackageSelector() {
   const [selected, setSelected] = useState<Record<Pkg["id"], boolean>>({
-    clinic: true, grow: true, pay: false, fiscal: false,
+    presenca: true, clinic: true, pay: false, flow: false, contabil: false,
   });
 
   const toggle = (id: Pkg["id"]) =>
@@ -322,7 +322,7 @@ function PackageSelector() {
   const savings = allSelected ? subtotal - BUNDLE_PRICE : 0;
 
   const selectAll = () =>
-    setSelected({ clinic: true, grow: true, pay: true, fiscal: true });
+    setSelected({ presenca: true, clinic: true, pay: true, flow: true, contabil: true });
 
   const ctaLabel =
     selectedIds.length === 0
@@ -401,8 +401,8 @@ function PackageSelector() {
               <p className="mt-1 text-sm opacity-90">
                 {selectedIds.length === 0
                   ? "Marque os pacotes acima para combinar o que faz sentido para sua clínica."
-                  : allSelected
-                    ? `Clinic + Grow + Pay + Fiscal com onboarding guiado e suporte prioritário.`
+                    : allSelected
+                    ? `Presença + Clinic + Pay + Flow + Contábil com onboarding guiado e suporte prioritário.`
                     : `Você selecionou: ${selectedIds.map((id) => packages.find((p) => p.id === id)!.title).join(" + ")}.`}
               </p>
               {!allSelected && selectedIds.length > 0 && (
@@ -460,7 +460,7 @@ const steps = [
   },
   {
     title: "Escolha seu pacote",
-    body: "Comece pelo que mais dói — Clinic, Grow, Pay ou Fiscal. Adicione os outros quando quiser, ou vá direto no One.",
+    body: "Comece pelo que mais dói — Presença, Clinic, Pay, Flow ou Contábil. Adicione os outros quando quiser, ou vá direto no One.",
   },
   {
     title: "Publique e conecte",
