@@ -89,11 +89,11 @@ function Page() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Inteligência</p>
-            <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">BI avançado</h1>
+            <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">BI avançado</h1>
             <p className="mt-1.5 text-muted-foreground">Performance, funil, cohort e DRE consolidados — exporte em CSV ou PDF.</p>
           </div>
           <Button onClick={exportPDF} className="gap-2"><FileText className="h-4 w-4" /> Exportar PDF</Button>

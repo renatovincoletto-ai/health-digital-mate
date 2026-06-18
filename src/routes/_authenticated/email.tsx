@@ -48,10 +48,10 @@ function EmailPage() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">E-mail marketing</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Campanhas e base de contatos</h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">Campanhas e base de contatos</h1>
           <p className="mt-1.5 text-muted-foreground">Crie campanhas com IA, dentro das normas dos conselhos e da LGPD.</p>
         </header>
 

@@ -60,10 +60,10 @@ function WhatsappAgentePage() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-6">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Grow · WhatsApp</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Agente de marcação por WhatsApp</h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">Agente de marcação por WhatsApp</h1>
           <p className="mt-1.5 text-muted-foreground">A IA conversa com o paciente, consulta sua agenda real e marca consultas. Use o sandbox para testar agora — a entrega real liga depois pelo Twilio.</p>
         </header>
 

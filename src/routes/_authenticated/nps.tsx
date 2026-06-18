@@ -30,10 +30,10 @@ function Page() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Aquisição</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">NPS automatizado</h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">NPS automatizado</h1>
           <p className="mt-1.5 text-muted-foreground">Pesquisa pós-consulta que alimenta a Reputação.</p>
         </header>
         <div className="grid grid-cols-4 gap-4 mb-8">

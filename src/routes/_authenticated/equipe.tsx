@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,11 +24,13 @@ const MODULES = [
 function EquipePage() {
   return (
     <AppShell>
-      <div className="mx-auto max-w-6xl space-y-6 p-6">
-        <header>
-          <h1 className="text-2xl font-semibold tracking-tight">Equipe & Permissões</h1>
-          <p className="text-sm text-muted-foreground">Controle quem acessa o quê e o limite máximo de desconto por perfil.</p>
-        </header>
+      <div className="container-page py-8 space-y-6">
+        <PageHeader
+          eyebrow="Configurações"
+          title="Equipe & Permissões"
+          description="Controle quem acessa o quê e o limite máximo de desconto por perfil."
+          className="mb-2"
+        />
         <Tabs defaultValue="rbac">
           <TabsList>
             <TabsTrigger value="rbac">Matriz de permissões</TabsTrigger>

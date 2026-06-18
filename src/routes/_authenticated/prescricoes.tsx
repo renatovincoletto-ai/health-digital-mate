@@ -26,10 +26,10 @@ function Page() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Atendimento</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Prescrição digital</h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">Prescrição digital</h1>
           <p className="mt-1.5 text-muted-foreground">Receita, atestado e pedido de exame com QR de validação e assinatura ICP-Brasil.</p>
         </header>
         <div className="grid gap-6 lg:grid-cols-[420px_1fr]">
