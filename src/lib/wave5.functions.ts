@@ -1,235 +1,455 @@
 import { createServerFn } from "@tanstack/react-start";
+import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
+import { generateText } from "ai";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { createLovableAiGatewayProvider } from "./ai-gateway.server";
+import type { Database } from "@/integrations/supabase/types";
 
-async function getTenantId(ctx: { supabase: any; userId: string }) {
-  const { data } = await ctx.supabase.from("tenants").select("id").eq("owner_id", ctx.userId).maybeSingle();
+async function tenantId(ctx: { supabase: ReturnType<typeof createClient<Database>>; userId: string }) {
+  const { data } = await ctx.supabase
+    .from("tenants").select("id").eq("owner_id", ctx.userId).maybeSingle();
   if (!data) throw new Error("Consultório não encontrado");
-  return data.id as string;
+  return data.id;
 }
 
-// ============ DRE ============
-export const getDre = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ months: z.number().int().min(1).max(24).default(6) }).parse(d ?? {}),
-  )
-  .handler(async ({ data, context }) => {
-    const sb = context.supabase;
-    const since = new Date();
-    since.setMonth(since.getMonth() - data.months + 1);
-    since.setDate(1); since.setHours(0, 0, 0, 0);
-    const { data: rows, error } = await sb
-      .from("financial_transactions")
-      .select("amount, direction, category, paid_at, due_date, status")
-      .gte("paid_at", since.toISOString());
-    if (error) throw error;
-
-    type Bucket = { month: string; income: number; expense: number; net: number; byCategory: Record<string, number> };
-    const map = new Map<string, Bucket>();
-    for (const r of rows ?? []) {
-      const d = r.paid_at ?? r.due_date;
-      if (!d) continue;
-      const month = d.slice(0, 7);
-      const b = map.get(month) ?? { month, income: 0, expense: 0, net: 0, byCategory: {} };
-      const amt = Number(r.amount);
-      const cat = r.category ?? "outros";
-      if (r.direction === "in") { b.income += amt; b.byCategory[`+ ${cat}`] = (b.byCategory[`+ ${cat}`] ?? 0) + amt; }
-      else { b.expense += amt; b.byCategory[`- ${cat}`] = (b.byCategory[`- ${cat}`] ?? 0) + amt; }
-      b.net = b.income - b.expense;
-      map.set(month, b);
-    }
-    const buckets = Array.from(map.values()).sort((a, b) => a.month.localeCompare(b.month));
-    const totals = buckets.reduce(
-      (acc, b) => ({ income: acc.income + b.income, expense: acc.expense + b.expense, net: acc.net + b.net }),
-      { income: 0, expense: 0, net: 0 },
-    );
-    return { buckets, totals };
-  });
-
-// ============ PAYROLL ============
-export const listPayroll = createServerFn({ method: "GET" })
+// ============ LOCATIONS (multi-unit) ============
+export const listLocations = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
-      .from("payroll_entries").select("*").order("reference_month", { ascending: false }).limit(200);
+      .from("locations").select("*").order("is_primary", { ascending: false }).order("created_at");
     if (error) throw error;
     return data ?? [];
   });
 
-const PayrollInput = z.object({
+const LocationInput = z.object({
   id: z.string().uuid().optional(),
-  reference_month: z.string(),
-  full_name: z.string().min(1).max(160),
-  role_label: z.string().max(60).nullable().optional(),
-  professional_id: z.string().uuid().nullable().optional(),
-  base_salary: z.number().min(0),
-  pro_labore: z.number().min(0).default(0),
-  bonus: z.number().min(0).default(0),
-  inss: z.number().min(0).default(0),
-  fgts: z.number().min(0).default(0),
-  irrf: z.number().min(0).default(0),
-  other_deductions: z.number().min(0).default(0),
-  status: z.enum(["draft", "approved", "paid"]).default("draft"),
-  notes: z.string().max(500).nullable().optional(),
+  name: z.string().min(2).max(120),
+  address: z.string().max(240).optional().nullable(),
+  city: z.string().max(80).optional().nullable(),
+  state: z.string().max(5).optional().nullable(),
+  zip: z.string().max(20).optional().nullable(),
+  phone: z.string().max(30).optional().nullable(),
+  is_primary: z.boolean().default(false),
+  active: z.boolean().default(true),
 });
-export const savePayroll = createServerFn({ method: "POST" })
+
+export const saveLocation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => PayrollInput.parse(d))
+  .inputValidator((d: unknown) => LocationInput.parse(d))
   .handler(async ({ data, context }) => {
-    const tenant_id = await getTenantId(context);
-    const net_amount = +(
-      data.base_salary + data.pro_labore + data.bonus - data.inss - data.irrf - data.other_deductions
-    ).toFixed(2);
-    const payload: any = { ...data, tenant_id, net_amount };
-    if (data.id) {
-      const { error } = await context.supabase.from("payroll_entries").update(payload).eq("id", data.id);
-      if (error) throw error;
-      return { ok: true, id: data.id };
+    const tid = await tenantId(context);
+    if (data.is_primary) {
+      await context.supabase.from("locations").update({ is_primary: false }).eq("tenant_id", tid);
     }
-    const { data: row, error } = await context.supabase.from("payroll_entries").insert(payload).select().single();
+    const payload = { ...data, tenant_id: tid };
+    if (data.id) {
+      const { data: row, error } = await context.supabase
+        .from("locations").update(payload).eq("id", data.id).select().single();
+      if (error) throw error;
+      return row;
+    }
+    const { data: row, error } = await context.supabase
+      .from("locations").insert(payload).select().single();
     if (error) throw error;
-    return { ok: true, id: row.id };
+    return row;
   });
 
-export const deletePayroll = createServerFn({ method: "POST" })
+export const deleteLocation = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase.from("payroll_entries").delete().eq("id", data.id);
+    const { error } = await context.supabase.from("locations").delete().eq("id", data.id);
     if (error) throw error;
     return { ok: true };
   });
 
-// ============ RBAC ============
-export const listRolePermissions = createServerFn({ method: "GET" })
+// ============ ANAMNESE ============
+export const listAnamneseTemplates = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase.from("role_permissions").select("*");
+    const { data, error } = await context.supabase
+      .from("anamnese_templates").select("*").order("created_at", { ascending: false });
     if (error) throw error;
     return data ?? [];
   });
 
-const RolePermInput = z.object({
-  role: z.enum(["owner", "admin", "manager", "dentist", "doctor", "staff"]),
-  module: z.string().min(1).max(40),
-  can_view: z.boolean(),
-  can_create: z.boolean(),
-  can_edit: z.boolean(),
-  can_delete: z.boolean(),
-  max_discount_pct: z.number().min(0).max(100).nullable().optional(),
+const QuestionSchema = z.object({
+  id: z.string(),
+  label: z.string().min(1),
+  type: z.enum(["text", "textarea", "boolean", "select"]),
+  options: z.array(z.string()).optional(),
+  required: z.boolean().default(false),
 });
-export const saveRolePermission = createServerFn({ method: "POST" })
+
+const TemplateInput = z.object({
+  id: z.string().uuid().optional(),
+  name: z.string().min(2).max(120),
+  description: z.string().max(500).optional().nullable(),
+  questions: z.array(QuestionSchema).default([]),
+  active: z.boolean().default(true),
+});
+
+export const saveAnamneseTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => RolePermInput.parse(d))
+  .inputValidator((d: unknown) => TemplateInput.parse(d))
   .handler(async ({ data, context }) => {
-    const tenant_id = await getTenantId(context);
-    const { error } = await context.supabase.from("role_permissions").upsert(
-      { ...data, tenant_id },
-      { onConflict: "tenant_id,role,module" },
+    const tid = await tenantId(context);
+    const payload = { ...data, tenant_id: tid, questions: data.questions };
+    if (data.id) {
+      const { data: row, error } = await context.supabase
+        .from("anamnese_templates").update(payload).eq("id", data.id).select().single();
+      if (error) throw error;
+      return row;
+    }
+    const { data: row, error } = await context.supabase
+      .from("anamnese_templates").insert(payload).select().single();
+    if (error) throw error;
+    return row;
+  });
+
+export const generateAnamneseTemplate = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ specialty: z.string().min(2).max(120) }).parse(d))
+  .handler(async ({ data }) => {
+    const provider = createLovableAiGatewayProvider(process.env.LOVABLE_API_KEY!);
+    const { text } = await generateText({
+      model: provider("google/gemini-2.5-flash"),
+      system: "Você é um especialista em prontuários médicos/odontológicos no Brasil. Gere anamneses adequadas à LGPD e às boas práticas dos conselhos (CFM/CFO).",
+      prompt: `Crie uma anamnese digital para a especialidade "${data.specialty}". Retorne APENAS JSON válido no formato:
+{"name":"...","description":"...","questions":[{"id":"q1","label":"...","type":"text|textarea|boolean|select","options":["..."],"required":true}]}
+Inclua 8 a 12 perguntas cobrindo: queixa principal, histórico, alergias, medicamentos em uso, condições crônicas e dados específicos da especialidade. Nunca peça CPF, RG ou dados não essenciais.`,
+    });
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("Resposta inválida da IA");
+    const parsed = JSON.parse(match[0]);
+    return parsed as { name: string; description: string; questions: Array<z.infer<typeof QuestionSchema>> };
+  });
+
+export const listAnamneseResponses = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("anamnese_responses")
+      .select("*, anamnese_templates(name)")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) throw error;
+    return data ?? [];
+  });
+
+// Public anamnese — anon submit (uses publishable client)
+export const getPublicAnamnese = createServerFn({ method: "GET" })
+  .inputValidator((d: unknown) => z.object({ slug: z.string() }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = createClient<Database>(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_PUBLISHABLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } },
     );
+    const { data: tenant } = await sb
+      .from("tenants").select("id, display_name").eq("slug", data.slug).maybeSingle();
+    if (!tenant) return null;
+    const { data: template } = await sb
+      .from("anamnese_templates")
+      .select("id, name, description, questions")
+      .eq("tenant_id", tenant.id).eq("active", true)
+      .order("created_at", { ascending: false }).limit(1).maybeSingle();
+    return { tenant, template };
+  });
+
+export const submitAnamnese = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) =>
+    z.object({
+      slug: z.string(),
+      template_id: z.string().uuid(),
+      patient_name: z.string().min(2).max(120),
+      patient_email: z.string().email().optional().or(z.literal("")),
+      patient_phone: z.string().max(30).optional(),
+      answers: z.record(z.string(), z.any()),
+      lgpd_consent: z.literal(true),
+    }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    const sb = createClient<Database>(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_PUBLISHABLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } },
+    );
+    const { data: tenant } = await sb
+      .from("tenants").select("id").eq("slug", data.slug).maybeSingle();
+    if (!tenant) throw new Error("Consultório não encontrado");
+    const { error } = await sb.from("anamnese_responses").insert({
+      tenant_id: tenant.id,
+      template_id: data.template_id,
+      patient_name: data.patient_name,
+      patient_email: data.patient_email || null,
+      patient_phone: data.patient_phone || null,
+      answers: data.answers,
+      lgpd_consent: true,
+    });
     if (error) throw error;
     return { ok: true };
   });
 
-// ============ TEAM ============
-export const listTeam = createServerFn({ method: "GET" })
+// ============ CONSULTATION NOTES (AI SOAP) ============
+export const listConsultationNotes = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const tenant_id = await getTenantId(context);
-    const { data: roles } = await context.supabase
-      .from("user_roles").select("user_id, role").eq("tenant_id", tenant_id);
-    const ids = (roles ?? []).map((r: any) => r.user_id);
-    if (!ids.length) return [];
-    const { data: profiles } = await context.supabase
-      .from("profiles").select("id, full_name, avatar_url").in("id", ids);
-    return (roles ?? []).map((r: any) => ({
-      user_id: r.user_id,
-      role: r.role,
-      profile: profiles?.find((p: any) => p.id === r.user_id) ?? null,
-    }));
+    const { data, error } = await context.supabase
+      .from("consultation_notes").select("*").order("created_at", { ascending: false }).limit(50);
+    if (error) throw error;
+    return data ?? [];
   });
 
-// ============ DEBT NEGOTIATION ============
-const NegoInput = z.object({
-  patient_id: z.string().uuid().nullable().optional(),
-  original_amount: z.number().positive(),
-  interest_pct: z.number().min(0).max(50).default(0),
-  fine_pct: z.number().min(0).max(50).default(0),
-  discount_pct: z.number().min(0).max(80).default(0),
-  installments: z.number().int().min(1).max(36).default(1),
-  due_first: z.string().nullable().optional(),
-  notes: z.string().max(500).nullable().optional(),
-});
-export const createDebtNegotiation = createServerFn({ method: "POST" })
+export const generateSoapNote = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => NegoInput.parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({
+      patient_name: z.string().min(2).max(120),
+      patient_phone: z.string().max(40).optional().nullable(),
+      transcript: z.string().min(20).max(20000),
+      specialty: z.string().optional(),
+    }).parse(d),
+  )
   .handler(async ({ data, context }) => {
-    const tenant_id = await getTenantId(context);
-    const withInterest = data.original_amount * (1 + data.interest_pct / 100) * (1 + data.fine_pct / 100);
-    const final_amount = +(withInterest * (1 - data.discount_pct / 100)).toFixed(2);
-    const installment_amount = +(final_amount / data.installments).toFixed(2);
-    const { data: row, error } = await context.supabase.from("debt_negotiations").insert({
-      tenant_id,
-      patient_id: data.patient_id ?? null,
-      original_amount: data.original_amount,
-      interest_pct: data.interest_pct,
-      fine_pct: data.fine_pct,
-      discount_pct: data.discount_pct,
-      installments: data.installments,
-      installment_amount,
-      final_amount,
-      due_first: data.due_first ?? null,
-      notes: data.notes ?? null,
-      status: "agreed",
+    const tid = await tenantId(context);
+    const provider = createLovableAiGatewayProvider(process.env.LOVABLE_API_KEY!);
+    const { text } = await generateText({
+      model: provider("google/gemini-2.5-flash"),
+      system: "Você é um assistente clínico. Gera (1) nota SOAP técnica para o prontuário e (2) um resumo curto, em linguagem leiga e acolhedora, para o paciente leigo entender o que aconteceu na consulta e quais são os próximos passos. Nunca invente sintomas, diagnósticos ou condutas. Não inclua diagnóstico não mencionado.",
+      prompt: `Especialidade: ${data.specialty ?? "Geral"}.
+Paciente: ${data.patient_name}.
+Transcrição/anotações da consulta:
+"""
+${data.transcript}
+"""
+
+Retorne APENAS JSON no formato exato:
+{"subjective":"...","objective":"...","assessment":"...","plan":"...","patient_summary":"Olá ${data.patient_name}, ..."}
+
+O campo patient_summary deve ter no máximo 6 linhas, em português claro, sem jargão médico, citar orientações e próximos passos. Não inclua dados sensíveis desnecessários.`,
+    });
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("Resposta inválida da IA");
+    const soap = JSON.parse(match[0]) as {
+      subjective: string; objective: string; assessment: string; plan: string; patient_summary: string;
+    };
+    const { data: row, error } = await context.supabase.from("consultation_notes").insert({
+      tenant_id: tid,
+      patient_name: data.patient_name,
+      patient_phone: data.patient_phone || null,
+      transcript: data.transcript,
+      soap_subjective: soap.subjective,
+      soap_objective: soap.objective,
+      soap_assessment: soap.assessment,
+      soap_plan: soap.plan,
+      patient_summary: soap.patient_summary,
+      status: "ready",
     }).select().single();
     if (error) throw error;
     return row;
   });
 
-export const listDebtNegotiations = createServerFn({ method: "GET" })
+export const transcribeConsultationAudio = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const { data, error } = await context.supabase
-      .from("debt_negotiations").select("*, patients(full_name)")
-      .order("created_at", { ascending: false }).limit(100);
-    if (error) throw error;
-    return data ?? [];
+  .inputValidator((d: unknown) =>
+    z.object({
+      audio_base64: z.string().min(100),
+      mime: z.string().min(3).max(60),
+    }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    const key = process.env.LOVABLE_API_KEY;
+    if (!key) throw new Error("LOVABLE_API_KEY ausente");
+    const extMap: Record<string, string> = {
+      "audio/webm": "webm", "audio/mp4": "mp4", "audio/mpeg": "mp3",
+      "audio/wav": "wav", "audio/ogg": "ogg",
+    };
+    const ext = extMap[data.mime.split(";")[0]] ?? "webm";
+    const bin = Uint8Array.from(atob(data.audio_base64), (c) => c.charCodeAt(0));
+    const file = new File([bin], `consulta.${ext}`, { type: data.mime });
+    const form = new FormData();
+    form.append("model", "openai/gpt-4o-mini-transcribe");
+    form.append("file", file);
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/audio/transcriptions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}` },
+      body: form,
+    });
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      if (res.status === 429) throw new Error("Limite de uso da IA atingido. Tente novamente em instantes.");
+      if (res.status === 402) throw new Error("Créditos de IA esgotados. Adicione créditos em Configurações.");
+      throw new Error(`Falha ao transcrever: ${res.status} ${t}`);
+    }
+    const json = await res.json() as { text?: string };
+    return { text: json.text ?? "" };
   });
 
-// ============ PORTAL (public lookup by CPF + birth) ============
-const PortalLookupInput = z.object({
-  cpf: z.string().min(11).max(14),
-  birth_date: z.string(),
-});
-export const portalLookup = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => PortalLookupInput.parse(d))
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const cpf = data.cpf.replace(/\D/g, "");
-    const { data: patient } = await supabaseAdmin
-      .from("patients").select("id, full_name, tenant_id, birth_date")
-      .eq("cpf", cpf).maybeSingle();
-    if (!patient || patient.birth_date !== data.birth_date) {
-      return { ok: false as const, message: "Não encontramos os dados informados." };
-    }
-    const now = new Date().toISOString();
-    const [{ data: appts }, { data: rx }, { data: nf }] = await Promise.all([
-      supabaseAdmin.from("appointments")
-        .select("id, starts_at, ends_at, status, service_id, services(name)")
-        .eq("patient_id", patient.id).gte("starts_at", now).order("starts_at").limit(20),
-      supabaseAdmin.from("prescriptions")
-        .select("id, content, pdf_url, status, created_at, valid_until")
-        .eq("patient_id", patient.id).order("created_at", { ascending: false }).limit(20),
-      supabaseAdmin.from("nfse_invoices")
-        .select("id, number, amount, status, issued_at, pdf_url")
-        .eq("patient_id", patient.id).order("created_at", { ascending: false }).limit(20),
+export const markConsultationWhatsappSent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("consultation_notes")
+      .update({ whatsapp_sent_at: new Date().toISOString() })
+      .eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
+
+// ============ REPUTATION ============
+export const listReviews = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const [{ data: reviews }, { data: requests }] = await Promise.all([
+      context.supabase.from("reviews").select("*").order("created_at", { ascending: false }),
+      context.supabase.from("review_requests").select("*").order("created_at", { ascending: false }).limit(20),
     ]);
-    return {
-      ok: true as const,
-      patient: { id: patient.id, full_name: patient.full_name },
-      appointments: appts ?? [],
-      prescriptions: rx ?? [],
-      invoices: nf ?? [],
-    };
+    return { reviews: reviews ?? [], requests: requests ?? [] };
+  });
+
+const ReviewInput = z.object({
+  source: z.enum(["google", "direct", "facebook"]).default("direct"),
+  author_name: z.string().max(120).optional(),
+  rating: z.number().int().min(1).max(5),
+  content: z.string().max(2000).optional(),
+});
+
+export const addReview = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => ReviewInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const tid = await tenantId(context);
+    const { data: row, error } = await context.supabase
+      .from("reviews").insert({ ...data, tenant_id: tid, reviewed_at: new Date().toISOString() })
+      .select().single();
+    if (error) throw error;
+    return row;
+  });
+
+export const suggestReviewReply = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ review_id: z.string().uuid() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: review } = await context.supabase
+      .from("reviews").select("*").eq("id", data.review_id).maybeSingle();
+    if (!review) throw new Error("Avaliação não encontrada");
+    const provider = createLovableAiGatewayProvider(process.env.LOVABLE_API_KEY!);
+    const { text } = await generateText({
+      model: provider("google/gemini-2.5-flash"),
+      system: "Você responde avaliações de pacientes em consultórios médicos/odontológicos no Brasil. Tom: educado, profissional, humano. Nunca confirme tratamento nem cite dados clínicos. Respeite a LGPD: nunca confirme se a pessoa é paciente.",
+      prompt: `Avaliação ${review.rating}/5 de ${review.author_name ?? "paciente"}:\n"${review.content ?? ""}"\n\nEscreva uma resposta curta (até 3 frases) em português.`,
+    });
+    await context.supabase.from("reviews").update({ reply: text, reply_status: "drafted" }).eq("id", data.review_id);
+    return { reply: text };
+  });
+
+export const scheduleReviewRequest = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      patient_name: z.string().min(2),
+      patient_phone: z.string().optional(),
+      patient_email: z.string().email().optional().or(z.literal("")),
+      channel: z.enum(["whatsapp", "email", "sms"]).default("whatsapp"),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const tid = await tenantId(context);
+    const { data: row, error } = await context.supabase.from("review_requests").insert({
+      tenant_id: tid,
+      patient_name: data.patient_name,
+      patient_phone: data.patient_phone || null,
+      patient_email: data.patient_email || null,
+      channel: data.channel,
+      status: "queued",
+    }).select().single();
+    if (error) throw error;
+    return row;
+  });
+
+// ============ EMAIL MARKETING ============
+export const listEmailData = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const [{ data: campaigns }, { data: contacts }] = await Promise.all([
+      context.supabase.from("email_campaigns").select("*").order("created_at", { ascending: false }),
+      context.supabase.from("email_contacts").select("*").order("created_at", { ascending: false }).limit(100),
+    ]);
+    return { campaigns: campaigns ?? [], contacts: contacts ?? [] };
+  });
+
+const CampaignInput = z.object({
+  id: z.string().uuid().optional(),
+  name: z.string().min(2).max(120),
+  subject: z.string().min(2).max(200),
+  preheader: z.string().max(200).optional().nullable(),
+  body_html: z.string().max(50000).optional().nullable(),
+  audience: z.string().default("all"),
+  scheduled_for: z.string().datetime().optional().nullable(),
+});
+
+export const saveCampaign = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => CampaignInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const tid = await tenantId(context);
+    const payload = { ...data, tenant_id: tid };
+    if (data.id) {
+      const { data: row, error } = await context.supabase
+        .from("email_campaigns").update(payload).eq("id", data.id).select().single();
+      if (error) throw error;
+      return row;
+    }
+    const { data: row, error } = await context.supabase
+      .from("email_campaigns").insert(payload).select().single();
+    if (error) throw error;
+    return row;
+  });
+
+export const generateCampaignContent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      topic: z.string().min(3).max(200),
+      tone: z.string().default("acolhedor"),
+      specialty: z.string().optional(),
+    }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    const provider = createLovableAiGatewayProvider(process.env.LOVABLE_API_KEY!);
+    const { text } = await generateText({
+      model: provider("google/gemini-2.5-flash"),
+      system: "Você escreve e-mails marketing para consultórios médicos/odontológicos no Brasil. Respeite CFM/CFO e LGPD: sem promessa de resultado, sem antes/depois, sem sensacionalismo. Tom humano e útil.",
+      prompt: `Crie um e-mail sobre "${data.topic}" para a especialidade "${data.specialty ?? "saúde"}". Tom: ${data.tone}.
+Retorne APENAS JSON: {"subject":"...","preheader":"...","body_html":"<html aceito por clientes de e-mail, sem css externo>"}.`,
+    });
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("Resposta inválida da IA");
+    return JSON.parse(match[0]) as { subject: string; preheader: string; body_html: string };
+  });
+
+const ContactInput = z.object({
+  email: z.string().email(),
+  name: z.string().max(120).optional(),
+  tags: z.array(z.string()).default([]),
+});
+
+export const addContact = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => ContactInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const tid = await tenantId(context);
+    const { data: row, error } = await context.supabase
+      .from("email_contacts")
+      .upsert({ ...data, tenant_id: tid }, { onConflict: "tenant_id,email" })
+      .select().single();
+    if (error) throw error;
+    return row;
   });
