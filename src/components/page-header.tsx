@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { SectionOnboarding } from "./section-onboarding";
 
 /**
  * Cabeçalho padrão das telas internas do Minha Clínica.
@@ -6,18 +7,23 @@ import type { ReactNode } from "react";
  *
  * Estrutura: eyebrow (uppercase) + título display + descrição + ações.
  * Use sempre dentro de `<div className="container-page py-8">`.
+ *
+ * `onboardingSection`: chave do registro em SectionOnboarding (ex.: "agenda",
+ * "financeiro"). Quando definida, exibe automaticamente o botão Onboarding.
  */
 export function PageHeader({
   eyebrow,
   title,
   description,
   actions,
+  onboardingSection,
   className = "mb-8",
 }: {
   eyebrow?: string;
   title: string;
   description?: ReactNode;
   actions?: ReactNode;
+  onboardingSection?: string;
   className?: string;
 }) {
   return (
@@ -31,7 +37,12 @@ export function PageHeader({
           <p className="mt-1.5 text-sm text-muted-foreground max-w-2xl">{description}</p>
         )}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-2 shrink-0">{actions}</div>}
+      {(actions || onboardingSection) && (
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {onboardingSection && <SectionOnboarding section={onboardingSection} />}
+          {actions}
+        </div>
+      )}
     </header>
   );
 }
