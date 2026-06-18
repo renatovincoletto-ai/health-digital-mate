@@ -1,28 +1,28 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import {
   Calendar, Users, Wallet, Clock, TrendingUp, AlertTriangle, ArrowRight,
   ExternalLink, Loader2, CheckCircle2, ClipboardCheck, Stethoscope, Bell,
   Smile, Receipt,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { getMyTenant } from "@/lib/tenant.functions";
+import { ensureMyTenant } from "@/lib/tenant.functions";
 import { getDashboardKpis } from "@/lib/wave2.functions";
+import { SectionOnboarding } from "@/components/section-onboarding";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: DashboardPage });
 
 const BRL = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 function DashboardPage() {
-  const fetchTenant = useServerFn(getMyTenant);
+  const ensureTenant = useServerFn(ensureMyTenant);
   const fetchKpis = useServerFn(getDashboardKpis);
-  const navigate = useNavigate();
-  const { data: tenant, isLoading } = useQuery({ queryKey: ["my-tenant"], queryFn: () => fetchTenant() });
+  const { data: tenant, isLoading } = useQuery({
+    queryKey: ["my-tenant"],
+    queryFn: () => ensureTenant({ data: undefined }),
+  });
   const { data: kpis } = useQuery({ queryKey: ["dashboard-kpis"], queryFn: () => fetchKpis(), enabled: !!tenant });
-
-  useEffect(() => { if (!isLoading && !tenant) navigate({ to: "/onboarding" }); }, [isLoading, tenant, navigate]);
 
   if (isLoading || !tenant) {
     return <div className="flex min-h-screen items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>;
@@ -41,9 +41,12 @@ function DashboardPage() {
               {tenant.specialty ? `${tenant.specialty} · ` : ""}{tenant.city ? `${tenant.city}${tenant.state ? `/${tenant.state}` : ""}` : "Brasil"}
             </p>
           </div>
-          <a href={`/s/${tenant.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-elevated px-4 py-2 text-sm font-medium hover:bg-accent/10">
-            Ver site público <ExternalLink className="h-3.5 w-3.5" />
-          </a>
+          <div className="flex items-center gap-2">
+            <SectionOnboarding section="default" />
+            <a href={`/s/${tenant.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-elevated px-4 py-2 text-sm font-medium hover:bg-accent/10">
+              Ver site público <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
         </div>
 
         {/* KPIs principais */}

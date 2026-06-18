@@ -25,6 +25,62 @@ export const getMyTenant = createServerFn({ method: "GET" })
     return data;
   });
 
+/**
+ * Garante que o usuário tenha um tenant mínimo, criando um padrão se necessário.
+ * Substitui o onboarding obrigatório inicial — agora cada seção tem seu próprio onboarding.
+ */
+export const ensureMyTenant = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: existing } = await context.supabase
+      .from("tenants")
+      .select("*")
+      .eq("owner_id", context.userId)
+      .maybeSingle();
+    if (existing) return existing;
+
+    const email = (context.claims?.email as string | undefined) ?? "";
+    const fallbackName = email ? email.split("@")[0] : "Meu Consultório";
+    const displayName = fallbackName.replace(/[._-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    const baseSlug = slugify(displayName) || "consultorio";
+
+    let slug = baseSlug;
+    let attempt = 0;
+    while (attempt < 6) {
+      const { data: taken } = await context.supabase
+        .from("tenants").select("id").eq("slug", slug).maybeSingle();
+      if (!taken) break;
+      attempt += 1;
+      slug = `${baseSlug}-${Math.random().toString(36).slice(2, 6)}`;
+    }
+
+    const { data: tenant, error } = await context.supabase
+      .from("tenants")
+      .insert({
+        type: "medico",
+        display_name: displayName,
+        owner_id: context.userId,
+        slug,
+        onboarding_status: "pending",
+      })
+      .select()
+      .single();
+    if (error) throw error;
+
+    await context.supabase.from("user_roles").insert({
+      user_id: context.userId, tenant_id: tenant.id, role: "owner",
+    });
+    await context.supabase.from("brands").insert({ tenant_id: tenant.id });
+    const seed = defaultSiteContent(tenant.display_name, tenant.specialty, tenant.city);
+    await context.supabase.from("sites").insert({
+      tenant_id: tenant.id,
+      content: seed,
+      seo_title: tenant.display_name,
+      seo_description: seed.hero.subheadline,
+    });
+    return tenant;
+  });
+
 const CreateTenantSchema = z.object({
   type: z.enum(["medico", "dentista", "clinica", "outro"]),
   display_name: z.string().min(2).max(100),

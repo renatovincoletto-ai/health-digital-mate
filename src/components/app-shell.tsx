@@ -10,8 +10,30 @@ import {
   Search, Languages, Menu, ScrollText,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
+import { SectionOnboarding } from "./section-onboarding";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+
+const ROUTE_TO_SECTION: Record<string, string> = {
+  "/dashboard": "default",
+  "/agenda": "agenda", "/recepcao": "agenda",
+  "/pacientes": "pacientes",
+  "/prontuario": "prontuario", "/anamnese": "prontuario", "/modelos": "prontuario", "/planos": "prontuario",
+  "/teleconsulta": "teleconsulta",
+  "/prescricoes": "prescricoes",
+  "/estoque": "estoque",
+  "/unidades": "equipe", "/equipe": "equipe",
+  "/financeiro": "financeiro", "/pagamentos": "financeiro", "/orcamentos": "financeiro",
+  "/maquininhas": "financeiro", "/repasses": "equipe", "/convenios": "financeiro", "/tiss": "fiscal",
+  "/whatsapp-agente": "whatsapp", "/chat": "whatsapp", "/callcenter": "whatsapp",
+  "/automacoes": "jornadas", "/jornadas": "jornadas", "/lembretes": "jornadas",
+  "/indicacoes": "marketing", "/nps": "jornadas",
+  "/site": "site", "/conteudo": "marketing", "/anuncios": "marketing",
+  "/email": "marketing", "/reputacao": "marketing",
+  "/contador": "contador", "/fiscal": "fiscal", "/tributos": "fiscal", "/dre": "contador", "/folha": "contador",
+  "/bi": "bi", "/integracoes": "default", "/setup": "default",
+  "/auditoria": "default", "/faturamento": "financeiro", "/dados": "default", "/tasks": "default",
+};
 import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,
 } from "@/components/ui/command";
@@ -235,6 +257,18 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main id="main-content" tabIndex={-1} className="flex-1 overflow-x-hidden focus:outline-none pt-12 lg:pt-0">
         {children}
       </main>
+
+      {/* Botão Onboarding por seção — flutuante, presente em todas as telas */}
+      {(() => {
+        const section = ROUTE_TO_SECTION[pathname] ?? "default";
+        return (
+          <div className="fixed bottom-5 right-5 z-40">
+            <SectionOnboarding section={section} />
+          </div>
+        );
+      })()}
+
+
 
 
       <CommandDialog open={paletteOpen} onOpenChange={setPaletteOpen}>
