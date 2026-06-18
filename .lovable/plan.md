@@ -47,17 +47,19 @@ Vamos executar em 5 ondas. Cada onda é uma entrega completa e independente — 
 
 ---
 
-## 🌊 Onda 4 — Conectores fiscais e de pagamento
+## 🌊 Onda 4 — Conectores fiscais e de pagamento ✅
 
-**Objetivo:** Cobrar e emitir nota de verdade.
+**Entregue:** Camada de conectores com modo sandbox por padrão e modo live quando há credenciais.
 
-- **Gateway de pagamento** (Asaas recomendado: faz Pix + boleto + cartão + DDA + split): cria `payment_links` reais, webhook atualiza status
-- **NFSe automática** via Focus NFe ou eNotas: dispara emissão quando `financial_transactions.status = 'pago'`
-- **Memed** para prescrição com validade jurídica e QR Code CFM
-- **Conciliação bancária via Open Finance** (Pluggy ou Belvo): importa extratos para `financial_transactions`
-- **DDA**: receber notificação de boletos emitidos contra o CNPJ da clínica
+- **`/integracoes`** — hub central com 4 conectores (Asaas, Focus NFe, Memed, Pluggy), configuração de modo (sandbox/ativo/inativo), API key e e-mail por conector, e botão "Testar conexão"
+- **Asaas** — geração de link de cobrança (Pix/boleto/cartão), listagem com status e botão "Simular pago"; webhook em `/api/public/hooks/asaas` para atualizar status em produção
+- **Focus NFe** — emissão de NFS-e com cálculo automático de ISS e armazenamento em `nfse_invoices`
+- **Memed** — prescrições assinadas com PDF e QR Code (sandbox simula localmente, produção usa Memed real)
+- **Pluggy (Open Finance)** — sincronização do extrato com inserção em `financial_transactions`, com toggle de sincronização automática diária
 
-Cada conector requer credenciais do cliente — vou pedir uma por vez.
+Cada conector roda 100% em sandbox sem chamadas externas. Para ativar modo real basta trocar o status e informar a API key — peço os secrets via formulário seguro quando você confirmar.
+
+
 
 ---
 
