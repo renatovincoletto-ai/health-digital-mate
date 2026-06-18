@@ -17,6 +17,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
+import { Route as AuthenticatedWhatsappAgenteRouteImport } from './routes/_authenticated/whatsapp-agente'
 import { Route as AuthenticatedUnidadesRouteImport } from './routes/_authenticated/unidades'
 import { Route as AuthenticatedTributosRouteImport } from './routes/_authenticated/tributos'
 import { Route as AuthenticatedTissRouteImport } from './routes/_authenticated/tiss'
@@ -92,6 +93,12 @@ const SSlugRoute = SSlugRouteImport.update({
   path: '/s/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedWhatsappAgenteRoute =
+  AuthenticatedWhatsappAgenteRouteImport.update({
+    id: '/whatsapp-agente',
+    path: '/whatsapp-agente',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedUnidadesRoute = AuthenticatedUnidadesRouteImport.update({
   id: '/unidades',
   path: '/unidades',
@@ -310,6 +317,7 @@ export interface FileRoutesByFullPath {
   '/tiss': typeof AuthenticatedTissRoute
   '/tributos': typeof AuthenticatedTributosRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
+  '/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -354,6 +362,7 @@ export interface FileRoutesByTo {
   '/tiss': typeof AuthenticatedTissRoute
   '/tributos': typeof AuthenticatedTributosRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
+  '/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -400,6 +409,7 @@ export interface FileRoutesById {
   '/_authenticated/tiss': typeof AuthenticatedTissRoute
   '/_authenticated/tributos': typeof AuthenticatedTributosRoute
   '/_authenticated/unidades': typeof AuthenticatedUnidadesRoute
+  '/_authenticated/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -446,6 +456,7 @@ export interface FileRouteTypes {
     | '/tiss'
     | '/tributos'
     | '/unidades'
+    | '/whatsapp-agente'
     | '/s/$slug'
     | '/portal/'
     | '/s/$slug/agendar'
@@ -490,6 +501,7 @@ export interface FileRouteTypes {
     | '/tiss'
     | '/tributos'
     | '/unidades'
+    | '/whatsapp-agente'
     | '/s/$slug'
     | '/portal'
     | '/s/$slug/agendar'
@@ -535,6 +547,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tiss'
     | '/_authenticated/tributos'
     | '/_authenticated/unidades'
+    | '/_authenticated/whatsapp-agente'
     | '/s/$slug'
     | '/portal/'
     | '/s/$slug/agendar'
@@ -609,6 +622,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/s/$slug'
       preLoaderRoute: typeof SSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/whatsapp-agente': {
+      id: '/_authenticated/whatsapp-agente'
+      path: '/whatsapp-agente'
+      fullPath: '/whatsapp-agente'
+      preLoaderRoute: typeof AuthenticatedWhatsappAgenteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/unidades': {
       id: '/_authenticated/unidades'
@@ -892,6 +912,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTissRoute: typeof AuthenticatedTissRoute
   AuthenticatedTributosRoute: typeof AuthenticatedTributosRoute
   AuthenticatedUnidadesRoute: typeof AuthenticatedUnidadesRoute
+  AuthenticatedWhatsappAgenteRoute: typeof AuthenticatedWhatsappAgenteRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -928,6 +949,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedTissRoute: AuthenticatedTissRoute,
   AuthenticatedTributosRoute: AuthenticatedTributosRoute,
   AuthenticatedUnidadesRoute: AuthenticatedUnidadesRoute,
+  AuthenticatedWhatsappAgenteRoute: AuthenticatedWhatsappAgenteRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
