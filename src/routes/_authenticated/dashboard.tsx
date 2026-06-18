@@ -107,15 +107,17 @@ function DashboardPage() {
             to="/conteudo"
             icon={Sparkles}
             title="Conteúdo & redes sociais"
-            body="Brand kit, gerador de peças e agendador para Instagram, Facebook e LinkedIn."
-            cta="Em desenvolvimento"
+            body="Brand kit, gerador de peças com IA e biblioteca de posts agendados."
+            cta="Abrir conteúdo"
+            ready
           />
           <ModuleCard
             to="/anuncios"
             icon={Megaphone}
             title="Google Ads & Meta Ads"
-            body="Criação e gestão automatizada de campanhas, com dashboard de ROI."
-            cta="Em desenvolvimento"
+            body="Criação assistida por IA, dashboard de ROI por canal. Publicação direta em breve."
+            cta="Abrir anúncios"
+            ready
           />
           <ModuleCard
             to="/reputacao"
