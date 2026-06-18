@@ -54,6 +54,7 @@ import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedEmailRouteImport } from './routes/_authenticated/email'
 import { Route as AuthenticatedDreRouteImport } from './routes/_authenticated/dre'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDadosRouteImport } from './routes/_authenticated/dados'
 import { Route as AuthenticatedConveniosRouteImport } from './routes/_authenticated/convenios'
 import { Route as AuthenticatedConteudoRouteImport } from './routes/_authenticated/conteudo'
 import { Route as AuthenticatedContadorRouteImport } from './routes/_authenticated/contador'
@@ -299,6 +300,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDadosRoute = AuthenticatedDadosRouteImport.update({
+  id: '/dados',
+  path: '/dados',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedConveniosRoute = AuthenticatedConveniosRouteImport.update({
   id: '/convenios',
   path: '/convenios',
@@ -387,6 +393,7 @@ export interface FileRoutesByFullPath {
   '/contador': typeof AuthenticatedContadorRoute
   '/conteudo': typeof AuthenticatedConteudoRoute
   '/convenios': typeof AuthenticatedConveniosRoute
+  '/dados': typeof AuthenticatedDadosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dre': typeof AuthenticatedDreRoute
   '/email': typeof AuthenticatedEmailRoute
@@ -447,6 +454,7 @@ export interface FileRoutesByTo {
   '/contador': typeof AuthenticatedContadorRoute
   '/conteudo': typeof AuthenticatedConteudoRoute
   '/convenios': typeof AuthenticatedConveniosRoute
+  '/dados': typeof AuthenticatedDadosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dre': typeof AuthenticatedDreRoute
   '/email': typeof AuthenticatedEmailRoute
@@ -509,6 +517,7 @@ export interface FileRoutesById {
   '/_authenticated/contador': typeof AuthenticatedContadorRoute
   '/_authenticated/conteudo': typeof AuthenticatedConteudoRoute
   '/_authenticated/convenios': typeof AuthenticatedConveniosRoute
+  '/_authenticated/dados': typeof AuthenticatedDadosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dre': typeof AuthenticatedDreRoute
   '/_authenticated/email': typeof AuthenticatedEmailRoute
@@ -571,6 +580,7 @@ export interface FileRouteTypes {
     | '/contador'
     | '/conteudo'
     | '/convenios'
+    | '/dados'
     | '/dashboard'
     | '/dre'
     | '/email'
@@ -631,6 +641,7 @@ export interface FileRouteTypes {
     | '/contador'
     | '/conteudo'
     | '/convenios'
+    | '/dados'
     | '/dashboard'
     | '/dre'
     | '/email'
@@ -692,6 +703,7 @@ export interface FileRouteTypes {
     | '/_authenticated/contador'
     | '/_authenticated/conteudo'
     | '/_authenticated/convenios'
+    | '/_authenticated/dados'
     | '/_authenticated/dashboard'
     | '/_authenticated/dre'
     | '/_authenticated/email'
@@ -1070,6 +1082,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dados': {
+      id: '/_authenticated/dados'
+      path: '/dados'
+      fullPath: '/dados'
+      preLoaderRoute: typeof AuthenticatedDadosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/convenios': {
       id: '/_authenticated/convenios'
       path: '/convenios'
@@ -1182,6 +1201,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedContadorRoute: typeof AuthenticatedContadorRoute
   AuthenticatedConteudoRoute: typeof AuthenticatedConteudoRoute
   AuthenticatedConveniosRoute: typeof AuthenticatedConveniosRoute
+  AuthenticatedDadosRoute: typeof AuthenticatedDadosRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDreRoute: typeof AuthenticatedDreRoute
   AuthenticatedEmailRoute: typeof AuthenticatedEmailRoute
@@ -1229,6 +1249,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedContadorRoute: AuthenticatedContadorRoute,
   AuthenticatedConteudoRoute: AuthenticatedConteudoRoute,
   AuthenticatedConveniosRoute: AuthenticatedConveniosRoute,
+  AuthenticatedDadosRoute: AuthenticatedDadosRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDreRoute: AuthenticatedDreRoute,
   AuthenticatedEmailRoute: AuthenticatedEmailRoute,
