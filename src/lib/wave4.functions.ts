@@ -266,10 +266,3 @@ export const syncOpenFinance = createServerFn({ method: "POST" })
     }
     return { ok: true, imported: samples.length, sandbox: isSandbox };
   });
-      }));
-      await context.supabase.from("financial_transactions").insert(rows as any);
-      await context.supabase.from("integration_accounts")
-        .update({ last_sync_at: new Date().toISOString() }).eq("tenant_id", tenant_id).eq("provider", "pluggy");
-    }
-    return { ok: true, imported: samples.length, sandbox: isSandbox };
-  });
