@@ -25,6 +25,7 @@ import { Route as AuthenticatedUnidadesRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedTributosRouteImport } from './routes/_authenticated/tributos'
 import { Route as AuthenticatedTissRouteImport } from './routes/_authenticated/tiss'
 import { Route as AuthenticatedTeleconsultaRouteImport } from './routes/_authenticated/teleconsulta'
+import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedSiteRouteImport } from './routes/_authenticated/site'
 import { Route as AuthenticatedSetupRouteImport } from './routes/_authenticated/setup'
 import { Route as AuthenticatedReputacaoRouteImport } from './routes/_authenticated/reputacao'
@@ -148,6 +149,11 @@ const AuthenticatedTeleconsultaRoute =
     path: '/teleconsulta',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedTasksRoute = AuthenticatedTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSiteRoute = AuthenticatedSiteRouteImport.update({
   id: '/site',
   path: '/site',
@@ -401,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/setup': typeof AuthenticatedSetupRoute
   '/site': typeof AuthenticatedSiteRoute
+  '/tasks': typeof AuthenticatedTasksRoute
   '/teleconsulta': typeof AuthenticatedTeleconsultaRoute
   '/tiss': typeof AuthenticatedTissRoute
   '/tributos': typeof AuthenticatedTributosRoute
@@ -459,6 +466,7 @@ export interface FileRoutesByTo {
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/setup': typeof AuthenticatedSetupRoute
   '/site': typeof AuthenticatedSiteRoute
+  '/tasks': typeof AuthenticatedTasksRoute
   '/teleconsulta': typeof AuthenticatedTeleconsultaRoute
   '/tiss': typeof AuthenticatedTissRoute
   '/tributos': typeof AuthenticatedTributosRoute
@@ -519,6 +527,7 @@ export interface FileRoutesById {
   '/_authenticated/reputacao': typeof AuthenticatedReputacaoRoute
   '/_authenticated/setup': typeof AuthenticatedSetupRoute
   '/_authenticated/site': typeof AuthenticatedSiteRoute
+  '/_authenticated/tasks': typeof AuthenticatedTasksRoute
   '/_authenticated/teleconsulta': typeof AuthenticatedTeleconsultaRoute
   '/_authenticated/tiss': typeof AuthenticatedTissRoute
   '/_authenticated/tributos': typeof AuthenticatedTributosRoute
@@ -579,6 +588,7 @@ export interface FileRouteTypes {
     | '/reputacao'
     | '/setup'
     | '/site'
+    | '/tasks'
     | '/teleconsulta'
     | '/tiss'
     | '/tributos'
@@ -637,6 +647,7 @@ export interface FileRouteTypes {
     | '/reputacao'
     | '/setup'
     | '/site'
+    | '/tasks'
     | '/teleconsulta'
     | '/tiss'
     | '/tributos'
@@ -696,6 +707,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reputacao'
     | '/_authenticated/setup'
     | '/_authenticated/site'
+    | '/_authenticated/tasks'
     | '/_authenticated/teleconsulta'
     | '/_authenticated/tiss'
     | '/_authenticated/tributos'
@@ -840,6 +852,13 @@ declare module '@tanstack/react-router' {
       path: '/teleconsulta'
       fullPath: '/teleconsulta'
       preLoaderRoute: typeof AuthenticatedTeleconsultaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/tasks': {
+      id: '/_authenticated/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof AuthenticatedTasksRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/site': {
@@ -1170,6 +1189,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedReputacaoRoute: typeof AuthenticatedReputacaoRoute
   AuthenticatedSetupRoute: typeof AuthenticatedSetupRoute
   AuthenticatedSiteRoute: typeof AuthenticatedSiteRoute
+  AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
   AuthenticatedTeleconsultaRoute: typeof AuthenticatedTeleconsultaRoute
   AuthenticatedTissRoute: typeof AuthenticatedTissRoute
   AuthenticatedTributosRoute: typeof AuthenticatedTributosRoute
@@ -1215,6 +1235,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedReputacaoRoute: AuthenticatedReputacaoRoute,
   AuthenticatedSetupRoute: AuthenticatedSetupRoute,
   AuthenticatedSiteRoute: AuthenticatedSiteRoute,
+  AuthenticatedTasksRoute: AuthenticatedTasksRoute,
   AuthenticatedTeleconsultaRoute: AuthenticatedTeleconsultaRoute,
   AuthenticatedTissRoute: AuthenticatedTissRoute,
   AuthenticatedTributosRoute: AuthenticatedTributosRoute,
