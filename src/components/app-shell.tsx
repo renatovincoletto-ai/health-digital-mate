@@ -6,7 +6,7 @@ import {
   Users, Video, FileText, ClipboardCheck, Wallet, Link2, FileSignature,
   Package, MessageSquare, Phone, Bell, Gift, Smile, TrendingUp,
   Receipt, Banknote, CreditCard, Building, FileBarChart, Workflow, Calculator,
-  ListChecks, PlugZap,
+  ListChecks, PlugZap, ShieldCheck, BarChart3, HandCoins,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
 import { supabase } from "@/integrations/supabase/client";
@@ -74,6 +74,11 @@ const groups: NavGroup[] = [
     { to: "/contador", label: "Painel contábil", icon: Calculator, pkg: "contabil" },
     { to: "/fiscal", label: "NFS-e", icon: FileText, pkg: "contabil" },
     { to: "/tributos", label: "Tributos", icon: Receipt, pkg: "contabil" },
+    { to: "/dre", label: "DRE", icon: BarChart3, pkg: "contabil" },
+    { to: "/folha", label: "Folha de pagamento", icon: HandCoins, pkg: "contabil" },
+  ]},
+  { label: "Configuração", items: [
+    { to: "/equipe", label: "Equipe & permissões", icon: ShieldCheck, pkg: "core" },
   ]},
 ];
 
