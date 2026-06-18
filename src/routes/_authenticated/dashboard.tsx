@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import {
   Calendar, Users, Wallet, Clock, TrendingUp, AlertTriangle, ArrowRight,
   ExternalLink, Loader2, CheckCircle2, ClipboardCheck, Stethoscope, Bell,
+  Smile, Receipt,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { getMyTenant } from "@/lib/tenant.functions";
@@ -54,11 +55,29 @@ function DashboardPage() {
         </section>
 
         {/* KPIs secundários */}
-        <section className="mb-8 grid gap-4 md:grid-cols-3">
+        <section className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+          <MiniKpi label="Receita hoje" value={kpis ? BRL(kpis.receitaHoje) : "—"} icon={Wallet} tone="default" />
+          <MiniKpi label="Ticket médio" value={kpis ? BRL(kpis.ticketMedio) : "—"} icon={Receipt} tone="default" />
           <MiniKpi label="A receber no mês" value={kpis ? BRL(kpis.aReceberMes) : "—"} icon={TrendingUp} tone="warning" />
-          <MiniKpi label="Despesas pagas" value={kpis ? BRL(kpis.despesaMes) : "—"} icon={Wallet} tone="danger" />
           <MiniKpi label="Taxa de falta" value={kpis ? `${kpis.taxaFalta.toFixed(1)}%` : "—"} icon={AlertTriangle} tone={kpis && kpis.taxaFalta > 15 ? "danger" : "default"} />
+          <MiniKpi
+            label={kpis?.npsScore == null ? "NPS (sem respostas)" : `NPS (${kpis.npsCount} resp.)`}
+            value={kpis?.npsScore == null ? "—" : String(kpis.npsScore)}
+            icon={Smile}
+            tone={kpis?.npsScore == null ? "default" : kpis.npsScore >= 50 ? "default" : kpis.npsScore < 0 ? "danger" : "warning"}
+          />
         </section>
+
+        {/* Sparkline semanal */}
+        {kpis && (
+          <section className="mb-8 rounded-2xl border border-border bg-surface-elevated p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-display text-lg font-semibold">Agendamentos — últimos 7 dias</h2>
+              <span className="text-xs text-muted-foreground">{kpis.weekly.reduce((s, d) => s + d.count, 0)} total</span>
+            </div>
+            <Sparkline data={kpis.weekly} />
+          </section>
+        )}
 
         {/* Agenda de hoje */}
         <section className="mb-8 grid gap-6 lg:grid-cols-3">
@@ -178,6 +197,25 @@ function InfoCard({ title, value, success }: { title: string; value: string; suc
       <p className={`mt-2 flex items-center gap-2 font-display text-xl font-semibold ${success ? "text-emerald-600" : "text-foreground"}`}>
         {success && <CheckCircle2 className="h-5 w-5" />}{value}
       </p>
+    </div>
+  );
+}
+
+function Sparkline({ data }: { data: { date: string; count: number }[] }) {
+  const max = Math.max(1, ...data.map((d) => d.count));
+  return (
+    <div className="flex items-end gap-2 h-24">
+      {data.map((d) => {
+        const h = Math.max(4, Math.round((d.count / max) * 96));
+        const label = new Date(d.date + "T00:00:00").toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "");
+        return (
+          <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
+            <span className="text-[10px] tabular-nums text-muted-foreground">{d.count}</span>
+            <div className="w-full rounded-t-md bg-primary/70" style={{ height: `${h}px` }} title={`${d.date}: ${d.count}`} />
+            <span className="text-[10px] uppercase text-muted-foreground">{label}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }
