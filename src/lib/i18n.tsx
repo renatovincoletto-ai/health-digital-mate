@@ -66,6 +66,8 @@ const ptBR: Dict = {
   "item.faturamento": "Plano & Faturamento",
   "item.dados": "Importar & Exportar",
   "item.tasks": "Tasks & Feedback",
+  "item.auditoria": "Auditoria",
+  "nav.menu": "Abrir menu",
 };
 
 const en: Dict = {
