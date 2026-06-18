@@ -55,11 +55,29 @@ function DashboardPage() {
         </section>
 
         {/* KPIs secundários */}
-        <section className="mb-8 grid gap-4 md:grid-cols-3">
+        <section className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+          <MiniKpi label="Receita hoje" value={kpis ? BRL(kpis.receitaHoje) : "—"} icon={Wallet} tone="default" />
+          <MiniKpi label="Ticket médio" value={kpis ? BRL(kpis.ticketMedio) : "—"} icon={Receipt} tone="default" />
           <MiniKpi label="A receber no mês" value={kpis ? BRL(kpis.aReceberMes) : "—"} icon={TrendingUp} tone="warning" />
-          <MiniKpi label="Despesas pagas" value={kpis ? BRL(kpis.despesaMes) : "—"} icon={Wallet} tone="danger" />
           <MiniKpi label="Taxa de falta" value={kpis ? `${kpis.taxaFalta.toFixed(1)}%` : "—"} icon={AlertTriangle} tone={kpis && kpis.taxaFalta > 15 ? "danger" : "default"} />
+          <MiniKpi
+            label={kpis?.npsScore == null ? "NPS (sem respostas)" : `NPS (${kpis.npsCount} resp.)`}
+            value={kpis?.npsScore == null ? "—" : String(kpis.npsScore)}
+            icon={Smile}
+            tone={kpis?.npsScore == null ? "default" : kpis.npsScore >= 50 ? "default" : kpis.npsScore < 0 ? "danger" : "warning"}
+          />
         </section>
+
+        {/* Sparkline semanal */}
+        {kpis && (
+          <section className="mb-8 rounded-2xl border border-border bg-surface-elevated p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-display text-lg font-semibold">Agendamentos — últimos 7 dias</h2>
+              <span className="text-xs text-muted-foreground">{kpis.weekly.reduce((s, d) => s + d.count, 0)} total</span>
+            </div>
+            <Sparkline data={kpis.weekly} />
+          </section>
+        )}
 
         {/* Agenda de hoje */}
         <section className="mb-8 grid gap-6 lg:grid-cols-3">
