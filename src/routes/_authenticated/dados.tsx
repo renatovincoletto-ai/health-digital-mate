@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
+import { PageHeader } from "@/components/page-header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -54,13 +55,14 @@ function DataIOPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-6xl space-y-6 p-6">
-        <header>
-          <h1 className="text-2xl font-semibold">Dados — Importar & Exportar</h1>
-          <p className="text-sm text-muted-foreground">
-            Portabilidade total (LGPD): baixe seus dados a qualquer momento. Importe com ajuda da IA.
-          </p>
-        </header>
+      <div className="container-page py-8 space-y-6">
+        <PageHeader
+          eyebrow="Dados"
+          title="Importar & Exportar"
+          description="Portabilidade total (LGPD): baixe seus dados a qualquer momento. Importe com ajuda da IA."
+          className="mb-2"
+        />
+
 
         <Tabs defaultValue="export">
           <TabsList>

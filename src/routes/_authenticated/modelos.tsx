@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,17 +51,21 @@ function ModelosPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-6xl space-y-6 p-6">
-        <header>
-          <h1 className="text-2xl font-semibold tracking-tight">Modelos de documentos</h1>
-          <p className="text-sm text-muted-foreground">
-            Biblioteca de atestados, receituários, prontuários, pedidos de exame, laudos e termos. Use variáveis como
-            <code className="mx-1 rounded bg-muted px-1">{"{{paciente}}"}</code>,
-            <code className="mx-1 rounded bg-muted px-1">{"{{cpf}}"}</code>,
-            <code className="mx-1 rounded bg-muted px-1">{"{{data}}"}</code>,
-            <code className="mx-1 rounded bg-muted px-1">{"{{profissional}}"}</code>.
-          </p>
-        </header>
+      <div className="container-page py-8 space-y-6">
+        <PageHeader
+          eyebrow="Clínico"
+          title="Modelos de documentos"
+          description={
+            <>
+              Biblioteca de atestados, receituários, prontuários, pedidos de exame, laudos e termos. Use variáveis como
+              <code className="mx-1 rounded bg-muted px-1">{"{{paciente}}"}</code>,
+              <code className="mx-1 rounded bg-muted px-1">{"{{cpf}}"}</code>,
+              <code className="mx-1 rounded bg-muted px-1">{"{{data}}"}</code>,
+              <code className="mx-1 rounded bg-muted px-1">{"{{profissional}}"}</code>.
+            </>
+          }
+          className="mb-2"
+        />
 
         <div className="grid gap-6 md:grid-cols-2">
           <Card>

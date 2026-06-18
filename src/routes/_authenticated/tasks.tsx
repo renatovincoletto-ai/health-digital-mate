@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
+import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,14 +53,16 @@ function TasksPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-6xl space-y-6 p-6">
-        <header className="flex items-start justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Tasks & Feedback</h1>
-            <p className="text-sm text-muted-foreground">Reporte problemas, tire dúvidas e sugira melhorias do sistema.</p>
-          </div>
-          <NewTicketDialog onCreated={() => qc.invalidateQueries({ queryKey: ["tickets"] })} />
-        </header>
+      <div className="container-page py-8 space-y-6">
+        <PageHeader
+          eyebrow="Suporte"
+          title="Tasks & Feedback"
+          description="Reporte problemas, tire dúvidas e sugira melhorias do sistema."
+          actions={<NewTicketDialog onCreated={() => qc.invalidateQueries({ queryKey: ["tickets"] })} />}
+          className="mb-2"
+        />
+
+
 
         <div className="flex flex-wrap items-center gap-3">
           <Select value={status} onValueChange={setStatus}>
