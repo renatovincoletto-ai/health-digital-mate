@@ -213,7 +213,7 @@ export const sendPatientMessage = createServerFn({ method: "POST" })
       tenant_id: tid,
       role: "agent",
       content: replyText,
-      tool_calls: toolCallsLog.length ? (toolCallsLog as object) : null,
+      tool_calls: toolCallsLog.length ? JSON.parse(JSON.stringify(toolCallsLog)) : null,
     });
     await context.supabase.from("whatsapp_conversations").update({ last_message_at: new Date().toISOString() }).eq("id", conv.id);
 
