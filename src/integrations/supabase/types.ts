@@ -251,6 +251,8 @@ export type Database = {
           patient_notes: string | null
           patient_phone: string | null
           professional_id: string
+          recurrence_group_id: string | null
+          recurrence_rule: string | null
           service_id: string | null
           starts_at: string
           status: string
@@ -270,6 +272,8 @@ export type Database = {
           patient_notes?: string | null
           patient_phone?: string | null
           professional_id: string
+          recurrence_group_id?: string | null
+          recurrence_rule?: string | null
           service_id?: string | null
           starts_at: string
           status?: string
@@ -289,6 +293,8 @@ export type Database = {
           patient_notes?: string | null
           patient_phone?: string | null
           professional_id?: string
+          recurrence_group_id?: string | null
+          recurrence_rule?: string | null
           service_id?: string | null
           starts_at?: string
           status?: string
@@ -1548,6 +1554,57 @@ export type Database = {
           },
           {
             foreignKeyName: "odontogram_entries_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_allergies: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          patient_id: string
+          reaction: string | null
+          severity: string
+          substance: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          reaction?: string | null
+          severity?: string
+          substance: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          reaction?: string | null
+          severity?: string
+          substance?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_allergies_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_allergies_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -3076,6 +3133,89 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_roles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      waitlist: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          patient_email: string | null
+          patient_id: string | null
+          patient_name: string
+          patient_phone: string | null
+          preferred_from: string | null
+          preferred_to: string | null
+          priority: string
+          professional_id: string | null
+          service_id: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_email?: string | null
+          patient_id?: string | null
+          patient_name: string
+          patient_phone?: string | null
+          preferred_from?: string | null
+          preferred_to?: string | null
+          priority?: string
+          professional_id?: string | null
+          service_id?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_email?: string | null
+          patient_id?: string | null
+          patient_name?: string
+          patient_phone?: string | null
+          preferred_from?: string | null
+          preferred_to?: string | null
+          priority?: string
+          professional_id?: string | null
+          service_id?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "waitlist_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "waitlist_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "waitlist_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "waitlist_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"

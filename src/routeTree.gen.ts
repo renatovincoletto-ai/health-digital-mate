@@ -26,6 +26,7 @@ import { Route as AuthenticatedSiteRouteImport } from './routes/_authenticated/s
 import { Route as AuthenticatedSetupRouteImport } from './routes/_authenticated/setup'
 import { Route as AuthenticatedReputacaoRouteImport } from './routes/_authenticated/reputacao'
 import { Route as AuthenticatedRepassesRouteImport } from './routes/_authenticated/repasses'
+import { Route as AuthenticatedRecepcaoRouteImport } from './routes/_authenticated/recepcao'
 import { Route as AuthenticatedProntuarioRouteImport } from './routes/_authenticated/prontuario'
 import { Route as AuthenticatedPrescricoesRouteImport } from './routes/_authenticated/prescricoes'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated/planos'
@@ -139,6 +140,11 @@ const AuthenticatedReputacaoRoute = AuthenticatedReputacaoRouteImport.update({
 const AuthenticatedRepassesRoute = AuthenticatedRepassesRouteImport.update({
   id: '/repasses',
   path: '/repasses',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRecepcaoRoute = AuthenticatedRecepcaoRouteImport.update({
+  id: '/recepcao',
+  path: '/recepcao',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProntuarioRoute = AuthenticatedProntuarioRouteImport.update({
@@ -316,6 +322,7 @@ export interface FileRoutesByFullPath {
   '/planos': typeof AuthenticatedPlanosRoute
   '/prescricoes': typeof AuthenticatedPrescricoesRoute
   '/prontuario': typeof AuthenticatedProntuarioRoute
+  '/recepcao': typeof AuthenticatedRecepcaoRoute
   '/repasses': typeof AuthenticatedRepassesRoute
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/setup': typeof AuthenticatedSetupRoute
@@ -362,6 +369,7 @@ export interface FileRoutesByTo {
   '/planos': typeof AuthenticatedPlanosRoute
   '/prescricoes': typeof AuthenticatedPrescricoesRoute
   '/prontuario': typeof AuthenticatedProntuarioRoute
+  '/recepcao': typeof AuthenticatedRecepcaoRoute
   '/repasses': typeof AuthenticatedRepassesRoute
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/setup': typeof AuthenticatedSetupRoute
@@ -410,6 +418,7 @@ export interface FileRoutesById {
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/prescricoes': typeof AuthenticatedPrescricoesRoute
   '/_authenticated/prontuario': typeof AuthenticatedProntuarioRoute
+  '/_authenticated/recepcao': typeof AuthenticatedRecepcaoRoute
   '/_authenticated/repasses': typeof AuthenticatedRepassesRoute
   '/_authenticated/reputacao': typeof AuthenticatedReputacaoRoute
   '/_authenticated/setup': typeof AuthenticatedSetupRoute
@@ -458,6 +467,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/prescricoes'
     | '/prontuario'
+    | '/recepcao'
     | '/repasses'
     | '/reputacao'
     | '/setup'
@@ -504,6 +514,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/prescricoes'
     | '/prontuario'
+    | '/recepcao'
     | '/repasses'
     | '/reputacao'
     | '/setup'
@@ -551,6 +562,7 @@ export interface FileRouteTypes {
     | '/_authenticated/planos'
     | '/_authenticated/prescricoes'
     | '/_authenticated/prontuario'
+    | '/_authenticated/recepcao'
     | '/_authenticated/repasses'
     | '/_authenticated/reputacao'
     | '/_authenticated/setup'
@@ -696,6 +708,13 @@ declare module '@tanstack/react-router' {
       path: '/repasses'
       fullPath: '/repasses'
       preLoaderRoute: typeof AuthenticatedRepassesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/recepcao': {
+      id: '/_authenticated/recepcao'
+      path: '/recepcao'
+      fullPath: '/recepcao'
+      preLoaderRoute: typeof AuthenticatedRecepcaoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/prontuario': {
@@ -924,6 +943,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedPrescricoesRoute: typeof AuthenticatedPrescricoesRoute
   AuthenticatedProntuarioRoute: typeof AuthenticatedProntuarioRoute
+  AuthenticatedRecepcaoRoute: typeof AuthenticatedRecepcaoRoute
   AuthenticatedRepassesRoute: typeof AuthenticatedRepassesRoute
   AuthenticatedReputacaoRoute: typeof AuthenticatedReputacaoRoute
   AuthenticatedSetupRoute: typeof AuthenticatedSetupRoute
@@ -962,6 +982,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedPrescricoesRoute: AuthenticatedPrescricoesRoute,
   AuthenticatedProntuarioRoute: AuthenticatedProntuarioRoute,
+  AuthenticatedRecepcaoRoute: AuthenticatedRecepcaoRoute,
   AuthenticatedRepassesRoute: AuthenticatedRepassesRoute,
   AuthenticatedReputacaoRoute: AuthenticatedReputacaoRoute,
   AuthenticatedSetupRoute: AuthenticatedSetupRoute,
@@ -1001,13 +1022,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
