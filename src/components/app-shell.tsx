@@ -81,6 +81,7 @@ const groups: NavGroup[] = [
   { label: "Configuração", items: [
     { to: "/equipe", label: "Equipe & permissões", icon: ShieldCheck, pkg: "core" },
     { to: "/faturamento", label: "Plano & Faturamento", icon: Receipt, pkg: "core" },
+    { to: "/dados", label: "Importar & Exportar", icon: DatabaseBackup, pkg: "core" },
     { to: "/tasks", label: "Tasks & Feedback", icon: MessageSquare, pkg: "core" },
   ]},
 ];
