@@ -7,7 +7,7 @@ import {
   Package, MessageSquare, Phone, Bell, Gift, Smile, TrendingUp,
   Receipt, Banknote, CreditCard, Building, FileBarChart, Workflow, Calculator,
   ListChecks, PlugZap, ShieldCheck, BarChart3, HandCoins, DatabaseBackup,
-  Search,
+  Search, Languages,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,10 +15,11 @@ import { cn } from "@/lib/utils";
 import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,
 } from "@/components/ui/command";
+import { useI18n, type Locale } from "@/lib/i18n";
 
 type Pkg = "clinic" | "pay" | "flow" | "contabil" | "presenca" | "core";
-type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; pkg: Pkg };
-type NavGroup = { label: string; items: NavItem[] };
+type NavItem = { to: string; labelKey: string; icon: typeof LayoutDashboard; pkg: Pkg };
+type NavGroup = { labelKey: string; items: NavItem[] };
 
 const pkgBadge: Record<Pkg, { label: string; color: string }> = {
   core:     { label: "Core",     color: "bg-muted text-muted-foreground" },
@@ -30,63 +31,63 @@ const pkgBadge: Record<Pkg, { label: string; color: string }> = {
 };
 
 const groups: NavGroup[] = [
-  { label: "Visão", items: [
-    { to: "/dashboard", label: "Painel", icon: LayoutDashboard, pkg: "core" },
-    { to: "/setup", label: "Central de configuração", icon: ListChecks, pkg: "core" },
-    { to: "/integracoes", label: "Integrações", icon: PlugZap, pkg: "core" },
-    { to: "/bi", label: "BI", icon: TrendingUp, pkg: "core" },
+  { labelKey: "group.visao", items: [
+    { to: "/dashboard", labelKey: "item.dashboard", icon: LayoutDashboard, pkg: "core" },
+    { to: "/setup", labelKey: "item.setup", icon: ListChecks, pkg: "core" },
+    { to: "/integracoes", labelKey: "item.integracoes", icon: PlugZap, pkg: "core" },
+    { to: "/bi", labelKey: "item.bi", icon: TrendingUp, pkg: "core" },
   ]},
-  { label: "Clinic — Atendimento", items: [
-    { to: "/agenda", label: "Agenda", icon: Calendar, pkg: "clinic" },
-    { to: "/recepcao", label: "Recepção", icon: ClipboardCheck, pkg: "clinic" },
-    { to: "/pacientes", label: "Pacientes", icon: Users, pkg: "clinic" },
-    { to: "/prontuario", label: "Prontuário", icon: Stethoscope, pkg: "clinic" },
-    { to: "/anamnese", label: "Anamnese", icon: ClipboardList, pkg: "clinic" },
-    { to: "/teleconsulta", label: "Teleconsulta", icon: Video, pkg: "clinic" },
-    { to: "/prescricoes", label: "Prescrições", icon: FileText, pkg: "clinic" },
-    { to: "/modelos", label: "Modelos de documentos", icon: FileText, pkg: "clinic" },
-    { to: "/planos", label: "Planos de tratamento", icon: ClipboardCheck, pkg: "clinic" },
-    { to: "/estoque", label: "Estoque", icon: Package, pkg: "clinic" },
-    { to: "/unidades", label: "Unidades", icon: Building2, pkg: "clinic" },
+  { labelKey: "group.clinic", items: [
+    { to: "/agenda", labelKey: "item.agenda", icon: Calendar, pkg: "clinic" },
+    { to: "/recepcao", labelKey: "item.recepcao", icon: ClipboardCheck, pkg: "clinic" },
+    { to: "/pacientes", labelKey: "item.pacientes", icon: Users, pkg: "clinic" },
+    { to: "/prontuario", labelKey: "item.prontuario", icon: Stethoscope, pkg: "clinic" },
+    { to: "/anamnese", labelKey: "item.anamnese", icon: ClipboardList, pkg: "clinic" },
+    { to: "/teleconsulta", labelKey: "item.teleconsulta", icon: Video, pkg: "clinic" },
+    { to: "/prescricoes", labelKey: "item.prescricoes", icon: FileText, pkg: "clinic" },
+    { to: "/modelos", labelKey: "item.modelos", icon: FileText, pkg: "clinic" },
+    { to: "/planos", labelKey: "item.planos", icon: ClipboardCheck, pkg: "clinic" },
+    { to: "/estoque", labelKey: "item.estoque", icon: Package, pkg: "clinic" },
+    { to: "/unidades", labelKey: "item.unidades", icon: Building2, pkg: "clinic" },
   ]},
-  { label: "Pay — Financeiro", items: [
-    { to: "/financeiro", label: "Caixa", icon: Wallet, pkg: "pay" },
-    { to: "/pagamentos", label: "Pagamentos online", icon: Link2, pkg: "pay" },
-    { to: "/maquininhas", label: "Maquininhas (TEF)", icon: CreditCard, pkg: "pay" },
-    { to: "/orcamentos", label: "Orçamentos", icon: FileSignature, pkg: "pay" },
-    { to: "/repasses", label: "Repasses", icon: Banknote, pkg: "pay" },
-    { to: "/convenios", label: "Convênios", icon: Building, pkg: "pay" },
-    { to: "/tiss", label: "Guias TISS", icon: FileBarChart, pkg: "pay" },
+  { labelKey: "group.pay", items: [
+    { to: "/financeiro", labelKey: "item.financeiro", icon: Wallet, pkg: "pay" },
+    { to: "/pagamentos", labelKey: "item.pagamentos", icon: Link2, pkg: "pay" },
+    { to: "/maquininhas", labelKey: "item.maquininhas", icon: CreditCard, pkg: "pay" },
+    { to: "/orcamentos", labelKey: "item.orcamentos", icon: FileSignature, pkg: "pay" },
+    { to: "/repasses", labelKey: "item.repasses", icon: Banknote, pkg: "pay" },
+    { to: "/convenios", labelKey: "item.convenios", icon: Building, pkg: "pay" },
+    { to: "/tiss", labelKey: "item.tiss", icon: FileBarChart, pkg: "pay" },
   ]},
-  { label: "Flow — Relacionamento", items: [
-    { to: "/whatsapp-agente", label: "Agente WhatsApp", icon: MessageSquare, pkg: "flow" },
-    { to: "/automacoes", label: "Automações", icon: Workflow, pkg: "flow" },
-    { to: "/jornadas", label: "Jornadas IA", icon: Workflow, pkg: "flow" },
-    { to: "/lembretes", label: "Lembretes", icon: Bell, pkg: "flow" },
-    { to: "/indicacoes", label: "Indicações", icon: Gift, pkg: "flow" },
-    { to: "/nps", label: "NPS", icon: Smile, pkg: "flow" },
-    { to: "/chat", label: "Chat interno", icon: MessageSquare, pkg: "flow" },
-    { to: "/callcenter", label: "Call center", icon: Phone, pkg: "flow" },
+  { labelKey: "group.flow", items: [
+    { to: "/whatsapp-agente", labelKey: "item.whatsapp", icon: MessageSquare, pkg: "flow" },
+    { to: "/automacoes", labelKey: "item.automacoes", icon: Workflow, pkg: "flow" },
+    { to: "/jornadas", labelKey: "item.jornadas", icon: Workflow, pkg: "flow" },
+    { to: "/lembretes", labelKey: "item.lembretes", icon: Bell, pkg: "flow" },
+    { to: "/indicacoes", labelKey: "item.indicacoes", icon: Gift, pkg: "flow" },
+    { to: "/nps", labelKey: "item.nps", icon: Smile, pkg: "flow" },
+    { to: "/chat", labelKey: "item.chat", icon: MessageSquare, pkg: "flow" },
+    { to: "/callcenter", labelKey: "item.callcenter", icon: Phone, pkg: "flow" },
   ]},
-  { label: "Presença — Marketing", items: [
-    { to: "/site", label: "Site", icon: Globe, pkg: "presenca" },
-    { to: "/conteudo", label: "Conteúdo", icon: Sparkles, pkg: "presenca" },
-    { to: "/anuncios", label: "Anúncios", icon: Megaphone, pkg: "presenca" },
-    { to: "/email", label: "E-mail mkt", icon: Mail, pkg: "presenca" },
-    { to: "/reputacao", label: "Reputação", icon: Star, pkg: "presenca" },
+  { labelKey: "group.presenca", items: [
+    { to: "/site", labelKey: "item.site", icon: Globe, pkg: "presenca" },
+    { to: "/conteudo", labelKey: "item.conteudo", icon: Sparkles, pkg: "presenca" },
+    { to: "/anuncios", labelKey: "item.anuncios", icon: Megaphone, pkg: "presenca" },
+    { to: "/email", labelKey: "item.email", icon: Mail, pkg: "presenca" },
+    { to: "/reputacao", labelKey: "item.reputacao", icon: Star, pkg: "presenca" },
   ]},
-  { label: "Contábil — Fiscal", items: [
-    { to: "/contador", label: "Painel contábil", icon: Calculator, pkg: "contabil" },
-    { to: "/fiscal", label: "NFS-e", icon: FileText, pkg: "contabil" },
-    { to: "/tributos", label: "Tributos", icon: Receipt, pkg: "contabil" },
-    { to: "/dre", label: "DRE", icon: BarChart3, pkg: "contabil" },
-    { to: "/folha", label: "Folha de pagamento", icon: HandCoins, pkg: "contabil" },
+  { labelKey: "group.contabil", items: [
+    { to: "/contador", labelKey: "item.contador", icon: Calculator, pkg: "contabil" },
+    { to: "/fiscal", labelKey: "item.fiscal", icon: FileText, pkg: "contabil" },
+    { to: "/tributos", labelKey: "item.tributos", icon: Receipt, pkg: "contabil" },
+    { to: "/dre", labelKey: "item.dre", icon: BarChart3, pkg: "contabil" },
+    { to: "/folha", labelKey: "item.folha", icon: HandCoins, pkg: "contabil" },
   ]},
-  { label: "Configuração", items: [
-    { to: "/equipe", label: "Equipe & permissões", icon: ShieldCheck, pkg: "core" },
-    { to: "/faturamento", label: "Plano & Faturamento", icon: Receipt, pkg: "core" },
-    { to: "/dados", label: "Importar & Exportar", icon: DatabaseBackup, pkg: "core" },
-    { to: "/tasks", label: "Tasks & Feedback", icon: MessageSquare, pkg: "core" },
+  { labelKey: "group.config", items: [
+    { to: "/equipe", labelKey: "item.equipe", icon: ShieldCheck, pkg: "core" },
+    { to: "/faturamento", labelKey: "item.faturamento", icon: Receipt, pkg: "core" },
+    { to: "/dados", labelKey: "item.dados", icon: DatabaseBackup, pkg: "core" },
+    { to: "/tasks", labelKey: "item.tasks", icon: MessageSquare, pkg: "core" },
   ]},
 ];
 
@@ -94,6 +95,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const { t, locale, setLocale } = useI18n();
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -116,13 +118,18 @@ export function AppShell({ children }: { children: ReactNode }) {
     router.navigate({ to });
   }
 
+  function toggleLocale() {
+    const next: Locale = locale === "pt-BR" ? "en" : "pt-BR";
+    setLocale(next);
+  }
+
   return (
     <div className="flex min-h-screen bg-surface">
-      <a href="#main-content" className="skip-to-content">Pular para o conteúdo</a>
+      <a href="#main-content" className="skip-to-content">{t("nav.skip")}</a>
 
       <aside
         className="hidden w-64 shrink-0 flex-col border-r border-border/70 bg-sidebar p-3 lg:flex overflow-y-auto"
-        aria-label="Navegação principal"
+        aria-label={t("nav.main")}
       >
         <div className="px-2 py-2">
           <BrandMark to="/dashboard" />
@@ -130,16 +137,16 @@ export function AppShell({ children }: { children: ReactNode }) {
         <button
           onClick={() => setPaletteOpen(true)}
           className="mt-3 flex items-center gap-2 rounded-md border border-border/60 bg-background px-3 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent/60"
-          aria-label="Abrir busca rápida (Ctrl+K)"
+          aria-label={t("nav.search.aria")}
         >
           <Search className="h-3.5 w-3.5" />
-          <span className="flex-1 text-left">Buscar…</span>
+          <span className="flex-1 text-left">{t("nav.search")}</span>
           <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
         </button>
         <nav className="mt-4 flex flex-1 flex-col gap-4" role="navigation">
           {groups.map((g) => (
-            <div key={g.label}>
-              <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">{g.label}</p>
+            <div key={g.labelKey}>
+              <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">{t(g.labelKey)}</p>
               <div className="flex flex-col gap-0.5">
                 {g.items.map((item) => {
                   const active = pathname === item.to || pathname.startsWith(item.to + "/");
@@ -158,7 +165,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                       )}
                     >
                       <Icon className="h-3.5 w-3.5" aria-hidden="true" />
-                      <span className="flex-1">{item.label}</span>
+                      <span className="flex-1">{t(item.labelKey)}</span>
                       {item.pkg !== "core" && active && (
                         <span className={cn("rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase", b.color)}>{b.label}</span>
                       )}
@@ -170,10 +177,21 @@ export function AppShell({ children }: { children: ReactNode }) {
           ))}
         </nav>
         <button
-          onClick={handleSignOut}
+          onClick={toggleLocale}
           className="mt-4 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-sidebar-accent/60 hover:text-foreground"
+          aria-label={t("lang.label")}
         >
-          <LogOut className="h-4 w-4" aria-hidden="true" /> Sair
+          <Languages className="h-4 w-4" aria-hidden="true" />
+          <span className="flex-1 text-left">{t("lang.label")}</span>
+          <span className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] uppercase">
+            {locale === "pt-BR" ? "PT" : "EN"}
+          </span>
+        </button>
+        <button
+          onClick={handleSignOut}
+          className="mt-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-sidebar-accent/60 hover:text-foreground"
+        >
+          <LogOut className="h-4 w-4" aria-hidden="true" /> {t("nav.signout")}
         </button>
       </aside>
 
@@ -182,21 +200,22 @@ export function AppShell({ children }: { children: ReactNode }) {
       </main>
 
       <CommandDialog open={paletteOpen} onOpenChange={setPaletteOpen}>
-        <CommandInput placeholder="Buscar página… (ex: agenda, NPS, financeiro)" />
+        <CommandInput placeholder={t("palette.placeholder")} />
         <CommandList>
-          <CommandEmpty>Nenhum resultado.</CommandEmpty>
+          <CommandEmpty>{t("palette.empty")}</CommandEmpty>
           {groups.map((g) => (
-            <CommandGroup key={g.label} heading={g.label}>
+            <CommandGroup key={g.labelKey} heading={t(g.labelKey)}>
               {g.items.map((item) => {
                 const Icon = item.icon;
+                const label = t(item.labelKey);
                 return (
                   <CommandItem
                     key={item.to}
-                    value={`${item.label} ${g.label} ${item.to}`}
+                    value={`${label} ${t(g.labelKey)} ${item.to}`}
                     onSelect={() => go(item.to)}
                   >
                     <Icon className="mr-2 h-4 w-4" />
-                    <span>{item.label}</span>
+                    <span>{label}</span>
                   </CommandItem>
                 );
               })}
