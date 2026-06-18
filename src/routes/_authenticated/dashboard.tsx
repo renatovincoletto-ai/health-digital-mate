@@ -200,3 +200,22 @@ function InfoCard({ title, value, success }: { title: string; value: string; suc
     </div>
   );
 }
+
+function Sparkline({ data }: { data: { date: string; count: number }[] }) {
+  const max = Math.max(1, ...data.map((d) => d.count));
+  return (
+    <div className="flex items-end gap-2 h-24">
+      {data.map((d) => {
+        const h = Math.max(4, Math.round((d.count / max) * 96));
+        const label = new Date(d.date + "T00:00:00").toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "");
+        return (
+          <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
+            <span className="text-[10px] tabular-nums text-muted-foreground">{d.count}</span>
+            <div className="w-full rounded-t-md bg-primary/70" style={{ height: `${h}px` }} title={`${d.date}: ${d.count}`} />
+            <span className="text-[10px] uppercase text-muted-foreground">{label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
