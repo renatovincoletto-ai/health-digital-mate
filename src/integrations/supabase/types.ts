@@ -325,6 +325,161 @@ export type Database = {
           },
         ]
       }
+      automation_jobs: {
+        Row: {
+          appointment_id: string | null
+          attempts: number
+          body: string
+          channel: string
+          created_at: string
+          enrollment_id: string | null
+          id: string
+          kind: string
+          last_error: string | null
+          patient_id: string | null
+          provider_id: string | null
+          recipient: string
+          recipient_name: string | null
+          reminder_id: string | null
+          scheduled_for: string
+          sent_at: string | null
+          status: string
+          subject: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          attempts?: number
+          body: string
+          channel: string
+          created_at?: string
+          enrollment_id?: string | null
+          id?: string
+          kind: string
+          last_error?: string | null
+          patient_id?: string | null
+          provider_id?: string | null
+          recipient: string
+          recipient_name?: string | null
+          reminder_id?: string | null
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string
+          subject?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          attempts?: number
+          body?: string
+          channel?: string
+          created_at?: string
+          enrollment_id?: string | null
+          id?: string
+          kind?: string
+          last_error?: string | null
+          patient_id?: string | null
+          provider_id?: string | null
+          recipient?: string
+          recipient_name?: string | null
+          reminder_id?: string | null
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string
+          subject?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_jobs_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_jobs_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "journey_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_jobs_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_jobs_reminder_id_fkey"
+            columns: ["reminder_id"]
+            isOneToOne: false
+            referencedRelation: "reminders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_jobs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_settings: {
+        Row: {
+          created_at: string
+          dry_run: boolean
+          email_enabled: boolean
+          email_from_address: string | null
+          email_from_name: string | null
+          sms_enabled: boolean
+          tenant_id: string
+          twilio_from_number: string | null
+          twilio_whatsapp_from: string | null
+          updated_at: string
+          whatsapp_enabled: boolean
+        }
+        Insert: {
+          created_at?: string
+          dry_run?: boolean
+          email_enabled?: boolean
+          email_from_address?: string | null
+          email_from_name?: string | null
+          sms_enabled?: boolean
+          tenant_id: string
+          twilio_from_number?: string | null
+          twilio_whatsapp_from?: string | null
+          updated_at?: string
+          whatsapp_enabled?: boolean
+        }
+        Update: {
+          created_at?: string
+          dry_run?: boolean
+          email_enabled?: boolean
+          email_from_address?: string | null
+          email_from_name?: string | null
+          sms_enabled?: boolean
+          tenant_id?: string
+          twilio_from_number?: string | null
+          twilio_whatsapp_from?: string | null
+          updated_at?: string
+          whatsapp_enabled?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_settings_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       availability_blocks: {
         Row: {
           created_at: string
