@@ -14,16 +14,270 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      brands: {
+        Row: {
+          accent_color: string | null
+          created_at: string
+          font_body: string | null
+          font_heading: string | null
+          id: string
+          logo_url: string | null
+          primary_color: string | null
+          secondary_color: string | null
+          tenant_id: string
+          tone_of_voice: string | null
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string | null
+          created_at?: string
+          font_body?: string | null
+          font_heading?: string | null
+          id?: string
+          logo_url?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          tenant_id: string
+          tone_of_voice?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string | null
+          created_at?: string
+          font_body?: string | null
+          font_heading?: string | null
+          id?: string
+          logo_url?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          tenant_id?: string
+          tone_of_voice?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brands_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          site_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          site_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          site_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_messages_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sites: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          published: boolean
+          seo_description: string | null
+          seo_title: string | null
+          tenant_id: string
+          theme: Json
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          id?: string
+          published?: boolean
+          seo_description?: string | null
+          seo_title?: string | null
+          tenant_id: string
+          theme?: Json
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          published?: boolean
+          seo_description?: string | null
+          seo_title?: string | null
+          tenant_id?: string
+          theme?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sites_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          city: string | null
+          council_number: string | null
+          council_state: string | null
+          council_type: string | null
+          created_at: string
+          display_name: string
+          email: string | null
+          id: string
+          onboarding_status: Database["public"]["Enums"]["onboarding_status"]
+          owner_id: string
+          phone: string | null
+          slug: string
+          specialty: string | null
+          state: string | null
+          type: Database["public"]["Enums"]["tenant_type"]
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          city?: string | null
+          council_number?: string | null
+          council_state?: string | null
+          council_type?: string | null
+          created_at?: string
+          display_name: string
+          email?: string | null
+          id?: string
+          onboarding_status?: Database["public"]["Enums"]["onboarding_status"]
+          owner_id: string
+          phone?: string | null
+          slug: string
+          specialty?: string | null
+          state?: string | null
+          type?: Database["public"]["Enums"]["tenant_type"]
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          city?: string | null
+          council_number?: string | null
+          council_state?: string | null
+          council_type?: string | null
+          created_at?: string
+          display_name?: string
+          email?: string | null
+          id?: string
+          onboarding_status?: Database["public"]["Enums"]["onboarding_status"]
+          owner_id?: string
+          phone?: string | null
+          slug?: string
+          specialty?: string | null
+          state?: string | null
+          type?: Database["public"]["Enums"]["tenant_type"]
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _tenant_id: string
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      user_tenant_id: { Args: { _user_id: string }; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "owner" | "staff" | "admin"
+      onboarding_status: "pending" | "site_pending" | "completed"
+      tenant_type: "medico" | "dentista" | "clinica" | "outro"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +404,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["owner", "staff", "admin"],
+      onboarding_status: ["pending", "site_pending", "completed"],
+      tenant_type: ["medico", "dentista", "clinica", "outro"],
+    },
   },
 } as const
