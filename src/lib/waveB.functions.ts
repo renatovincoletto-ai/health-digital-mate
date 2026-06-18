@@ -175,18 +175,18 @@ export const portalMe = createServerFn({ method: "POST" })
     const { data: sess } = await sb.from("patient_portal_sessions").select("*").eq("token", data.token).maybeSingle();
     if (!sess || new Date(sess.expires_at) < new Date()) throw new Error("Sessão expirada");
     const { data: patient } = await sb.from("patients").select("id, full_name, email, phone").eq("id", sess.patient_id).maybeSingle();
-    const { data: appts } = await sb
-      .from("appointments")
-      .select("id, scheduled_at, status, service_name, professional_name")
-      .eq("patient_id", sess.patient_id)
-      .gte("scheduled_at", new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString())
-      .order("scheduled_at", { ascending: false })
-      .limit(50);
-    const { data: rxs } = await sb
-      .from("prescriptions")
-      .select("id, issued_at, content")
-      .eq("patient_id", sess.patient_id)
-      .order("issued_at", { ascending: false })
-      .limit(20);
-    return { patient, appointments: appts ?? [], prescriptions: rxs ?? [] };
+    const sinceIso = new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString();
+    const apptQ = sb.from("appointments")
+      .select("id, starts_at, ends_at, status, patient_name")
+      .eq("tenant_id", sess.tenant_id).gte("starts_at", sinceIso)
+      .order("starts_at", { ascending: false }).limit(50);
+    const apptResult = patient?.phone
+      ? await apptQ.eq("patient_phone", patient.phone)
+      : patient?.email
+        ? await apptQ.eq("patient_email", patient.email)
+        : await apptQ.eq("patient_name", patient?.full_name ?? "");
+    const { data: rxs } = await sb.from("prescriptions")
+      .select("id, content, pdf_url, status, created_at")
+      .eq("patient_id", sess.patient_id).order("created_at", { ascending: false }).limit(20);
+    return { patient, appointments: apptResult.data ?? [], prescriptions: rxs ?? [] };
   });
