@@ -15,13 +15,18 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
+import { Route as AuthenticatedUnidadesRouteImport } from './routes/_authenticated/unidades'
 import { Route as AuthenticatedSiteRouteImport } from './routes/_authenticated/site'
 import { Route as AuthenticatedReputacaoRouteImport } from './routes/_authenticated/reputacao'
+import { Route as AuthenticatedProntuarioRouteImport } from './routes/_authenticated/prontuario'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedEmailRouteImport } from './routes/_authenticated/email'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedConteudoRouteImport } from './routes/_authenticated/conteudo'
 import { Route as AuthenticatedAnunciosRouteImport } from './routes/_authenticated/anuncios'
+import { Route as AuthenticatedAnamneseRouteImport } from './routes/_authenticated/anamnese'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
+import { Route as SSlugAnamneseRouteImport } from './routes/s.$slug.anamnese'
 import { Route as SSlugAgendarRouteImport } from './routes/s.$slug.agendar'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -53,6 +58,11 @@ const SSlugRoute = SSlugRouteImport.update({
   path: '/s/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedUnidadesRoute = AuthenticatedUnidadesRouteImport.update({
+  id: '/unidades',
+  path: '/unidades',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSiteRoute = AuthenticatedSiteRouteImport.update({
   id: '/site',
   path: '/site',
@@ -63,9 +73,19 @@ const AuthenticatedReputacaoRoute = AuthenticatedReputacaoRouteImport.update({
   path: '/reputacao',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedProntuarioRoute = AuthenticatedProntuarioRouteImport.update({
+  id: '/prontuario',
+  path: '/prontuario',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEmailRoute = AuthenticatedEmailRouteImport.update({
+  id: '/email',
+  path: '/email',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -83,10 +103,20 @@ const AuthenticatedAnunciosRoute = AuthenticatedAnunciosRouteImport.update({
   path: '/anuncios',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAnamneseRoute = AuthenticatedAnamneseRouteImport.update({
+  id: '/anamnese',
+  path: '/anamnese',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
   id: '/agenda',
   path: '/agenda',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const SSlugAnamneseRoute = SSlugAnamneseRouteImport.update({
+  id: '/anamnese',
+  path: '/anamnese',
+  getParentRoute: () => SSlugRoute,
 } as any)
 const SSlugAgendarRoute = SSlugAgendarRouteImport.update({
   id: '/agendar',
@@ -100,14 +130,19 @@ export interface FileRoutesByFullPath {
   '/precos': typeof PrecosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/agenda': typeof AuthenticatedAgendaRoute
+  '/anamnese': typeof AuthenticatedAnamneseRoute
   '/anuncios': typeof AuthenticatedAnunciosRoute
   '/conteudo': typeof AuthenticatedConteudoRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/email': typeof AuthenticatedEmailRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/prontuario': typeof AuthenticatedProntuarioRoute
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/site': typeof AuthenticatedSiteRoute
+  '/unidades': typeof AuthenticatedUnidadesRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/s/$slug/agendar': typeof SSlugAgendarRoute
+  '/s/$slug/anamnese': typeof SSlugAnamneseRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -115,14 +150,19 @@ export interface FileRoutesByTo {
   '/precos': typeof PrecosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/agenda': typeof AuthenticatedAgendaRoute
+  '/anamnese': typeof AuthenticatedAnamneseRoute
   '/anuncios': typeof AuthenticatedAnunciosRoute
   '/conteudo': typeof AuthenticatedConteudoRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/email': typeof AuthenticatedEmailRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/prontuario': typeof AuthenticatedProntuarioRoute
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/site': typeof AuthenticatedSiteRoute
+  '/unidades': typeof AuthenticatedUnidadesRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/s/$slug/agendar': typeof SSlugAgendarRoute
+  '/s/$slug/anamnese': typeof SSlugAnamneseRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -132,14 +172,19 @@ export interface FileRoutesById {
   '/precos': typeof PrecosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
+  '/_authenticated/anamnese': typeof AuthenticatedAnamneseRoute
   '/_authenticated/anuncios': typeof AuthenticatedAnunciosRoute
   '/_authenticated/conteudo': typeof AuthenticatedConteudoRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/email': typeof AuthenticatedEmailRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/prontuario': typeof AuthenticatedProntuarioRoute
   '/_authenticated/reputacao': typeof AuthenticatedReputacaoRoute
   '/_authenticated/site': typeof AuthenticatedSiteRoute
+  '/_authenticated/unidades': typeof AuthenticatedUnidadesRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/s/$slug/agendar': typeof SSlugAgendarRoute
+  '/s/$slug/anamnese': typeof SSlugAnamneseRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -149,14 +194,19 @@ export interface FileRouteTypes {
     | '/precos'
     | '/sitemap.xml'
     | '/agenda'
+    | '/anamnese'
     | '/anuncios'
     | '/conteudo'
     | '/dashboard'
+    | '/email'
     | '/onboarding'
+    | '/prontuario'
     | '/reputacao'
     | '/site'
+    | '/unidades'
     | '/s/$slug'
     | '/s/$slug/agendar'
+    | '/s/$slug/anamnese'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -164,14 +214,19 @@ export interface FileRouteTypes {
     | '/precos'
     | '/sitemap.xml'
     | '/agenda'
+    | '/anamnese'
     | '/anuncios'
     | '/conteudo'
     | '/dashboard'
+    | '/email'
     | '/onboarding'
+    | '/prontuario'
     | '/reputacao'
     | '/site'
+    | '/unidades'
     | '/s/$slug'
     | '/s/$slug/agendar'
+    | '/s/$slug/anamnese'
   id:
     | '__root__'
     | '/'
@@ -180,14 +235,19 @@ export interface FileRouteTypes {
     | '/precos'
     | '/sitemap.xml'
     | '/_authenticated/agenda'
+    | '/_authenticated/anamnese'
     | '/_authenticated/anuncios'
     | '/_authenticated/conteudo'
     | '/_authenticated/dashboard'
+    | '/_authenticated/email'
     | '/_authenticated/onboarding'
+    | '/_authenticated/prontuario'
     | '/_authenticated/reputacao'
     | '/_authenticated/site'
+    | '/_authenticated/unidades'
     | '/s/$slug'
     | '/s/$slug/agendar'
+    | '/s/$slug/anamnese'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -243,6 +303,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/unidades': {
+      id: '/_authenticated/unidades'
+      path: '/unidades'
+      fullPath: '/unidades'
+      preLoaderRoute: typeof AuthenticatedUnidadesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/site': {
       id: '/_authenticated/site'
       path: '/site'
@@ -257,11 +324,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReputacaoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/prontuario': {
+      id: '/_authenticated/prontuario'
+      path: '/prontuario'
+      fullPath: '/prontuario'
+      preLoaderRoute: typeof AuthenticatedProntuarioRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/email': {
+      id: '/_authenticated/email'
+      path: '/email'
+      fullPath: '/email'
+      preLoaderRoute: typeof AuthenticatedEmailRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -285,12 +366,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnunciosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/anamnese': {
+      id: '/_authenticated/anamnese'
+      path: '/anamnese'
+      fullPath: '/anamnese'
+      preLoaderRoute: typeof AuthenticatedAnamneseRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/agenda': {
       id: '/_authenticated/agenda'
       path: '/agenda'
       fullPath: '/agenda'
       preLoaderRoute: typeof AuthenticatedAgendaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/s/$slug/anamnese': {
+      id: '/s/$slug/anamnese'
+      path: '/anamnese'
+      fullPath: '/s/$slug/anamnese'
+      preLoaderRoute: typeof SSlugAnamneseRouteImport
+      parentRoute: typeof SSlugRoute
     }
     '/s/$slug/agendar': {
       id: '/s/$slug/agendar'
@@ -304,22 +399,30 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
+  AuthenticatedAnamneseRoute: typeof AuthenticatedAnamneseRoute
   AuthenticatedAnunciosRoute: typeof AuthenticatedAnunciosRoute
   AuthenticatedConteudoRoute: typeof AuthenticatedConteudoRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedEmailRoute: typeof AuthenticatedEmailRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedProntuarioRoute: typeof AuthenticatedProntuarioRoute
   AuthenticatedReputacaoRoute: typeof AuthenticatedReputacaoRoute
   AuthenticatedSiteRoute: typeof AuthenticatedSiteRoute
+  AuthenticatedUnidadesRoute: typeof AuthenticatedUnidadesRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAgendaRoute: AuthenticatedAgendaRoute,
+  AuthenticatedAnamneseRoute: AuthenticatedAnamneseRoute,
   AuthenticatedAnunciosRoute: AuthenticatedAnunciosRoute,
   AuthenticatedConteudoRoute: AuthenticatedConteudoRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedEmailRoute: AuthenticatedEmailRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedProntuarioRoute: AuthenticatedProntuarioRoute,
   AuthenticatedReputacaoRoute: AuthenticatedReputacaoRoute,
   AuthenticatedSiteRoute: AuthenticatedSiteRoute,
+  AuthenticatedUnidadesRoute: AuthenticatedUnidadesRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -327,10 +430,12 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface SSlugRouteChildren {
   SSlugAgendarRoute: typeof SSlugAgendarRoute
+  SSlugAnamneseRoute: typeof SSlugAnamneseRoute
 }
 
 const SSlugRouteChildren: SSlugRouteChildren = {
   SSlugAgendarRoute: SSlugAgendarRoute,
+  SSlugAnamneseRoute: SSlugAnamneseRoute,
 }
 
 const SSlugRouteWithChildren = SSlugRoute._addFileChildren(SSlugRouteChildren)

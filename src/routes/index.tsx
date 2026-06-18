@@ -11,6 +11,9 @@ import {
   Stethoscope,
   ShieldCheck,
   MessageSquare,
+  ClipboardList,
+  Mail,
+  Building2,
   Image as ImageIcon,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
@@ -257,6 +260,21 @@ const features = [
     body: "Pedido automático de avaliação após consulta. Respostas com IA. Score do consultório sempre em alta.",
   },
   {
+    icon: ClipboardList,
+    title: "Anamnese digital",
+    body: "Paciente preenche antes da consulta com consentimento LGPD. Modelos gerados por IA para cada especialidade.",
+  },
+  {
+    icon: Stethoscope,
+    title: "Prontuário com IA (SOAP)",
+    body: "Dite a consulta no navegador. A IA transcreve e estrutura em S/O/A/P. Você só revisa.",
+  },
+  {
+    icon: Mail,
+    title: "E-mail marketing",
+    body: "Campanhas criadas por IA, base de contatos própria e relatórios — tudo dentro do compliance.",
+  },
+  {
     icon: CreditCard,
     title: "Pix e sinal de consulta",
     body: "Reduza no-show com cobrança de sinal por Pix. Recorrência para tratamentos longos.",
@@ -267,9 +285,9 @@ const features = [
     body: "Guardrails que bloqueiam conteúdo vetado. Anamnese digital com consentimento. Dados protegidos.",
   },
   {
-    icon: Sparkles,
+    icon: Building2,
     title: "Multi-unidade",
-    body: "Clínicas com vários profissionais e salas. Permissões por papel. Dashboard consolidado.",
+    body: "Clínicas com vários profissionais, salas e endereços. Permissões por papel. Dashboard consolidado.",
   },
 ];
 

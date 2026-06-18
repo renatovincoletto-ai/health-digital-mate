@@ -7,6 +7,10 @@ import {
   Sparkles,
   Megaphone,
   Star,
+  ClipboardList,
+  Stethoscope,
+  Mail,
+  Building2,
   LogOut,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
@@ -14,19 +18,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
-  to: "/dashboard" | "/site" | "/agenda" | "/conteudo" | "/anuncios" | "/reputacao";
+  to: "/dashboard" | "/site" | "/agenda" | "/conteudo" | "/anuncios" | "/reputacao" | "/anamnese" | "/prontuario" | "/email" | "/unidades";
   label: string;
   icon: typeof LayoutDashboard;
-  soon?: boolean;
 };
 
 const nav: NavItem[] = [
   { to: "/dashboard", label: "Painel", icon: LayoutDashboard },
   { to: "/site", label: "Site", icon: Globe },
-  { to: "/agenda", label: "Agenda", icon: Calendar, soon: true },
-  { to: "/conteudo", label: "Conteúdo", icon: Sparkles, soon: true },
-  { to: "/anuncios", label: "Anúncios", icon: Megaphone, soon: true },
-  { to: "/reputacao", label: "Reputação", icon: Star, soon: true },
+  { to: "/agenda", label: "Agenda", icon: Calendar },
+  { to: "/conteudo", label: "Conteúdo", icon: Sparkles },
+  { to: "/anuncios", label: "Anúncios", icon: Megaphone },
+  { to: "/reputacao", label: "Reputação", icon: Star },
+  { to: "/anamnese", label: "Anamnese", icon: ClipboardList },
+  { to: "/prontuario", label: "Prontuário", icon: Stethoscope },
+  { to: "/email", label: "E-mail mkt", icon: Mail },
+  { to: "/unidades", label: "Unidades", icon: Building2 },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -63,11 +70,6 @@ export function AppShell({ children }: { children: ReactNode }) {
                   <Icon className="h-4 w-4" />
                   {item.label}
                 </span>
-                {item.soon ? (
-                  <span className="rounded-full bg-accent/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent-foreground">
-                    em breve
-                  </span>
-                ) : null}
               </Link>
             );
           })}
