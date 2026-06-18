@@ -28,7 +28,7 @@ export const getProfessionalPerformance = createServerFn({ method: "GET" })
       const noShow = a.filter((x: any) => x.status === "no_show").length;
       const cancelled = a.filter((x: any) => x.status === "cancelled").length;
       const total = a.length;
-      const revenue = (tx ?? []).filter((t: any) => t.professional_id === p.id && t.kind === "income")
+      const revenue = (tx ?? []).filter((t: any) => t.professional_id === p.id && t.direction === "income")
         .reduce((s: number, t: any) => s + Number(t.amount ?? 0), 0);
       const ticket = completed > 0 ? revenue / completed : 0;
       const npsRows = (nps ?? []).filter((n: any) => n.professional_id === p.id);
