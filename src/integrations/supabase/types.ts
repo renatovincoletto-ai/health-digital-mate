@@ -920,6 +920,53 @@ export type Database = {
           },
         ]
       }
+      document_templates: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_default: boolean
+          kind: string
+          tenant_id: string
+          title: string
+          updated_at: string
+          variables: Json
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_default?: boolean
+          kind: string
+          tenant_id: string
+          title: string
+          updated_at?: string
+          variables?: Json
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_default?: boolean
+          kind?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+          variables?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_templates_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_campaigns: {
         Row: {
           audience: string
@@ -1960,6 +2007,104 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_portal_accounts: {
+        Row: {
+          cpf: string
+          created_at: string
+          email: string | null
+          failed_attempts: number
+          id: string
+          last_login_at: string | null
+          locked_until: string | null
+          password_hash: string
+          patient_id: string
+          reset_expires_at: string | null
+          reset_token: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          cpf: string
+          created_at?: string
+          email?: string | null
+          failed_attempts?: number
+          id?: string
+          last_login_at?: string | null
+          locked_until?: string | null
+          password_hash: string
+          patient_id: string
+          reset_expires_at?: string | null
+          reset_token?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          cpf?: string
+          created_at?: string
+          email?: string | null
+          failed_attempts?: number
+          id?: string
+          last_login_at?: string | null
+          locked_until?: string | null
+          password_hash?: string
+          patient_id?: string
+          reset_expires_at?: string | null
+          reset_token?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_portal_accounts_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_portal_accounts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_portal_sessions: {
+        Row: {
+          account_id: string
+          created_at: string
+          expires_at: string
+          patient_id: string
+          tenant_id: string
+          token: string
+        }
+        Insert: {
+          account_id: string
+          created_at?: string
+          expires_at: string
+          patient_id: string
+          tenant_id: string
+          token: string
+        }
+        Update: {
+          account_id?: string
+          created_at?: string
+          expires_at?: string
+          patient_id?: string
+          tenant_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_portal_sessions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "patient_portal_accounts"
             referencedColumns: ["id"]
           },
         ]

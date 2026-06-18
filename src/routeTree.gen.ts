@@ -17,7 +17,9 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
+import { Route as PortalRecuperarRouteImport } from './routes/portal.recuperar'
 import { Route as PortalAcessoRouteImport } from './routes/portal.acesso'
+import { Route as PortalSlugRouteImport } from './routes/portal.$slug'
 import { Route as AuthenticatedWhatsappAgenteRouteImport } from './routes/_authenticated/whatsapp-agente'
 import { Route as AuthenticatedUnidadesRouteImport } from './routes/_authenticated/unidades'
 import { Route as AuthenticatedTributosRouteImport } from './routes/_authenticated/tributos'
@@ -36,6 +38,7 @@ import { Route as AuthenticatedPacientesRouteImport } from './routes/_authentica
 import { Route as AuthenticatedOrcamentosRouteImport } from './routes/_authenticated/orcamentos'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedNpsRouteImport } from './routes/_authenticated/nps'
+import { Route as AuthenticatedModelosRouteImport } from './routes/_authenticated/modelos'
 import { Route as AuthenticatedMaquininhasRouteImport } from './routes/_authenticated/maquininhas'
 import { Route as AuthenticatedLembretesRouteImport } from './routes/_authenticated/lembretes'
 import { Route as AuthenticatedJornadasRouteImport } from './routes/_authenticated/jornadas'
@@ -103,9 +106,19 @@ const SSlugRoute = SSlugRouteImport.update({
   path: '/s/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortalRecuperarRoute = PortalRecuperarRouteImport.update({
+  id: '/portal/recuperar',
+  path: '/portal/recuperar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PortalAcessoRoute = PortalAcessoRouteImport.update({
   id: '/portal/acesso',
   path: '/portal/acesso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalSlugRoute = PortalSlugRouteImport.update({
+  id: '/portal/$slug',
+  path: '/portal/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedWhatsappAgenteRoute =
@@ -199,6 +212,11 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
 const AuthenticatedNpsRoute = AuthenticatedNpsRouteImport.update({
   id: '/nps',
   path: '/nps',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedModelosRoute = AuthenticatedModelosRouteImport.update({
+  id: '/modelos',
+  path: '/modelos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMaquininhasRoute =
@@ -369,6 +387,7 @@ export interface FileRoutesByFullPath {
   '/jornadas': typeof AuthenticatedJornadasRoute
   '/lembretes': typeof AuthenticatedLembretesRoute
   '/maquininhas': typeof AuthenticatedMaquininhasRoute
+  '/modelos': typeof AuthenticatedModelosRoute
   '/nps': typeof AuthenticatedNpsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orcamentos': typeof AuthenticatedOrcamentosRoute
@@ -387,7 +406,9 @@ export interface FileRoutesByFullPath {
   '/tributos': typeof AuthenticatedTributosRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
   '/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
+  '/portal/$slug': typeof PortalSlugRoute
   '/portal/acesso': typeof PortalAcessoRoute
+  '/portal/recuperar': typeof PortalRecuperarRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -424,6 +445,7 @@ export interface FileRoutesByTo {
   '/jornadas': typeof AuthenticatedJornadasRoute
   '/lembretes': typeof AuthenticatedLembretesRoute
   '/maquininhas': typeof AuthenticatedMaquininhasRoute
+  '/modelos': typeof AuthenticatedModelosRoute
   '/nps': typeof AuthenticatedNpsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orcamentos': typeof AuthenticatedOrcamentosRoute
@@ -442,7 +464,9 @@ export interface FileRoutesByTo {
   '/tributos': typeof AuthenticatedTributosRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
   '/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
+  '/portal/$slug': typeof PortalSlugRoute
   '/portal/acesso': typeof PortalAcessoRoute
+  '/portal/recuperar': typeof PortalRecuperarRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -481,6 +505,7 @@ export interface FileRoutesById {
   '/_authenticated/jornadas': typeof AuthenticatedJornadasRoute
   '/_authenticated/lembretes': typeof AuthenticatedLembretesRoute
   '/_authenticated/maquininhas': typeof AuthenticatedMaquininhasRoute
+  '/_authenticated/modelos': typeof AuthenticatedModelosRoute
   '/_authenticated/nps': typeof AuthenticatedNpsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/orcamentos': typeof AuthenticatedOrcamentosRoute
@@ -499,7 +524,9 @@ export interface FileRoutesById {
   '/_authenticated/tributos': typeof AuthenticatedTributosRoute
   '/_authenticated/unidades': typeof AuthenticatedUnidadesRoute
   '/_authenticated/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
+  '/portal/$slug': typeof PortalSlugRoute
   '/portal/acesso': typeof PortalAcessoRoute
+  '/portal/recuperar': typeof PortalRecuperarRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -538,6 +565,7 @@ export interface FileRouteTypes {
     | '/jornadas'
     | '/lembretes'
     | '/maquininhas'
+    | '/modelos'
     | '/nps'
     | '/onboarding'
     | '/orcamentos'
@@ -556,7 +584,9 @@ export interface FileRouteTypes {
     | '/tributos'
     | '/unidades'
     | '/whatsapp-agente'
+    | '/portal/$slug'
     | '/portal/acesso'
+    | '/portal/recuperar'
     | '/s/$slug'
     | '/portal/'
     | '/s/$slug/agendar'
@@ -593,6 +623,7 @@ export interface FileRouteTypes {
     | '/jornadas'
     | '/lembretes'
     | '/maquininhas'
+    | '/modelos'
     | '/nps'
     | '/onboarding'
     | '/orcamentos'
@@ -611,7 +642,9 @@ export interface FileRouteTypes {
     | '/tributos'
     | '/unidades'
     | '/whatsapp-agente'
+    | '/portal/$slug'
     | '/portal/acesso'
+    | '/portal/recuperar'
     | '/s/$slug'
     | '/portal'
     | '/s/$slug/agendar'
@@ -649,6 +682,7 @@ export interface FileRouteTypes {
     | '/_authenticated/jornadas'
     | '/_authenticated/lembretes'
     | '/_authenticated/maquininhas'
+    | '/_authenticated/modelos'
     | '/_authenticated/nps'
     | '/_authenticated/onboarding'
     | '/_authenticated/orcamentos'
@@ -667,7 +701,9 @@ export interface FileRouteTypes {
     | '/_authenticated/tributos'
     | '/_authenticated/unidades'
     | '/_authenticated/whatsapp-agente'
+    | '/portal/$slug'
     | '/portal/acesso'
+    | '/portal/recuperar'
     | '/s/$slug'
     | '/portal/'
     | '/s/$slug/agendar'
@@ -683,7 +719,9 @@ export interface RootRouteChildren {
   PrecosRoute: typeof PrecosRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  PortalSlugRoute: typeof PortalSlugRoute
   PortalAcessoRoute: typeof PortalAcessoRoute
+  PortalRecuperarRoute: typeof PortalRecuperarRoute
   SSlugRoute: typeof SSlugRouteWithChildren
   PortalIndexRoute: typeof PortalIndexRoute
   ApiPublicHooksAsaasRoute: typeof ApiPublicHooksAsaasRoute
@@ -748,11 +786,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portal/recuperar': {
+      id: '/portal/recuperar'
+      path: '/portal/recuperar'
+      fullPath: '/portal/recuperar'
+      preLoaderRoute: typeof PortalRecuperarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/portal/acesso': {
       id: '/portal/acesso'
       path: '/portal/acesso'
       fullPath: '/portal/acesso'
       preLoaderRoute: typeof PortalAcessoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/$slug': {
+      id: '/portal/$slug'
+      path: '/portal/$slug'
+      fullPath: '/portal/$slug'
+      preLoaderRoute: typeof PortalSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/whatsapp-agente': {
@@ -879,6 +931,13 @@ declare module '@tanstack/react-router' {
       path: '/nps'
       fullPath: '/nps'
       preLoaderRoute: typeof AuthenticatedNpsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/modelos': {
+      id: '/_authenticated/modelos'
+      path: '/modelos'
+      fullPath: '/modelos'
+      preLoaderRoute: typeof AuthenticatedModelosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/maquininhas': {
@@ -1097,6 +1156,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedJornadasRoute: typeof AuthenticatedJornadasRoute
   AuthenticatedLembretesRoute: typeof AuthenticatedLembretesRoute
   AuthenticatedMaquininhasRoute: typeof AuthenticatedMaquininhasRoute
+  AuthenticatedModelosRoute: typeof AuthenticatedModelosRoute
   AuthenticatedNpsRoute: typeof AuthenticatedNpsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedOrcamentosRoute: typeof AuthenticatedOrcamentosRoute
@@ -1141,6 +1201,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedJornadasRoute: AuthenticatedJornadasRoute,
   AuthenticatedLembretesRoute: AuthenticatedLembretesRoute,
   AuthenticatedMaquininhasRoute: AuthenticatedMaquininhasRoute,
+  AuthenticatedModelosRoute: AuthenticatedModelosRoute,
   AuthenticatedNpsRoute: AuthenticatedNpsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedOrcamentosRoute: AuthenticatedOrcamentosRoute,
@@ -1183,7 +1244,9 @@ const rootRouteChildren: RootRouteChildren = {
   PrecosRoute: PrecosRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  PortalSlugRoute: PortalSlugRoute,
   PortalAcessoRoute: PortalAcessoRoute,
+  PortalRecuperarRoute: PortalRecuperarRoute,
   SSlugRoute: SSlugRouteWithChildren,
   PortalIndexRoute: PortalIndexRoute,
   ApiPublicHooksAsaasRoute: ApiPublicHooksAsaasRoute,
