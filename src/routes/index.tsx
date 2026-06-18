@@ -218,6 +218,14 @@ type Pkg = {
   items: string[];
 };
 
+const BASE_PRICES: Record<Pkg["id"], number> = {
+  presenca: 197,
+  clinic: 297,
+  flow: 197,
+  pay: 247,
+  contabil: 349,
+};
+
 const packages: Pkg[] = [
   {
     id: "presenca",
@@ -225,7 +233,7 @@ const packages: Pkg[] = [
     title: "Presença",
     tagline: "Atraia mais pacientes",
     tone: "bg-accent/15 text-accent",
-    price: 197,
+    price: BASE_PRICES.presenca,
     body: "Site profissional com IA, conteúdo, SEO local, anúncios Google/Meta e gestão de reputação.",
     items: [
       "Site profissional com IA",
@@ -241,7 +249,7 @@ const packages: Pkg[] = [
     title: "Clinic",
     tagline: "Operar a clínica",
     tone: "bg-primary/10 text-primary",
-    price: 297,
+    price: BASE_PRICES.clinic,
     body: "Tudo que sua equipe usa do agendamento ao atendimento — com prontuário inteligente e teleconsulta.",
     items: [
       "Agenda multi-profissional",
@@ -252,28 +260,12 @@ const packages: Pkg[] = [
     ],
   },
   {
-    id: "pay",
-    icon: Wallet,
-    title: "Pay",
-    tagline: "Receber, repassar, faturar",
-    tone: "bg-success/15 text-success",
-    price: 247,
-    body: "Do orçamento ao repasse do profissional — incluindo maquininha TEF e faturamento de convênios.",
-    items: [
-      "Caixa e fluxo financeiro",
-      "Pix, link, maquininha (TEF)",
-      "Repasse a profissionais",
-      "Orçamentos digitais",
-      "Convênios + Guias TISS",
-    ],
-  },
-  {
     id: "flow",
     icon: Sparkles,
     title: "Flow",
     tagline: "Engaje o paciente",
-    tone: "bg-primary/10 text-primary",
-    price: 197,
+    tone: "bg-secondary/40 text-primary",
+    price: BASE_PRICES.flow,
     body: "Jornadas automáticas com IA, lembretes multicanal, programa de indicação e portal do paciente.",
     items: [
       "Jornadas automáticas com IA",
@@ -284,12 +276,28 @@ const packages: Pkg[] = [
     ],
   },
   {
+    id: "pay",
+    icon: Wallet,
+    title: "Pay",
+    tagline: "Receber, repassar, faturar",
+    tone: "bg-success/15 text-success",
+    price: BASE_PRICES.pay,
+    body: "Do orçamento ao repasse do profissional — incluindo maquininha TEF e faturamento de convênios.",
+    items: [
+      "Caixa e fluxo financeiro",
+      "Pix, link, maquininha (TEF)",
+      "Repasse a profissionais",
+      "Orçamentos digitais",
+      "Convênios + Guias TISS",
+    ],
+  },
+  {
     id: "contabil",
     icon: Calculator,
     title: "Contábil",
     tagline: "Fique em dia",
     tone: "bg-warning/15 text-warning",
-    price: 349,
+    price: BASE_PRICES.contabil,
     body: "Emissão de notas, impostos, painel do contador e suporte fiscal humano integrado ao financeiro.",
     items: [
       "Emissão de NFS-e (ISS auto)",
