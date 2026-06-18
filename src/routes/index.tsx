@@ -207,12 +207,25 @@ function LandingPage() {
   );
 }
 
-const packages = [
+type Pkg = {
+  id: "clinic" | "grow" | "pay" | "fiscal";
+  icon: typeof Stethoscope;
+  title: string;
+  tagline: string;
+  tone: string;
+  price: number;
+  body: string;
+  items: string[];
+};
+
+const packages: Pkg[] = [
   {
+    id: "clinic",
     icon: Stethoscope,
     title: "Clinic",
     tagline: "Operar a clínica",
     tone: "bg-primary/10 text-primary",
+    price: 299,
     body: "Tudo que sua equipe usa do agendamento ao atendimento — com prontuário inteligente e teleconsulta.",
     items: [
       "Agenda + Pacientes/CRM",
@@ -224,24 +237,28 @@ const packages = [
     ],
   },
   {
+    id: "grow",
     icon: TrendingUp,
     title: "Grow",
     tagline: "Crescer e fidelizar",
     tone: "bg-accent/15 text-accent",
+    price: 249,
     body: "Atrai pacientes novos e mantém os atuais voltando, com IA cuidando da presença digital ponta a ponta.",
     items: [
       "Site + Conteúdo + SEO",
       "Anúncios Google e Meta",
       "E-mail marketing + Reputação",
       "Jornadas IA + Lembretes",
-      "Indicações + NPS",
+      "Agente WhatsApp + Indicações",
     ],
   },
   {
+    id: "pay",
     icon: Wallet,
     title: "Pay",
     tagline: "Receber, repassar, faturar",
     tone: "bg-success/15 text-success",
+    price: 199,
     body: "Do orçamento ao repasse do profissional — incluindo maquininha TEF e faturamento de convênios.",
     items: [
       "Caixa + Pagamentos online",
@@ -252,10 +269,12 @@ const packages = [
     ],
   },
   {
+    id: "fiscal",
     icon: Receipt,
     title: "Fiscal",
     tagline: "Ficar legal",
     tone: "bg-warning/15 text-warning",
+    price: 149,
     body: "Notas, impostos e painel do contador integrados ao financeiro — sem planilha, sem retrabalho.",
     items: [
       "Emissão de NFS-e",
@@ -265,6 +284,158 @@ const packages = [
     ],
   },
 ];
+
+function PackageSelector() {
+  const [selected, setSelected] = useState<Record<Pkg["id"], boolean>>({
+    clinic: true, grow: true, pay: false, fiscal: false,
+  });
+
+  const toggle = (id: Pkg["id"]) =>
+    setSelected((s) => ({ ...s, [id]: !s[id] }));
+
+  const selectedIds = useMemo(
+    () => packages.filter((p) => selected[p.id]).map((p) => p.id),
+    [selected],
+  );
+  const allSelected = selectedIds.length === packages.length;
+  const subtotal = useMemo(
+    () => packages.reduce((sum, p) => (selected[p.id] ? sum + p.price : sum), 0),
+    [selected],
+  );
+  const total = allSelected ? BUNDLE_PRICE : subtotal;
+  const savings = allSelected ? subtotal - BUNDLE_PRICE : 0;
+
+  const selectAll = () =>
+    setSelected({ clinic: true, grow: true, pay: true, fiscal: true });
+
+  const ctaLabel =
+    selectedIds.length === 0
+      ? "Selecione ao menos um pacote"
+      : allSelected
+        ? "Assinar SaúdeOS One (todos os pacotes)"
+        : `Assinar ${selectedIds.length} pacote${selectedIds.length > 1 ? "s" : ""}`;
+
+  return (
+    <>
+      <div className="mt-14 grid gap-5 md:grid-cols-2">
+        {packages.map((p) => {
+          const isOn = selected[p.id];
+          return (
+            <button
+              type="button"
+              key={p.id}
+              onClick={() => toggle(p.id)}
+              aria-pressed={isOn}
+              className={`group relative text-left rounded-2xl border bg-surface-elevated p-7 transition hover:shadow-lift ${
+                isOn ? "border-primary ring-2 ring-primary/30" : "border-border/70 hover:border-primary/30"
+              }`}
+            >
+              <span
+                className={`absolute right-5 top-5 inline-flex h-6 w-6 items-center justify-center rounded-md border transition ${
+                  isOn
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-background"
+                }`}
+                aria-hidden
+              >
+                {isOn && <Check className="h-4 w-4" />}
+              </span>
+              <div className="flex items-center gap-3 pr-10">
+                <div className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${p.tone}`}>
+                  <p.icon className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    {p.tagline}
+                  </p>
+                  <h3 className="font-display text-2xl font-semibold leading-tight">{p.title}</h3>
+                </div>
+                <div className="ml-auto text-right">
+                  <p className="font-display text-xl font-semibold text-ink">{formatBRL(p.price)}</p>
+                  <p className="text-[11px] uppercase tracking-wider text-muted-foreground">/mês</p>
+                </div>
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+              <ul className="mt-5 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+                {p.items.map((it) => (
+                  <li key={it} className="flex items-start gap-2">
+                    <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-success" />
+                    <span>{it}</span>
+                  </li>
+                ))}
+              </ul>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-primary/30 bg-cta-gradient p-7 text-primary-foreground shadow-lift md:p-9">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-start gap-4">
+            <div className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/15">
+              <Layers className="h-6 w-6 text-accent" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-80">
+                Sua seleção
+              </p>
+              <h3 className="font-display text-2xl font-semibold">
+                {allSelected ? "SaúdeOS One — tudo incluso" : "Monte seu plano"}
+              </h3>
+              <p className="mt-1 text-sm opacity-90">
+                {selectedIds.length === 0
+                  ? "Marque os pacotes acima para combinar o que faz sentido para sua clínica."
+                  : allSelected
+                    ? `Clinic + Grow + Pay + Fiscal com onboarding guiado e suporte prioritário.`
+                    : `Você selecionou: ${selectedIds.map((id) => packages.find((p) => p.id === id)!.title).join(" + ")}.`}
+              </p>
+              {!allSelected && selectedIds.length > 0 && (
+                <button
+                  type="button"
+                  onClick={selectAll}
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-white/15 px-3 py-1 text-xs font-medium hover:bg-white/25"
+                >
+                  Quero todos por {formatBRL(BUNDLE_PRICE)}/mês
+                  <ArrowRight className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col items-stretch gap-3 md:items-end">
+            <div className="text-right">
+              {allSelected && savings > 0 && (
+                <p className="text-xs line-through opacity-70">{formatBRL(subtotal)}/mês</p>
+              )}
+              <p className="font-display text-3xl font-semibold leading-none">
+                {formatBRL(total)}
+                <span className="ml-1 text-sm font-normal opacity-80">/mês</span>
+              </p>
+              {allSelected && savings > 0 && (
+                <p className="mt-1 text-xs font-medium text-accent">
+                  Economia de {formatBRL(savings)}/mês
+                </p>
+              )}
+            </div>
+            <Link
+              to="/auth"
+              search={{ mode: "signup" }}
+              aria-disabled={selectedIds.length === 0}
+              onClick={(e) => {
+                if (selectedIds.length === 0) e.preventDefault();
+              }}
+              className={`inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-primary shadow-soft transition ${
+                selectedIds.length === 0 ? "cursor-not-allowed opacity-60" : "hover:opacity-90"
+              }`}
+            >
+              {ctaLabel} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
 
 const steps = [
   {
