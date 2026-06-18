@@ -567,6 +567,8 @@ export type Database = {
           duration_seconds: number | null
           id: string
           patient_name: string
+          patient_phone: string | null
+          patient_summary: string | null
           professional_id: string | null
           soap_assessment: string | null
           soap_objective: string | null
@@ -576,6 +578,7 @@ export type Database = {
           tenant_id: string
           transcript: string | null
           updated_at: string
+          whatsapp_sent_at: string | null
         }
         Insert: {
           appointment_id?: string | null
@@ -583,6 +586,8 @@ export type Database = {
           duration_seconds?: number | null
           id?: string
           patient_name: string
+          patient_phone?: string | null
+          patient_summary?: string | null
           professional_id?: string | null
           soap_assessment?: string | null
           soap_objective?: string | null
@@ -592,6 +597,7 @@ export type Database = {
           tenant_id: string
           transcript?: string | null
           updated_at?: string
+          whatsapp_sent_at?: string | null
         }
         Update: {
           appointment_id?: string | null
@@ -599,6 +605,8 @@ export type Database = {
           duration_seconds?: number | null
           id?: string
           patient_name?: string
+          patient_phone?: string | null
+          patient_summary?: string | null
           professional_id?: string | null
           soap_assessment?: string | null
           soap_objective?: string | null
@@ -608,6 +616,7 @@ export type Database = {
           tenant_id?: string
           transcript?: string | null
           updated_at?: string
+          whatsapp_sent_at?: string | null
         }
         Relationships: [
           {

@@ -208,6 +208,7 @@ export const generateSoapNote = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z.object({
       patient_name: z.string().min(2).max(120),
+      patient_phone: z.string().max(40).optional().nullable(),
       transcript: z.string().min(20).max(20000),
       specialty: z.string().optional(),
     }).parse(d),
@@ -217,7 +218,7 @@ export const generateSoapNote = createServerFn({ method: "POST" })
     const provider = createLovableAiGatewayProvider(process.env.LOVABLE_API_KEY!);
     const { text } = await generateText({
       model: provider("google/gemini-2.5-flash"),
-      system: "Você é um assistente clínico que estrutura consultas em formato SOAP (Subjective, Objective, Assessment, Plan). Use linguagem técnica e objetiva. Nunca invente sintomas, diagnósticos ou condutas.",
+      system: "Você é um assistente clínico. Gera (1) nota SOAP técnica para o prontuário e (2) um resumo curto, em linguagem leiga e acolhedora, para o paciente leigo entender o que aconteceu na consulta e quais são os próximos passos. Nunca invente sintomas, diagnósticos ou condutas. Não inclua diagnóstico não mencionado.",
       prompt: `Especialidade: ${data.specialty ?? "Geral"}.
 Paciente: ${data.patient_name}.
 Transcrição/anotações da consulta:
@@ -225,25 +226,80 @@ Transcrição/anotações da consulta:
 ${data.transcript}
 """
 
-Retorne APENAS JSON no formato:
-{"subjective":"...","objective":"...","assessment":"...","plan":"..."}`,
+Retorne APENAS JSON no formato exato:
+{"subjective":"...","objective":"...","assessment":"...","plan":"...","patient_summary":"Olá ${data.patient_name}, ..."}
+
+O campo patient_summary deve ter no máximo 6 linhas, em português claro, sem jargão médico, citar orientações e próximos passos. Não inclua dados sensíveis desnecessários.`,
     });
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) throw new Error("Resposta inválida da IA");
-    const soap = JSON.parse(match[0]) as { subjective: string; objective: string; assessment: string; plan: string };
+    const soap = JSON.parse(match[0]) as {
+      subjective: string; objective: string; assessment: string; plan: string; patient_summary: string;
+    };
     const { data: row, error } = await context.supabase.from("consultation_notes").insert({
       tenant_id: tid,
       patient_name: data.patient_name,
+      patient_phone: data.patient_phone || null,
       transcript: data.transcript,
       soap_subjective: soap.subjective,
       soap_objective: soap.objective,
       soap_assessment: soap.assessment,
       soap_plan: soap.plan,
+      patient_summary: soap.patient_summary,
       status: "ready",
     }).select().single();
     if (error) throw error;
     return row;
   });
+
+export const transcribeConsultationAudio = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      audio_base64: z.string().min(100),
+      mime: z.string().min(3).max(60),
+    }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    const key = process.env.LOVABLE_API_KEY;
+    if (!key) throw new Error("LOVABLE_API_KEY ausente");
+    const extMap: Record<string, string> = {
+      "audio/webm": "webm", "audio/mp4": "mp4", "audio/mpeg": "mp3",
+      "audio/wav": "wav", "audio/ogg": "ogg",
+    };
+    const ext = extMap[data.mime.split(";")[0]] ?? "webm";
+    const bin = Uint8Array.from(atob(data.audio_base64), (c) => c.charCodeAt(0));
+    const file = new File([bin], `consulta.${ext}`, { type: data.mime });
+    const form = new FormData();
+    form.append("model", "openai/gpt-4o-mini-transcribe");
+    form.append("file", file);
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/audio/transcriptions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}` },
+      body: form,
+    });
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      if (res.status === 429) throw new Error("Limite de uso da IA atingido. Tente novamente em instantes.");
+      if (res.status === 402) throw new Error("Créditos de IA esgotados. Adicione créditos em Configurações.");
+      throw new Error(`Falha ao transcrever: ${res.status} ${t}`);
+    }
+    const json = await res.json() as { text?: string };
+    return { text: json.text ?? "" };
+  });
+
+export const markConsultationWhatsappSent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("consultation_notes")
+      .update({ whatsapp_sent_at: new Date().toISOString() })
+      .eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
 
 // ============ REPUTATION ============
 export const listReviews = createServerFn({ method: "GET" })
