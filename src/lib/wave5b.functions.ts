@@ -111,7 +111,7 @@ export const listRolePermissions = createServerFn({ method: "GET" })
   });
 
 const RolePermInput = z.object({
-  role: z.enum(["owner", "admin", "manager", "dentist", "doctor", "staff"]),
+  role: z.enum(["owner", "admin", "staff"]),
   module: z.string().min(1).max(40),
   can_view: z.boolean(),
   can_create: z.boolean(),
@@ -125,7 +125,7 @@ export const saveRolePermission = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const tenant_id = await getTenantId(context);
     const { error } = await context.supabase.from("role_permissions").upsert(
-      { ...data, tenant_id },
+      { ...data, tenant_id } as any,
       { onConflict: "tenant_id,role,module" },
     );
     if (error) throw error;
