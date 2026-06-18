@@ -26,7 +26,7 @@ function Page() {
       <div className="mt-8 rounded-2xl border border-dashed border-border p-8 text-center">
         <Calculator className="h-8 w-8 mx-auto text-muted-foreground" />
         <p className="mt-3 font-medium">Quer contabilidade 100% feita pra você?</p>
-        <p className="mt-1 text-sm text-muted-foreground">Conecte um contador parceiro ou ative o pacote SaúdeOS Contábil para abertura/regularização de CNPJ, declarações e suporte fiscal.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Conecte um contador parceiro ou ative o pacote Minha Clínica Contábil para abertura/regularização de CNPJ, declarações e suporte fiscal.</p>
         <a href="/precos" className="mt-4 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Ver pacote Contábil</a>
       </div>
     </SimplePage>

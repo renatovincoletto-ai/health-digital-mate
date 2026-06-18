@@ -279,7 +279,7 @@ function PublicSite() {
           </p>
           <p className="mt-1">
             <Link to="/" className="hover:text-foreground">
-              Site feito com SaúdeOS
+              Site feito com Minha Clínica
             </Link>
           </p>
         </div>

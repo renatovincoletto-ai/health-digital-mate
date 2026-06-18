@@ -6,7 +6,7 @@ export const PACKAGE_PRICES: Record<PackageKey, { name: string; price: number }>
   pay: { name: "Pay", price: 247 },
   flow: { name: "Flow", price: 197 },
   contabil: { name: "Contábil", price: 349 },
-  one: { name: "SaúdeOS One", price: 897 },
+  one: { name: "Minha Clínica Total", price: 897 },
 };
 
 export type PatientPackKey = "starter" | "pro" | "scale" | "ilimitado";

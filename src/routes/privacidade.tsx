@@ -3,11 +3,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/privacidade")({
   head: () => ({
     meta: [
-      { title: "Privacidade e Segurança · SaúdeOS" },
+      { title: "Privacidade e Segurança · Minha Clínica" },
       {
         name: "description",
         content:
-          "Como o SaúdeOS protege dados de profissionais de saúde e pacientes: autenticação, criptografia, LGPD e responsabilidades compartilhadas.",
+          "Como o Minha Clínica protege dados de profissionais de saúde e pacientes: autenticação, criptografia, LGPD e responsabilidades compartilhadas.",
       },
     ],
   }),
@@ -30,7 +30,7 @@ function PrivacyPage() {
         <p className="text-xs uppercase tracking-widest text-muted-foreground">Trust Center</p>
         <h1 className="text-3xl font-bold tracking-tight">Privacidade e Segurança</h1>
         <p className="text-sm text-muted-foreground">
-          Esta página é mantida pela equipe do SaúdeOS para responder dúvidas comuns sobre como
+          Esta página é mantida pela equipe do Minha Clínica para responder dúvidas comuns sobre como
           protegemos dados de profissionais de saúde, equipes e pacientes. Ela descreve controles
           atualmente habilitados e práticas atuais — não é uma certificação independente.
         </p>
@@ -72,7 +72,7 @@ function PrivacyPage() {
 
       <Section title="Sub-processadores e infraestrutura">
         <p>
-          O SaúdeOS roda sobre Lovable Cloud (banco gerenciado, autenticação, storage e funções
+          O Minha Clínica roda sobre Lovable Cloud (banco gerenciado, autenticação, storage e funções
           serverless). Modelos de IA são consumidos via Lovable AI Gateway. Não compartilhamos
           dados de pacientes com terceiros fora dos sub-processadores estritamente necessários
           para operar o serviço.
@@ -91,7 +91,7 @@ function PrivacyPage() {
         <p>
           Em conformidade com a LGPD, titulares de dados podem solicitar acesso, correção,
           portabilidade ou exclusão de seus dados. Profissionais de saúde atuam como controladores
-          dos dados dos próprios pacientes; o SaúdeOS atua como operador.
+          dos dados dos próprios pacientes; o Minha Clínica atua como operador.
         </p>
       </Section>
 
@@ -106,7 +106,7 @@ function PrivacyPage() {
       <Section title="Relate uma vulnerabilidade">
         <p>
           Se você acredita ter encontrado uma vulnerabilidade, escreva para a equipe responsável
-          pela clínica que utiliza o SaúdeOS ou para o canal de suporte do produto. Pedimos que
+          pela clínica que utiliza o Minha Clínica ou para o canal de suporte do produto. Pedimos que
           não explore a falha além do necessário para demonstrá-la.
         </p>
       </Section>
