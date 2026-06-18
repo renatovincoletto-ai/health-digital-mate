@@ -195,7 +195,8 @@ export const importRows = createServerFn({ method: "POST" })
       for (const f of fields) if (r[f] !== undefined && r[f] !== "") out[f] = r[f];
       return out;
     });
-    const { data: inserted, error } = await context.supabase.from(data.table).insert(cleaned).select("id");
+    const sb = context.supabase as any;
+    const { data: inserted, error } = await sb.from(data.table).insert(cleaned).select("id");
     if (error) throw error;
     return { inserted: inserted?.length ?? 0 };
   });
