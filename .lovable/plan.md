@@ -1,101 +1,88 @@
+# Roadmap de Evolução — SaúdeOS
 
-# SaúdeOS — Plataforma all-in-one para médicos e dentistas
-
-Agência digital autônoma vertical: o profissional se cadastra, paga, e a IA cuida de site, agenda, conteúdo, anúncios e reputação. Você não opera nada manualmente.
-
-## Como vou construir (ondas iterativas)
-
-Vou entregar em 5 ondas. Cada onda gera um app funcional e testável — você valida e passamos para a próxima. **Esta primeira rodada entrega a Onda 0 + Onda 1 completas.**
+Vamos executar em 5 ondas. Cada onda é uma entrega completa e independente — você aprova uma, eu construo, e seguimos para a próxima.
 
 ---
 
-### 🌊 ONDA 0 — Fundação (esta rodada)
-- **Lovable Cloud** ativado (Postgres, Auth, Storage, Edge Functions)
-- **Design system** premium em PT-BR, voltado para o setor de saúde (sóbrio, confiável, moderno — sem cara de hospital genérico)
-- **Auth completo**: cadastro/login email+senha + Google
-- **Onboarding self-service**: especialidade (médico/dentista/clínica), CRM/CRO, nome, foto, cidade, nicho
-- **Modelo de dados multi-tenant**: `tenants`, `profiles`, `user_roles` (owner/staff), `subscriptions`
-- **Dashboard central** com cards de cada módulo (Site, Agenda, Conteúdo, Ads, Reputação)
-- **Compliance LGPD/CFM/CFO embutido**: consentimento, guardrails da IA bloqueando "antes/depois", promessa de resultado, sensacionalismo
-- **Página de pricing** e billing stub (Stripe entra em onda futura)
-- **Landing page comercial** da plataforma (captação de profissionais)
+## 🌊 Onda 1 — Fechar as 7 telas em "SimplePage"
 
-### 🌊 ONDA 1 — Site Builder + Assistente IA (esta rodada)
-- Cada tenant ganha um **subdomínio** (`drsilva.suaplataforma.com.br`) ou rota pública
-- **Assistente IA conversacional** estilo Lovable usando Lovable AI (Gemini 3 Flash) que:
-  - faz perguntas sobre a clínica e gera o site inicial
-  - edita seções por conversa ("deixa o hero mais quente", "adiciona depoimentos")
-  - respeita guardrails do CFM/CFO
-- Site público gerado com: hero, sobre, especialidades, equipe, depoimentos, FAQ, localização, CTA agenda, WhatsApp flutuante
-- **SEO local automático**: schema.org `MedicalBusiness`/`Dentist`, meta tags, sitemap
-- Upload de logo, fotos, paleta da marca
+**Objetivo:** Eliminar o visual de "em construção". Todas já persistem dados; só falta UI completa.
 
-### 🌊 ONDA 2 — Agenda + Integrações (próxima rodada)
-- Calendário próprio + sync bidirecional Google Calendar e Outlook (OAuth por profissional)
-- Agenda pública embutida no site (paciente escolhe horário sem login)
-- **WhatsApp Business** (via API): confirmação, lembrete 24h e 2h antes, reagendamento
-- Email transacional (Resend) para o que WhatsApp não cobrir
-- Bloqueio de horários, duração por tipo de consulta, múltiplos profissionais, sala/unidade
-
-### 🌊 ONDA 3 — Marca → Peças → Redes Sociais
-- Brand kit: logo, cores, fontes, tom de voz
-- **Gerador de peças** (Lovable AI image gen): posts feed, stories, carrosséis
-- Agente de conteúdo IA: gera calendário editorial mensal com base no nicho
-- **Publicação programada**: Instagram, Facebook (Meta API), LinkedIn
-- Fila de aprovação antes de publicar (opcional auto-publish)
-
-### 🌊 ONDA 4 — Ads + Reputação + Pagamentos
-- **Google Ads**: criação de campanhas Search/Performance Max via API com templates por especialidade
-- **Meta Ads**: campanhas Instagram/Facebook integradas
-- Dashboard único de ROI (lead → consulta → faturamento por canal)
-- **Gestão de reputação**: pedido automático de review no Google pós-consulta, respostas com IA
-- **Pix + cartão** para sinal de consulta (Stripe ou Asaas)
-- **Email marketing** de reengajamento (paciente sumido)
-
-### 🌊 ONDA 5 (sugestões extras que recomendo)
-- Anamnese digital pré-consulta (formulários LGPD-compliant)
-- Transcrição de consulta com IA + resumo (com consentimento)
-- Multi-unidade / multi-profissional com permissões granulares
-- Programa de indicação (paciente indica paciente)
-- App PWA para o profissional gerenciar do celular
-- White-label para revenda regional
+| Tela | O que ganhar |
+|---|---|
+| `/repasses` | Tabela rica com filtros por profissional/período, cálculo de comissão por % configurável, botão "Liquidar via Pix" (mock), relatório exportável |
+| `/maquininhas` | Cadastro de terminais com bandeira, histórico de transações TEF com filtros, totalizadores por adquirente |
+| `/convenios` | Tabela de procedimentos por convênio, prazo de repasse, regras de faturamento, status ativo/inativo |
+| `/tiss` | Editor de guia TISS (consulta/SADT/honorários), envio simulado, painel de glosas com motivo |
+| `/jornadas` | Construtor visual de etapas (timeline), templates prontos (boas-vindas, aniversário, recall, pós-consulta), métricas por jornada |
+| `/fiscal` | Listagem com filtros, status visual (pendente/emitida/cancelada), preview de NFSe, cálculo de ISS por município |
+| `/tributos` | Calendário fiscal, separação por regime (Simples/Lucro Presumido), alertas de vencimento, upload de comprovante |
 
 ---
 
-## Stack técnico
+## 🌊 Onda 2 — Dashboard + Recepção + Agendamento avançado
 
-- **TanStack Start** (já configurado) + Lovable Cloud (Supabase gerenciado)
-- **IA**: Lovable AI Gateway (Gemini 3 Flash para chat, Gemini 3 Pro Image para peças)
-- **Multi-tenancy** via RLS no Postgres com `tenant_id` em todas as tabelas
-- **Roles** em tabela separada com `has_role()` (nunca no profile — evita escalation)
-- **Edge functions** para webhooks (Google Calendar, WhatsApp, Meta, Stripe)
-- Integrações por OAuth por tenant (cada médico conecta a própria conta Google/Meta)
+**Objetivo:** Transformar o `/dashboard` em centro de operação real e cobrir lacunas críticas da agenda.
 
-## Sobre custos que você precisa saber
+- **`/dashboard` com KPIs reais**: agendamentos do dia, receita do mês, NPS, taxa de no-show, ticket médio, próximos pacientes
+- **Nova rota `/recepcao`** — painel do dia para a secretária: sala de espera, em atendimento, faltou, chegou
+- **Lista de espera** (`appointment_waitlist`) + botão "Encaixar" quando surge horário vago
+- **Agendamento recorrente** (semanal, quinzenal, mensal) usando RRULE
+- **Status visual na agenda**: badges coloridos por status (agendado / confirmado / aguardando / em atendimento / realizado / faltou / cancelado)
+- **Alertas de alergia** (`patient_allergies`) com checagem automática em `/prescricoes`
 
-A maioria das integrações precisa de **contas e chaves do próprio profissional** (não suas):
-- Google Calendar / Outlook → OAuth do usuário
-- Meta Ads / Google Ads → conta de anúncios do próprio médico
-- WhatsApp Business API → exige aprovação da Meta + número dedicado
-- Stripe/Asaas → conta do profissional para receber
+---
 
-Algumas precisam de **chaves suas como plataforma** (vou pedir quando chegarmos lá):
-- Resend (email) — já vem no Lovable Cloud
-- Lovable AI — já configurado (créditos do seu workspace)
-- Google Cloud project (para OAuth Calendar/Ads)
-- Meta App (para Ads/Instagram)
-- WhatsApp Cloud API
+## 🌊 Onda 3 — Engine de automação real
 
-## O que entrego AGORA (Ondas 0 + 1)
+**Objetivo:** Fazer lembretes, jornadas e mensagens efetivamente saírem do sistema.
 
-1. Lovable Cloud + esquema multi-tenant + auth + roles
-2. Landing comercial da plataforma
-3. Onboarding self-service do profissional
-4. Dashboard central com todos os módulos visíveis (os não-prontos ficam "em breve")
-5. Site builder com assistente IA conversacional funcionando de verdade
-6. Site público de cada profissional renderizado em rota dinâmica
-7. SEO local + compliance guardrails
+- **Job scheduler** (pg_cron + server route `/api/public/hooks/run-automations`) rodando a cada 5 min
+- **Engine de jornadas** que executa etapas: lê `journey_steps`, dispara mensagem no canal certo, marca enrollment
+- **Engine de lembretes** que olha `appointments` (24h antes, 1h antes) e dispara
+- **Conector Twilio WhatsApp + SMS** (precisa de credenciais Twilio)
+- **Conector de e-mail Resend** (precisa de API key)
+- **Confirmação de presença** via link na mensagem (paciente clica → atualiza `appointments.status`)
+- **Reengajamento automático** de inativos (90 dias sem consulta)
 
-Depois você me diz "vamos para a Onda 2" e atacamos agenda + integrações.
+---
 
-**Confirma esse plano que eu começo a construir?** Se quiser ajustar prioridades (ex.: trocar ordem das ondas, cortar landing comercial agora, começar pela agenda em vez do site), me diz antes que eu sigo.
+## 🌊 Onda 4 — Conectores fiscais e de pagamento
+
+**Objetivo:** Cobrar e emitir nota de verdade.
+
+- **Gateway de pagamento** (Asaas recomendado: faz Pix + boleto + cartão + DDA + split): cria `payment_links` reais, webhook atualiza status
+- **NFSe automática** via Focus NFe ou eNotas: dispara emissão quando `financial_transactions.status = 'pago'`
+- **Memed** para prescrição com validade jurídica e QR Code CFM
+- **Conciliação bancária via Open Finance** (Pluggy ou Belvo): importa extratos para `financial_transactions`
+- **DDA**: receber notificação de boletos emitidos contra o CNPJ da clínica
+
+Cada conector requer credenciais do cliente — vou pedir uma por vez.
+
+---
+
+## 🌊 Onda 5 — Portal do paciente + RBAC + DRE + Folha
+
+**Objetivo:** Fechar as últimas lacunas do material.
+
+- **Portal do paciente** (área pública logada em `/portal`): agendamentos, 2ª via de recibo, NFSe, exames, prescrições
+- **RBAC granular**: matriz {role × módulo × ação}, limite máximo de desconto por usuário, restrição de unidades
+- **DRE** (Demonstrativo de Resultados) com agrupamento por categoria, comparativo mês a mês
+- **Folha de pagamento** simplificada: salário, INSS, FGTS, pró-labore, eSocial básico
+- **Renegociação de dívidas** com calculadora de juros e multa
+- **Calculadora de parcelamento** (Tabela Price) em `/orcamentos` e `/pagamentos`
+
+---
+
+## Detalhes técnicos
+
+- Cada onda gera 1 migration consolidada (novas tabelas, colunas, índices) + as telas correspondentes
+- Onda 3 e 4 dependem de secrets externos — vou pedir cada um no momento certo
+- Mantemos o padrão atual: TanStack Start + server functions + Supabase com RLS por tenant
+- Telas novas seguem o `app-shell` existente e o design system atual (sem gradientes genéricos, ícones lucide, componentes shadcn)
+
+---
+
+## Como prosseguir
+
+Confirme com **"vai onda 1"** (ou outra) e eu começo imediatamente. Se quiser ajustar escopo de alguma onda antes de começar, me diga o quê.
