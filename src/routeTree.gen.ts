@@ -36,6 +36,7 @@ import { Route as AuthenticatedPacientesRouteImport } from './routes/_authentica
 import { Route as AuthenticatedOrcamentosRouteImport } from './routes/_authenticated/orcamentos'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedNpsRouteImport } from './routes/_authenticated/nps'
+import { Route as AuthenticatedModelosRouteImport } from './routes/_authenticated/modelos'
 import { Route as AuthenticatedMaquininhasRouteImport } from './routes/_authenticated/maquininhas'
 import { Route as AuthenticatedLembretesRouteImport } from './routes/_authenticated/lembretes'
 import { Route as AuthenticatedJornadasRouteImport } from './routes/_authenticated/jornadas'
@@ -199,6 +200,11 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
 const AuthenticatedNpsRoute = AuthenticatedNpsRouteImport.update({
   id: '/nps',
   path: '/nps',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedModelosRoute = AuthenticatedModelosRouteImport.update({
+  id: '/modelos',
+  path: '/modelos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMaquininhasRoute =
@@ -369,6 +375,7 @@ export interface FileRoutesByFullPath {
   '/jornadas': typeof AuthenticatedJornadasRoute
   '/lembretes': typeof AuthenticatedLembretesRoute
   '/maquininhas': typeof AuthenticatedMaquininhasRoute
+  '/modelos': typeof AuthenticatedModelosRoute
   '/nps': typeof AuthenticatedNpsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orcamentos': typeof AuthenticatedOrcamentosRoute
@@ -424,6 +431,7 @@ export interface FileRoutesByTo {
   '/jornadas': typeof AuthenticatedJornadasRoute
   '/lembretes': typeof AuthenticatedLembretesRoute
   '/maquininhas': typeof AuthenticatedMaquininhasRoute
+  '/modelos': typeof AuthenticatedModelosRoute
   '/nps': typeof AuthenticatedNpsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orcamentos': typeof AuthenticatedOrcamentosRoute
@@ -481,6 +489,7 @@ export interface FileRoutesById {
   '/_authenticated/jornadas': typeof AuthenticatedJornadasRoute
   '/_authenticated/lembretes': typeof AuthenticatedLembretesRoute
   '/_authenticated/maquininhas': typeof AuthenticatedMaquininhasRoute
+  '/_authenticated/modelos': typeof AuthenticatedModelosRoute
   '/_authenticated/nps': typeof AuthenticatedNpsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/orcamentos': typeof AuthenticatedOrcamentosRoute
@@ -538,6 +547,7 @@ export interface FileRouteTypes {
     | '/jornadas'
     | '/lembretes'
     | '/maquininhas'
+    | '/modelos'
     | '/nps'
     | '/onboarding'
     | '/orcamentos'
@@ -593,6 +603,7 @@ export interface FileRouteTypes {
     | '/jornadas'
     | '/lembretes'
     | '/maquininhas'
+    | '/modelos'
     | '/nps'
     | '/onboarding'
     | '/orcamentos'
@@ -649,6 +660,7 @@ export interface FileRouteTypes {
     | '/_authenticated/jornadas'
     | '/_authenticated/lembretes'
     | '/_authenticated/maquininhas'
+    | '/_authenticated/modelos'
     | '/_authenticated/nps'
     | '/_authenticated/onboarding'
     | '/_authenticated/orcamentos'
@@ -881,6 +893,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNpsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/modelos': {
+      id: '/_authenticated/modelos'
+      path: '/modelos'
+      fullPath: '/modelos'
+      preLoaderRoute: typeof AuthenticatedModelosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/maquininhas': {
       id: '/_authenticated/maquininhas'
       path: '/maquininhas'
@@ -1097,6 +1116,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedJornadasRoute: typeof AuthenticatedJornadasRoute
   AuthenticatedLembretesRoute: typeof AuthenticatedLembretesRoute
   AuthenticatedMaquininhasRoute: typeof AuthenticatedMaquininhasRoute
+  AuthenticatedModelosRoute: typeof AuthenticatedModelosRoute
   AuthenticatedNpsRoute: typeof AuthenticatedNpsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedOrcamentosRoute: typeof AuthenticatedOrcamentosRoute
@@ -1141,6 +1161,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedJornadasRoute: AuthenticatedJornadasRoute,
   AuthenticatedLembretesRoute: AuthenticatedLembretesRoute,
   AuthenticatedMaquininhasRoute: AuthenticatedMaquininhasRoute,
+  AuthenticatedModelosRoute: AuthenticatedModelosRoute,
   AuthenticatedNpsRoute: AuthenticatedNpsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedOrcamentosRoute: AuthenticatedOrcamentosRoute,
