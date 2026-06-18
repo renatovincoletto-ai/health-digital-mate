@@ -1,5 +1,5 @@
 import { Link, useRouter, useRouterState } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import {
   LayoutDashboard, Globe, Calendar, Sparkles, Megaphone, Star,
   ClipboardList, Stethoscope, Mail, Building2, LogOut,
@@ -7,10 +7,14 @@ import {
   Package, MessageSquare, Phone, Bell, Gift, Smile, TrendingUp,
   Receipt, Banknote, CreditCard, Building, FileBarChart, Workflow, Calculator,
   ListChecks, PlugZap, ShieldCheck, BarChart3, HandCoins, DatabaseBackup,
+  Search,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import {
+  CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,
+} from "@/components/ui/command";
 
 type Pkg = "clinic" | "pay" | "flow" | "contabil" | "presenca" | "core";
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; pkg: Pkg };
