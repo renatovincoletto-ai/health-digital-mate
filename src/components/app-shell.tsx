@@ -258,6 +258,18 @@ export function AppShell({ children }: { children: ReactNode }) {
         {children}
       </main>
 
+      {/* Botão Onboarding por seção — flutuante, presente em todas as telas */}
+      {(() => {
+        const section = ROUTE_TO_SECTION[pathname] ?? "default";
+        return (
+          <div className="fixed bottom-5 right-5 z-40">
+            <SectionOnboarding section={section} />
+          </div>
+        );
+      })()}
+
+
+
 
       <CommandDialog open={paletteOpen} onOpenChange={setPaletteOpen}>
         <CommandInput placeholder={t("palette.placeholder")} />
