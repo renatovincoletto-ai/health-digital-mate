@@ -44,9 +44,10 @@ export const listExportableTables = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const tid = await tenantOf(context);
+    const sb = context.supabase as any;
     const out: Array<{ table: string; count: number }> = [];
     for (const t of EXPORTABLE_TABLES) {
-      const { count } = await context.supabase.from(t).select("id", { count: "exact", head: true }).eq("tenant_id", tid);
+      const { count } = await sb.from(t).select("id", { count: "exact", head: true }).eq("tenant_id", tid);
       out.push({ table: t, count: count ?? 0 });
     }
     return out;
