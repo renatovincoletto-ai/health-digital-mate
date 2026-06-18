@@ -6,6 +6,7 @@ import {
   Users, Video, FileText, ClipboardCheck, Wallet, Link2, FileSignature,
   Package, MessageSquare, Phone, Bell, Gift, Smile, TrendingUp,
   Receipt, Banknote, CreditCard, Building, FileBarChart, Workflow, Calculator,
+  ListChecks,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +28,7 @@ const pkgBadge: Record<Pkg, { label: string; color: string }> = {
 const groups: NavGroup[] = [
   { label: "Visão", items: [
     { to: "/dashboard", label: "Painel", icon: LayoutDashboard, pkg: "core" },
+    { to: "/setup", label: "Central de configuração", icon: ListChecks, pkg: "core" },
     { to: "/bi", label: "BI", icon: TrendingUp, pkg: "core" },
   ]},
   { label: "Clinic — Atendimento", items: [
