@@ -38,6 +38,7 @@ import { Route as AuthenticatedNpsRouteImport } from './routes/_authenticated/np
 import { Route as AuthenticatedMaquininhasRouteImport } from './routes/_authenticated/maquininhas'
 import { Route as AuthenticatedLembretesRouteImport } from './routes/_authenticated/lembretes'
 import { Route as AuthenticatedJornadasRouteImport } from './routes/_authenticated/jornadas'
+import { Route as AuthenticatedIntegracoesRouteImport } from './routes/_authenticated/integracoes'
 import { Route as AuthenticatedIndicacoesRouteImport } from './routes/_authenticated/indicacoes'
 import { Route as AuthenticatedFiscalRouteImport } from './routes/_authenticated/fiscal'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
@@ -57,6 +58,7 @@ import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated
 import { Route as SSlugAnamneseRouteImport } from './routes/s.$slug.anamnese'
 import { Route as SSlugAgendarRouteImport } from './routes/s.$slug.agendar'
 import { Route as ApiPublicHooksRunAutomationsRouteImport } from './routes/api/public/hooks/run-automations'
+import { Route as ApiPublicHooksAsaasRouteImport } from './routes/api/public/hooks/asaas'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -206,6 +208,12 @@ const AuthenticatedJornadasRoute = AuthenticatedJornadasRouteImport.update({
   path: '/jornadas',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedIntegracoesRoute =
+  AuthenticatedIntegracoesRouteImport.update({
+    id: '/integracoes',
+    path: '/integracoes',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedIndicacoesRoute = AuthenticatedIndicacoesRouteImport.update({
   id: '/indicacoes',
   path: '/indicacoes',
@@ -302,6 +310,11 @@ const ApiPublicHooksRunAutomationsRoute =
     path: '/api/public/hooks/run-automations',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksAsaasRoute = ApiPublicHooksAsaasRouteImport.update({
+  id: '/api/public/hooks/asaas',
+  path: '/api/public/hooks/asaas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -325,6 +338,7 @@ export interface FileRoutesByFullPath {
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/fiscal': typeof AuthenticatedFiscalRoute
   '/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/integracoes': typeof AuthenticatedIntegracoesRoute
   '/jornadas': typeof AuthenticatedJornadasRoute
   '/lembretes': typeof AuthenticatedLembretesRoute
   '/maquininhas': typeof AuthenticatedMaquininhasRoute
@@ -350,6 +364,7 @@ export interface FileRoutesByFullPath {
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
+  '/api/public/hooks/asaas': typeof ApiPublicHooksAsaasRoute
   '/api/public/hooks/run-automations': typeof ApiPublicHooksRunAutomationsRoute
 }
 export interface FileRoutesByTo {
@@ -374,6 +389,7 @@ export interface FileRoutesByTo {
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/fiscal': typeof AuthenticatedFiscalRoute
   '/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/integracoes': typeof AuthenticatedIntegracoesRoute
   '/jornadas': typeof AuthenticatedJornadasRoute
   '/lembretes': typeof AuthenticatedLembretesRoute
   '/maquininhas': typeof AuthenticatedMaquininhasRoute
@@ -399,6 +415,7 @@ export interface FileRoutesByTo {
   '/portal': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
+  '/api/public/hooks/asaas': typeof ApiPublicHooksAsaasRoute
   '/api/public/hooks/run-automations': typeof ApiPublicHooksRunAutomationsRoute
 }
 export interface FileRoutesById {
@@ -425,6 +442,7 @@ export interface FileRoutesById {
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/fiscal': typeof AuthenticatedFiscalRoute
   '/_authenticated/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/_authenticated/integracoes': typeof AuthenticatedIntegracoesRoute
   '/_authenticated/jornadas': typeof AuthenticatedJornadasRoute
   '/_authenticated/lembretes': typeof AuthenticatedLembretesRoute
   '/_authenticated/maquininhas': typeof AuthenticatedMaquininhasRoute
@@ -450,6 +468,7 @@ export interface FileRoutesById {
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
+  '/api/public/hooks/asaas': typeof ApiPublicHooksAsaasRoute
   '/api/public/hooks/run-automations': typeof ApiPublicHooksRunAutomationsRoute
 }
 export interface FileRouteTypes {
@@ -476,6 +495,7 @@ export interface FileRouteTypes {
     | '/financeiro'
     | '/fiscal'
     | '/indicacoes'
+    | '/integracoes'
     | '/jornadas'
     | '/lembretes'
     | '/maquininhas'
@@ -501,6 +521,7 @@ export interface FileRouteTypes {
     | '/portal/'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
+    | '/api/public/hooks/asaas'
     | '/api/public/hooks/run-automations'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -525,6 +546,7 @@ export interface FileRouteTypes {
     | '/financeiro'
     | '/fiscal'
     | '/indicacoes'
+    | '/integracoes'
     | '/jornadas'
     | '/lembretes'
     | '/maquininhas'
@@ -550,6 +572,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
+    | '/api/public/hooks/asaas'
     | '/api/public/hooks/run-automations'
   id:
     | '__root__'
@@ -575,6 +598,7 @@ export interface FileRouteTypes {
     | '/_authenticated/financeiro'
     | '/_authenticated/fiscal'
     | '/_authenticated/indicacoes'
+    | '/_authenticated/integracoes'
     | '/_authenticated/jornadas'
     | '/_authenticated/lembretes'
     | '/_authenticated/maquininhas'
@@ -600,6 +624,7 @@ export interface FileRouteTypes {
     | '/portal/'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
+    | '/api/public/hooks/asaas'
     | '/api/public/hooks/run-automations'
   fileRoutesById: FileRoutesById
 }
@@ -612,6 +637,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SSlugRoute: typeof SSlugRouteWithChildren
   PortalIndexRoute: typeof PortalIndexRoute
+  ApiPublicHooksAsaasRoute: typeof ApiPublicHooksAsaasRoute
   ApiPublicHooksRunAutomationsRoute: typeof ApiPublicHooksRunAutomationsRoute
 }
 
@@ -820,6 +846,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedJornadasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/integracoes': {
+      id: '/_authenticated/integracoes'
+      path: '/integracoes'
+      fullPath: '/integracoes'
+      preLoaderRoute: typeof AuthenticatedIntegracoesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/indicacoes': {
       id: '/_authenticated/indicacoes'
       path: '/indicacoes'
@@ -953,6 +986,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksRunAutomationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/asaas': {
+      id: '/api/public/hooks/asaas'
+      path: '/api/public/hooks/asaas'
+      fullPath: '/api/public/hooks/asaas'
+      preLoaderRoute: typeof ApiPublicHooksAsaasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -973,6 +1013,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedFiscalRoute: typeof AuthenticatedFiscalRoute
   AuthenticatedIndicacoesRoute: typeof AuthenticatedIndicacoesRoute
+  AuthenticatedIntegracoesRoute: typeof AuthenticatedIntegracoesRoute
   AuthenticatedJornadasRoute: typeof AuthenticatedJornadasRoute
   AuthenticatedLembretesRoute: typeof AuthenticatedLembretesRoute
   AuthenticatedMaquininhasRoute: typeof AuthenticatedMaquininhasRoute
@@ -1013,6 +1054,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedFiscalRoute: AuthenticatedFiscalRoute,
   AuthenticatedIndicacoesRoute: AuthenticatedIndicacoesRoute,
+  AuthenticatedIntegracoesRoute: AuthenticatedIntegracoesRoute,
   AuthenticatedJornadasRoute: AuthenticatedJornadasRoute,
   AuthenticatedLembretesRoute: AuthenticatedLembretesRoute,
   AuthenticatedMaquininhasRoute: AuthenticatedMaquininhasRoute,
@@ -1060,6 +1102,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SSlugRoute: SSlugRouteWithChildren,
   PortalIndexRoute: PortalIndexRoute,
+  ApiPublicHooksAsaasRoute: ApiPublicHooksAsaasRoute,
   ApiPublicHooksRunAutomationsRoute: ApiPublicHooksRunAutomationsRoute,
 }
 export const routeTree = rootRouteImport
