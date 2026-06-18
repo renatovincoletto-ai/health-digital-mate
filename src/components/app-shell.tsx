@@ -7,7 +7,7 @@ import {
   Package, MessageSquare, Phone, Bell, Gift, Smile, TrendingUp,
   Receipt, Banknote, CreditCard, Building, FileBarChart, Workflow, Calculator,
   ListChecks, PlugZap, ShieldCheck, BarChart3, HandCoins, DatabaseBackup,
-  Search, Languages,
+  Search, Languages, Menu, ScrollText,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
 import { supabase } from "@/integrations/supabase/client";
@@ -85,6 +85,7 @@ const groups: NavGroup[] = [
   ]},
   { labelKey: "group.config", items: [
     { to: "/equipe", labelKey: "item.equipe", icon: ShieldCheck, pkg: "core" },
+    { to: "/auditoria", labelKey: "item.auditoria", icon: ScrollText, pkg: "core" },
     { to: "/faturamento", labelKey: "item.faturamento", icon: Receipt, pkg: "core" },
     { to: "/dados", labelKey: "item.dados", icon: DatabaseBackup, pkg: "core" },
     { to: "/tasks", labelKey: "item.tasks", icon: MessageSquare, pkg: "core" },
