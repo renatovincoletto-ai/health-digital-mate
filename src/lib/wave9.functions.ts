@@ -75,6 +75,14 @@ export const markTaxPaid = createServerFn({ method: "POST" })
   });
 
 // ============ PAYOUTS / TEF ============
+export const listProfessionalsLite = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase.from("professionals").select("id, full_name").order("full_name");
+    if (error) throw error;
+    return data ?? [];
+  });
+
 export const listPayouts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {

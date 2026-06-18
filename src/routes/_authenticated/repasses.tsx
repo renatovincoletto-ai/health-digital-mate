@@ -6,13 +6,13 @@ import { Banknote, Check } from "lucide-react";
 import { toast } from "sonner";
 import { SimplePage } from "@/components/simple-page";
 import { listPayouts, createPayout, settlePayout } from "@/lib/wave9.functions";
-import { listProfessionals } from "@/lib/wave5.functions";
+import { listProfessionalsLite } from "@/lib/wave9.functions";
 
 export const Route = createFileRoute("/_authenticated/repasses")({ component: Page });
 
 function Page() {
   const fetchAll = useServerFn(listPayouts);
-  const fetchPros = useServerFn(listProfessionals);
+  const fetchPros = useServerFn(listProfessionalsLite);
   const create = useServerFn(createPayout);
   const settle = useServerFn(settlePayout);
   const qc = useQueryClient();
