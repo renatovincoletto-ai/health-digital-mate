@@ -63,16 +63,19 @@ Cada conector roda 100% em sandbox sem chamadas externas. Para ativar modo real 
 
 ---
 
-## 🌊 Onda 5 — Portal do paciente + RBAC + DRE + Folha
+## 🌊 Onda 5 — Portal do paciente + RBAC + DRE + Folha ✅
 
-**Objetivo:** Fechar as últimas lacunas do material.
+**Entregue:**
 
-- **Portal do paciente** (área pública logada em `/portal`): agendamentos, 2ª via de recibo, NFSe, exames, prescrições
-- **RBAC granular**: matriz {role × módulo × ação}, limite máximo de desconto por usuário, restrição de unidades
-- **DRE** (Demonstrativo de Resultados) com agrupamento por categoria, comparativo mês a mês
-- **Folha de pagamento** simplificada: salário, INSS, FGTS, pró-labore, eSocial básico
-- **Renegociação de dívidas** com calculadora de juros e multa
-- **Calculadora de parcelamento** (Tabela Price) em `/orcamentos` e `/pagamentos`
+- **`/portal/acesso`** — área pública com login por CPF + data de nascimento; exibe próximas consultas, receitas (com PDF) e notas fiscais (com PDF)
+- **`/equipe`** — matriz RBAC granular (perfil × módulo × ver/criar/editar/excluir + desconto máximo) + listagem do time
+- **`/dre`** — Demonstrativo de Resultados mensal com receitas, despesas, resultado líquido e breakdown por categoria; filtros de 3/6/12 meses
+- **`/folha`** — folha de pagamento com salário, pró-labore, bônus, INSS, FGTS, IRRF e cálculo automático do líquido
+- **Renegociação de dívidas** — server fn `createDebtNegotiation` com cálculo de juros, multa, desconto e parcelas (UI pode ser integrada em `/financeiro` quando você quiser)
+
+Novas tabelas: `payroll_entries`, `role_permissions`, `debt_negotiations` — todas com RLS por tenant.
+
+
 
 ---
 
