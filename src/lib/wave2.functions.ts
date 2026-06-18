@@ -6,29 +6,38 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 export const getDashboardKpis = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const sb = context.supabase;
+    const sb = context.supabase as any;
     const today = new Date();
     const startToday = new Date(today); startToday.setHours(0, 0, 0, 0);
     const endToday = new Date(today); endToday.setHours(23, 59, 59, 999);
     const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    const weekStart = new Date(today); weekStart.setDate(today.getDate() - 6); weekStart.setHours(0, 0, 0, 0);
 
-    const [todayAppts, monthAppts, patients, waiting, txMonth, waitlistCount] = await Promise.all([
+    const [todayAppts, monthAppts, weekAppts, patients, waiting, txMonth, txToday, waitlistCount, npsRows] = await Promise.all([
       sb.from("appointments").select("id,status,starts_at,patient_name,professional_id,service_id", { count: "exact" })
         .gte("starts_at", startToday.toISOString()).lte("starts_at", endToday.toISOString()),
-      sb.from("appointments").select("id,status", { count: "exact" })
+      sb.from("appointments").select("id,status,starts_at", { count: "exact" })
         .gte("starts_at", monthStart.toISOString()),
+      sb.from("appointments").select("starts_at,status")
+        .gte("starts_at", weekStart.toISOString()).lte("starts_at", endToday.toISOString()),
       sb.from("patients").select("id", { count: "exact", head: true }),
       sb.from("appointments").select("id", { count: "exact", head: true })
         .in("status", ["waiting_room", "in_service"]),
       sb.from("financial_transactions").select("amount,type,status")
         .gte("created_at", monthStart.toISOString()),
+      sb.from("financial_transactions").select("amount,type,status")
+        .gte("created_at", startToday.toISOString()).lte("created_at", endToday.toISOString()),
       sb.from("waitlist").select("id", { count: "exact", head: true }).eq("status", "waiting"),
+      sb.from("nps_surveys").select("score,created_at")
+        .gte("created_at", new Date(today.getFullYear(), today.getMonth() - 2, 1).toISOString()),
     ]);
 
     const txs = (txMonth.data ?? []) as any[];
     const receita = txs.filter(t => t.type === "income" && t.status === "paid").reduce((s, t) => s + Number(t.amount || 0), 0);
     const despesa = txs.filter(t => t.type === "expense" && t.status === "paid").reduce((s, t) => s + Number(t.amount || 0), 0);
     const aReceber = txs.filter(t => t.type === "income" && t.status === "pending").reduce((s, t) => s + Number(t.amount || 0), 0);
+    const todayTxs = (txToday.data ?? []) as any[];
+    const receitaHoje = todayTxs.filter(t => t.type === "income" && t.status === "paid").reduce((s, t) => s + Number(t.amount || 0), 0);
 
     const monthData = (monthAppts.data ?? []) as any[];
     const totalMes = monthData.length;
@@ -36,6 +45,26 @@ export const getDashboardKpis = createServerFn({ method: "GET" })
     const faltas = monthData.filter(a => a.status === "no_show").length;
     const taxaFalta = totalMes ? (faltas / totalMes) * 100 : 0;
     const ocupacao = totalMes ? (concluidos / totalMes) * 100 : 0;
+    const ticketMedio = concluidos ? receita / concluidos : 0;
+
+    // NPS (last 60 days)
+    const nps = (npsRows.data ?? []) as Array<{ score: number }>;
+    const promotores = nps.filter(n => n.score >= 9).length;
+    const detratores = nps.filter(n => n.score <= 6).length;
+    const npsScore = nps.length ? Math.round(((promotores - detratores) / nps.length) * 100) : null;
+
+    // Weekly sparkline: bookings per day for the last 7 days
+    const week = (weekAppts.data ?? []) as Array<{ starts_at: string }>;
+    const days: { date: string; count: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today); d.setDate(today.getDate() - i); d.setHours(0, 0, 0, 0);
+      const next = new Date(d); next.setDate(d.getDate() + 1);
+      const c = week.filter(a => {
+        const t = new Date(a.starts_at).getTime();
+        return t >= d.getTime() && t < next.getTime();
+      }).length;
+      days.push({ date: d.toISOString().slice(0, 10), count: c });
+    }
 
     return {
       todayCount: todayAppts.count ?? 0,
@@ -45,11 +74,16 @@ export const getDashboardKpis = createServerFn({ method: "GET" })
       waitingNow: waiting.count ?? 0,
       waitlistCount: waitlistCount.count ?? 0,
       receitaMes: receita,
+      receitaHoje,
       despesaMes: despesa,
       aReceberMes: aReceber,
       saldoMes: receita - despesa,
       taxaFalta,
       ocupacao,
+      ticketMedio,
+      npsScore,
+      npsCount: nps.length,
+      weekly: days,
     };
   });
 
