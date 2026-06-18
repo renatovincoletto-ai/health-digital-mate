@@ -26,7 +26,6 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
 });
 
-const BUNDLE_PRICE = 897;
 const formatBRL = (v: number) =>
   v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 });
 
@@ -311,7 +310,7 @@ const packages: Pkg[] = [
 
 function PackageSelector() {
   const [selected, setSelected] = useState<Record<Pkg["id"], boolean>>({
-    presenca: true, clinic: true, pay: false, flow: false, contabil: false,
+    presenca: true, clinic: true, flow: false, pay: false, contabil: false,
   });
 
   const toggle = (id: Pkg["id"]) =>
@@ -321,27 +320,32 @@ function PackageSelector() {
     () => packages.filter((p) => selected[p.id]).map((p) => p.id),
     [selected],
   );
-  const allSelected = selectedIds.length === packages.length;
+  const count = selectedIds.length;
+  const allSelected = count === packages.length;
+
   const subtotal = useMemo(
-    () => packages.reduce((sum, p) => (selected[p.id] ? sum + p.price : sum), 0),
+    () => packages.reduce((sum, p) => (selected[p.id] ? sum + BASE_PRICES[p.id] : sum), 0),
     [selected],
   );
-  const total = allSelected ? BUNDLE_PRICE : subtotal;
-  const savings = allSelected ? subtotal - BUNDLE_PRICE : 0;
+
+  const discountRate = Math.min(count * 0.05, 0.25);
+  const discountPct = Math.round(discountRate * 100);
+  const total = Math.round(subtotal * (1 - discountRate));
+  const savings = subtotal - total;
 
   const selectAll = () =>
-    setSelected({ presenca: true, clinic: true, pay: true, flow: true, contabil: true });
+    setSelected({ presenca: true, clinic: true, flow: true, pay: true, contabil: true });
 
   const ctaLabel =
-    selectedIds.length === 0
+    count === 0
       ? "Selecione ao menos um pacote"
       : allSelected
         ? "Assinar SaúdeOS One (todos os pacotes)"
-        : `Assinar ${selectedIds.length} pacote${selectedIds.length > 1 ? "s" : ""}`;
+        : `Assinar ${count} pacote${count > 1 ? "s" : ""}`;
 
   return (
     <>
-      <div className="mt-14 grid gap-5 md:grid-cols-2">
+      <div className="mt-14 flex flex-col gap-4">
         {packages.map((p) => {
           const isOn = selected[p.id];
           return (
@@ -350,44 +354,70 @@ function PackageSelector() {
               key={p.id}
               onClick={() => toggle(p.id)}
               aria-pressed={isOn}
-              className={`group relative text-left rounded-2xl border bg-surface-elevated p-7 transition hover:shadow-lift ${
+              className={`group relative text-left rounded-2xl border bg-surface-elevated p-6 transition hover:shadow-lift md:p-8 ${
                 isOn ? "border-primary ring-2 ring-primary/30" : "border-border/70 hover:border-primary/30"
               }`}
             >
-              <span
-                className={`absolute right-5 top-5 inline-flex h-6 w-6 items-center justify-center rounded-md border transition ${
-                  isOn
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-background"
-                }`}
-                aria-hidden
-              >
-                {isOn && <Check className="h-4 w-4" />}
-              </span>
-              <div className="flex items-center gap-3 pr-10">
-                <div className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${p.tone}`}>
-                  <p.icon className="h-5 w-5" />
+              <div className="flex flex-col gap-5 md:flex-row md:items-start">
+                <div className="flex items-center gap-4">
+                  <div className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${p.tone}`}>
+                    <p.icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                      {p.tagline}
+                    </p>
+                    <h3 className="font-display text-2xl font-semibold leading-tight">{p.title}</h3>
+                  </div>
+                  <div className="ml-auto text-right md:hidden">
+                    <span
+                      className={`inline-flex h-6 w-6 items-center justify-center rounded-md border transition ${
+                        isOn
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-background"
+                      }`}
+                      aria-hidden
+                    >
+                      {isOn && <Check className="h-4 w-4" />}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                    {p.tagline}
-                  </p>
-                  <h3 className="font-display text-2xl font-semibold leading-tight">{p.title}</h3>
+
+                <div className="flex-1">
+                  <p className="text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+                  <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-sm">
+                    {p.items.map((it) => (
+                      <li key={it} className="flex items-center gap-1.5">
+                        <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-success" />
+                        <span>{it}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="ml-auto text-right">
-                  <p className="font-display text-xl font-semibold text-ink">{formatBRL(p.price)}</p>
-                  <p className="text-[11px] uppercase tracking-wider text-muted-foreground">/mês</p>
+
+                <div className="flex items-center gap-6 md:flex-col md:items-end md:gap-2">
+                  <span
+                    className={`hidden md:inline-flex h-6 w-6 items-center justify-center rounded-md border transition ${
+                      isOn
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background"
+                    }`}
+                    aria-hidden
+                  >
+                    {isOn && <Check className="h-4 w-4" />}
+                  </span>
+                  <div className="text-right">
+                    <p className="font-display text-xl font-semibold text-ink">{formatBRL(p.price)}</p>
+                    <p className="text-[11px] uppercase tracking-wider text-muted-foreground">/mês</p>
+                  </div>
                 </div>
               </div>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
-              <ul className="mt-5 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
-                {p.items.map((it) => (
-                  <li key={it} className="flex items-start gap-2">
-                    <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-success" />
-                    <span>{it}</span>
-                  </li>
-                ))}
-              </ul>
+
+              {isOn && (
+                <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+                  <Check className="h-3 w-3" /> Selecionado
+                </div>
+              )}
             </button>
           );
         })}
@@ -407,19 +437,24 @@ function PackageSelector() {
                 {allSelected ? "SaúdeOS One — tudo incluso" : "Monte seu plano"}
               </h3>
               <p className="mt-1 text-sm opacity-90">
-                {selectedIds.length === 0
+                {count === 0
                   ? "Marque os pacotes acima para combinar o que faz sentido para sua clínica."
-                    : allSelected
-                    ? `Presença + Clinic + Pay + Flow + Contábil com onboarding guiado e suporte prioritário.`
+                  : allSelected
+                    ? `Presença + Clinic + Flow + Pay + Contábil com onboarding guiado e suporte prioritário.`
                     : `Você selecionou: ${selectedIds.map((id) => packages.find((p) => p.id === id)!.title).join(" + ")}.`}
               </p>
-              {!allSelected && selectedIds.length > 0 && (
+              {!allSelected && count > 0 && discountPct > 0 && (
+                <p className="mt-1 text-xs font-medium text-accent">
+                  {discountPct}% de desconto aplicado
+                </p>
+              )}
+              {!allSelected && count > 0 && count < packages.length && (
                 <button
                   type="button"
                   onClick={selectAll}
                   className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-white/15 px-3 py-1 text-xs font-medium hover:bg-white/25"
                 >
-                  Quero todos por {formatBRL(BUNDLE_PRICE)}/mês
+                  Quero todos com 25% off
                   <ArrowRight className="h-3 w-3" />
                 </button>
               )}
@@ -428,28 +463,28 @@ function PackageSelector() {
 
           <div className="flex flex-col items-stretch gap-3 md:items-end">
             <div className="text-right">
-              {allSelected && savings > 0 && (
+              {discountPct > 0 && (
                 <p className="text-xs line-through opacity-70">{formatBRL(subtotal)}/mês</p>
               )}
               <p className="font-display text-3xl font-semibold leading-none">
                 {formatBRL(total)}
                 <span className="ml-1 text-sm font-normal opacity-80">/mês</span>
               </p>
-              {allSelected && savings > 0 && (
+              {savings > 0 && (
                 <p className="mt-1 text-xs font-medium text-accent">
-                  Economia de {formatBRL(savings)}/mês
+                  Economia de {formatBRL(savings)}/mês ({discountPct}% off)
                 </p>
               )}
             </div>
             <Link
               to="/auth"
               search={{ mode: "signup" }}
-              aria-disabled={selectedIds.length === 0}
+              aria-disabled={count === 0}
               onClick={(e) => {
-                if (selectedIds.length === 0) e.preventDefault();
+                if (count === 0) e.preventDefault();
               }}
               className={`inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-primary shadow-soft transition ${
-                selectedIds.length === 0 ? "cursor-not-allowed opacity-60" : "hover:opacity-90"
+                count === 0 ? "cursor-not-allowed opacity-60" : "hover:opacity-90"
               }`}
             >
               {ctaLabel} <ArrowRight className="h-4 w-4" />
@@ -468,7 +503,7 @@ const steps = [
   },
   {
     title: "Escolha seu pacote",
-    body: "Comece pelo que mais dói — Presença, Clinic, Pay, Flow ou Contábil. Adicione os outros quando quiser, ou vá direto no One.",
+    body: "Comece pelo que mais dói — Presença, Clinic, Flow, Pay ou Contábil. Adicione os outros quando quiser, ou vá direto no One.",
   },
   {
     title: "Publique e conecte",
