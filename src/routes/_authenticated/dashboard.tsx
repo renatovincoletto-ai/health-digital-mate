@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import {
   Calendar, Users, Wallet, Clock, TrendingUp, AlertTriangle, ArrowRight,
   ExternalLink, Loader2, CheckCircle2, ClipboardCheck, Stethoscope, Bell,
+  Smile, Receipt,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { getMyTenant } from "@/lib/tenant.functions";
