@@ -7,7 +7,7 @@ export type AuditEntry = {
   resource_type: string;
   resource_id: string | null;
   severity: string;
-  metadata: unknown;
+  metadata: Record<string, string | number | boolean | null>;
   ip_address: string | null;
   user_agent: string | null;
   created_at: string;
