@@ -62,6 +62,7 @@ import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/c
 import { Route as AuthenticatedCallcenterRouteImport } from './routes/_authenticated/callcenter'
 import { Route as AuthenticatedBiRouteImport } from './routes/_authenticated/bi'
 import { Route as AuthenticatedAutomacoesRouteImport } from './routes/_authenticated/automacoes'
+import { Route as AuthenticatedAuditoriaRouteImport } from './routes/_authenticated/auditoria'
 import { Route as AuthenticatedAnunciosRouteImport } from './routes/_authenticated/anuncios'
 import { Route as AuthenticatedAnamneseRouteImport } from './routes/_authenticated/anamnese'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
@@ -340,6 +341,11 @@ const AuthenticatedAutomacoesRoute = AuthenticatedAutomacoesRouteImport.update({
   path: '/automacoes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAuditoriaRoute = AuthenticatedAuditoriaRouteImport.update({
+  id: '/auditoria',
+  path: '/auditoria',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAnunciosRoute = AuthenticatedAnunciosRouteImport.update({
   id: '/anuncios',
   path: '/anuncios',
@@ -386,6 +392,7 @@ export interface FileRoutesByFullPath {
   '/agenda': typeof AuthenticatedAgendaRoute
   '/anamnese': typeof AuthenticatedAnamneseRoute
   '/anuncios': typeof AuthenticatedAnunciosRoute
+  '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/automacoes': typeof AuthenticatedAutomacoesRoute
   '/bi': typeof AuthenticatedBiRoute
   '/callcenter': typeof AuthenticatedCallcenterRoute
@@ -447,6 +454,7 @@ export interface FileRoutesByTo {
   '/agenda': typeof AuthenticatedAgendaRoute
   '/anamnese': typeof AuthenticatedAnamneseRoute
   '/anuncios': typeof AuthenticatedAnunciosRoute
+  '/auditoria': typeof AuthenticatedAuditoriaRoute
   '/automacoes': typeof AuthenticatedAutomacoesRoute
   '/bi': typeof AuthenticatedBiRoute
   '/callcenter': typeof AuthenticatedCallcenterRoute
@@ -510,6 +518,7 @@ export interface FileRoutesById {
   '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
   '/_authenticated/anamnese': typeof AuthenticatedAnamneseRoute
   '/_authenticated/anuncios': typeof AuthenticatedAnunciosRoute
+  '/_authenticated/auditoria': typeof AuthenticatedAuditoriaRoute
   '/_authenticated/automacoes': typeof AuthenticatedAutomacoesRoute
   '/_authenticated/bi': typeof AuthenticatedBiRoute
   '/_authenticated/callcenter': typeof AuthenticatedCallcenterRoute
@@ -573,6 +582,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/anamnese'
     | '/anuncios'
+    | '/auditoria'
     | '/automacoes'
     | '/bi'
     | '/callcenter'
@@ -634,6 +644,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/anamnese'
     | '/anuncios'
+    | '/auditoria'
     | '/automacoes'
     | '/bi'
     | '/callcenter'
@@ -696,6 +707,7 @@ export interface FileRouteTypes {
     | '/_authenticated/agenda'
     | '/_authenticated/anamnese'
     | '/_authenticated/anuncios'
+    | '/_authenticated/auditoria'
     | '/_authenticated/automacoes'
     | '/_authenticated/bi'
     | '/_authenticated/callcenter'
@@ -1138,6 +1150,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAutomacoesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/auditoria': {
+      id: '/_authenticated/auditoria'
+      path: '/auditoria'
+      fullPath: '/auditoria'
+      preLoaderRoute: typeof AuthenticatedAuditoriaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/anuncios': {
       id: '/_authenticated/anuncios'
       path: '/anuncios'
@@ -1194,6 +1213,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
   AuthenticatedAnamneseRoute: typeof AuthenticatedAnamneseRoute
   AuthenticatedAnunciosRoute: typeof AuthenticatedAnunciosRoute
+  AuthenticatedAuditoriaRoute: typeof AuthenticatedAuditoriaRoute
   AuthenticatedAutomacoesRoute: typeof AuthenticatedAutomacoesRoute
   AuthenticatedBiRoute: typeof AuthenticatedBiRoute
   AuthenticatedCallcenterRoute: typeof AuthenticatedCallcenterRoute
@@ -1242,6 +1262,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAgendaRoute: AuthenticatedAgendaRoute,
   AuthenticatedAnamneseRoute: AuthenticatedAnamneseRoute,
   AuthenticatedAnunciosRoute: AuthenticatedAnunciosRoute,
+  AuthenticatedAuditoriaRoute: AuthenticatedAuditoriaRoute,
   AuthenticatedAutomacoesRoute: AuthenticatedAutomacoesRoute,
   AuthenticatedBiRoute: AuthenticatedBiRoute,
   AuthenticatedCallcenterRoute: AuthenticatedCallcenterRoute,
