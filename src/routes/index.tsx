@@ -690,7 +690,7 @@ const packages: Pkg[] = [
 
 function PackageSelector() {
   const [selected, setSelected] = useState<Record<Pkg["id"], boolean>>({
-    presenca: false, clinic: true, flow: true, pay: false, contabil: false,
+    presenca: true, clinic: true, flow: true, pay: true, contabil: true,
   });
 
   const toggle = (id: Pkg["id"]) =>
@@ -816,8 +816,8 @@ function PackageSelector() {
                 </button>
               )}
               <Link
-                to="/auth"
-                search={{ mode: "signup" }}
+                to="/assinar"
+                search={{ pkgs: selectedIds.join(",") }}
                 className={`inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition ${
                   count === 0
                     ? "pointer-events-none bg-white/10 text-white/40"
