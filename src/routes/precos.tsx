@@ -7,9 +7,9 @@ import { PricingCalculator } from "@/components/pricing-calculator";
 export const Route = createFileRoute("/precos")({
   head: () => ({
     meta: [
-      { title: "Pacotes & Preços — SaúdeOS" },
-      { name: "description", content: "Clinic, Pay, Flow, Contábil, Presença. Monte seu SaúdeOS — ou leve tudo no pacote One." },
-      { property: "og:title", content: "Pacotes & Preços — SaúdeOS" },
+      { title: "Pacotes & Preços — Minha Clínica" },
+      { name: "description", content: "Clinic, Pay, Flow, Contábil, Presença. Monte seu Minha Clínica — ou leve tudo no pacote One." },
+      { property: "og:title", content: "Pacotes & Preços — Minha Clínica" },
       { property: "og:description", content: "5 pacotes especializados + bundle One. Comece grátis." },
     ],
   }),
@@ -77,7 +77,7 @@ function PricingPage() {
       <section className="container-page py-16 md:py-24">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Pacotes</p>
-          <h1 className="mt-3 font-display text-5xl font-semibold tracking-tight md:text-6xl">Monte seu SaúdeOS.</h1>
+          <h1 className="mt-3 font-display text-5xl font-semibold tracking-tight md:text-6xl">Monte seu Minha Clínica.</h1>
           <p className="mt-4 text-lg text-muted-foreground">
             Cinco pacotes especializados que funcionam sozinhos ou juntos. Comece com o que você precisa hoje, ative o resto quando crescer.
           </p>
@@ -91,7 +91,7 @@ function PricingPage() {
                 <Layers className="h-5 w-5 text-primary" />
                 <span className="rounded-full bg-primary px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground">Mais popular</span>
               </div>
-              <h2 className="mt-3 font-display text-4xl font-semibold">SaúdeOS One</h2>
+              <h2 className="mt-3 font-display text-4xl font-semibold">Minha Clínica Total</h2>
               <p className="mt-2 text-muted-foreground">Os 5 pacotes integrados + BI executivo + onboarding assistido + suporte prioritário.</p>
             </div>
             <div className="text-right">
