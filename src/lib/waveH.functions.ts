@@ -141,24 +141,27 @@ export const getSimpleDre = createServerFn({ method: "GET" })
     const since = new Date(); since.setMonth(since.getMonth() - 6); since.setDate(1);
 
     const [{ data: tx }, { data: payouts }] = await Promise.all([
-      sb.from("financial_transactions").select("amount,kind,occurred_at").eq("tenant_id", tenant_id).gte("occurred_at", since.toISOString()),
-      sb.from("professional_payouts").select("amount,reference_month").eq("tenant_id", tenant_id).gte("reference_month", since.toISOString().slice(0, 10)),
+      sb.from("financial_transactions").select("amount,direction,due_date,paid_at").eq("tenant_id", tenant_id).gte("due_date", since.toISOString().slice(0, 10)),
+      sb.from("professional_payouts").select("net_amount,period_start").eq("tenant_id", tenant_id).gte("period_start", since.toISOString().slice(0, 10)),
     ]);
 
     const buckets = new Map<string, { revenue: number; expense: number; payout: number }>();
     for (const t of tx ?? []) {
-      const d = new Date(t.occurred_at);
+      const ref = t.paid_at ?? t.due_date;
+      if (!ref) continue;
+      const d = new Date(ref);
       const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
       const b = buckets.get(k) ?? { revenue: 0, expense: 0, payout: 0 };
-      if (t.kind === "income") b.revenue += Number(t.amount ?? 0);
-      else if (t.kind === "expense") b.expense += Number(t.amount ?? 0);
+      if (t.direction === "income") b.revenue += Number(t.amount ?? 0);
+      else if (t.direction === "expense") b.expense += Number(t.amount ?? 0);
       buckets.set(k, b);
     }
     for (const p of payouts ?? []) {
-      const d = new Date(p.reference_month);
+      if (!p.period_start) continue;
+      const d = new Date(p.period_start);
       const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
       const b = buckets.get(k) ?? { revenue: 0, expense: 0, payout: 0 };
-      b.payout += Number(p.amount ?? 0);
+      b.payout += Number(p.net_amount ?? 0);
       buckets.set(k, b);
     }
     return Array.from(buckets.entries())
