@@ -214,10 +214,18 @@ export const portalLookup = createServerFn({ method: "POST" })
       return { ok: false as const, message: "Não encontramos os dados informados." };
     }
     const now = new Date().toISOString();
+    const { data: fullPatient } = await supabaseAdmin
+      .from("patients").select("phone, email").eq("id", patient.id).maybeSingle();
+    const phone = fullPatient?.phone ?? "";
+    const email = fullPatient?.email ?? "";
+    const apptsQuery = supabaseAdmin.from("appointments")
+      .select("id, starts_at, ends_at, status, patient_name")
+      .eq("tenant_id", patient.tenant_id).gte("starts_at", now)
+      .order("starts_at").limit(20);
     const [{ data: appts }, { data: rx }, { data: nf }] = await Promise.all([
-      supabaseAdmin.from("appointments")
-        .select("id, starts_at, ends_at, status, service_id, services(name)")
-        .eq("patient_id", patient.id).gte("starts_at", now).order("starts_at").limit(20),
+      phone ? apptsQuery.eq("patient_phone", phone) :
+      email ? apptsQuery.eq("patient_email", email) :
+      apptsQuery.eq("patient_name", patient.full_name),
       supabaseAdmin.from("prescriptions")
         .select("id, content, pdf_url, status, created_at, valid_until")
         .eq("patient_id", patient.id).order("created_at", { ascending: false }).limit(20),
