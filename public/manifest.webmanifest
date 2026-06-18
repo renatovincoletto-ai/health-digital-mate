@@ -1,12 +1,12 @@
 {
-  "name": "SaúdeOS — Sua clínica no piloto automático",
-  "short_name": "SaúdeOS",
-  "description": "Site, agenda, conteúdo e anúncios automatizados por IA para médicos e dentistas no Brasil.",
+  "name": "Minha Clínica — Sistema completo para clínicas e consultórios",
+  "short_name": "Minha Clínica",
+  "description": "Agenda, prontuário, financeiro, marketing e IA em um só lugar. O sistema brasileiro para clínicas que querem crescer sem complicar.",
   "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
   "background_color": "#FAFAF7",
-  "theme_color": "#3B82F6",
+  "theme_color": "#0F766E",
   "lang": "pt-BR",
   "icons": [
     { "src": "/favicon.ico", "sizes": "any", "type": "image/x-icon" }

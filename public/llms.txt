@@ -1,4 +1,4 @@
-# SaúdeOS
+# Minha Clínica
 
 > Agência digital autônoma para médicos, dentistas e clínicas. Site, agenda, conteúdo e anúncios automatizados por IA, com compliance CFM/CFO/LGPD integrado.
 

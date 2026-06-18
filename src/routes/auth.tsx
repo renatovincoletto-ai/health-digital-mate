@@ -20,8 +20,8 @@ export const Route = createFileRoute("/auth")({
   },
   head: () => ({
     meta: [
-      { title: "Entrar — SaúdeOS" },
-      { name: "description", content: "Acesse sua conta SaúdeOS." },
+      { title: "Entrar — Minha Clínica" },
+      { name: "description", content: "Acesse sua conta Minha Clínica." },
     ],
   }),
   component: AuthPage,

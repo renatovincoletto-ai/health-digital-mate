@@ -85,7 +85,7 @@ export const sendAssistantMessage = createServerFn({ method: "POST" })
       .limit(12);
     const ordered = [...(history ?? [])].reverse();
 
-    const systemPrompt = `Você é o assistente de site do SaúdeOS. Você ajuda ${tenant.type === "dentista" ? "dentistas" : tenant.type === "clinica" ? "clínicas" : "médicos"} a criar e editar o site profissional deles.
+    const systemPrompt = `Você é o assistente de site do Minha Clínica. Você ajuda ${tenant.type === "dentista" ? "dentistas" : tenant.type === "clinica" ? "clínicas" : "médicos"} a criar e editar o site profissional deles.
 
 Sobre o profissional/consultório:
 - Nome: ${tenant.display_name}

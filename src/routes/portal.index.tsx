@@ -3,7 +3,7 @@ import { Smartphone, Calendar, FileText, MessageCircle, Video } from "lucide-rea
 
 export const Route = createFileRoute("/portal/")({
   component: Page,
-  head: () => ({ meta: [{ title: "Portal do paciente · SaúdeOS" }, { name: "description", content: "Acompanhe consultas, receitas e exames pelo seu celular." }] }),
+  head: () => ({ meta: [{ title: "Portal do paciente · Minha Clínica" }, { name: "description", content: "Acompanhe consultas, receitas e exames pelo seu celular." }] }),
 });
 
 function Page() {
@@ -11,7 +11,7 @@ function Page() {
     <div className="min-h-screen bg-surface">
       <header className="border-b border-border bg-background">
         <div className="container-page py-4 flex items-center justify-between">
-          <Link to="/" className="font-display text-xl font-semibold">SaúdeOS</Link>
+          <Link to="/" className="font-display text-xl font-semibold">Minha Clínica</Link>
           <Link to="/auth" className="rounded-lg border border-border px-3 py-1.5 text-sm">Entrar</Link>
         </div>
       </header>
