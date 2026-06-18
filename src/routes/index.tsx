@@ -816,8 +816,8 @@ function PackageSelector() {
                 </button>
               )}
               <Link
-                to="/auth"
-                search={{ mode: "signup" }}
+                to="/assinar"
+                search={{ pkgs: selectedIds.join(",") }}
                 className={`inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition ${
                   count === 0
                     ? "pointer-events-none bg-white/10 text-white/40"
