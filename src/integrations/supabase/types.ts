@@ -4110,6 +4110,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      enqueue_appointment_automations_for: {
+        Args: { _appointment_id: string }
+        Returns: undefined
+      }
+      enqueue_appointment_automations_inner: {
+        Args: { r: Database["public"]["Tables"]["appointments"]["Row"] }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
