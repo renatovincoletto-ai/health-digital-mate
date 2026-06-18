@@ -8,21 +8,22 @@ import {
   Smile, Receipt,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
-import { getMyTenant } from "@/lib/tenant.functions";
+import { ensureMyTenant } from "@/lib/tenant.functions";
 import { getDashboardKpis } from "@/lib/wave2.functions";
+import { SectionOnboarding } from "@/components/section-onboarding";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({ component: DashboardPage });
 
 const BRL = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 function DashboardPage() {
-  const fetchTenant = useServerFn(getMyTenant);
+  const ensureTenant = useServerFn(ensureMyTenant);
   const fetchKpis = useServerFn(getDashboardKpis);
-  const navigate = useNavigate();
-  const { data: tenant, isLoading } = useQuery({ queryKey: ["my-tenant"], queryFn: () => fetchTenant() });
+  const { data: tenant, isLoading } = useQuery({
+    queryKey: ["my-tenant"],
+    queryFn: () => ensureTenant({ data: undefined }),
+  });
   const { data: kpis } = useQuery({ queryKey: ["dashboard-kpis"], queryFn: () => fetchKpis(), enabled: !!tenant });
-
-  useEffect(() => { if (!isLoading && !tenant) navigate({ to: "/onboarding" }); }, [isLoading, tenant, navigate]);
 
   if (isLoading || !tenant) {
     return <div className="flex min-h-screen items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>;
