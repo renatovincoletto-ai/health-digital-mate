@@ -690,7 +690,7 @@ const packages: Pkg[] = [
 
 function PackageSelector() {
   const [selected, setSelected] = useState<Record<Pkg["id"], boolean>>({
-    presenca: false, clinic: true, flow: true, pay: false, contabil: false,
+    presenca: true, clinic: true, flow: true, pay: true, contabil: true,
   });
 
   const toggle = (id: Pkg["id"]) =>
