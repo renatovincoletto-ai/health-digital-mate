@@ -7,7 +7,7 @@ export type AuditEntry = {
   resource_type: string;
   resource_id: string | null;
   severity: string;
-  metadata: Record<string, unknown>;
+  metadata: unknown;
   ip_address: string | null;
   user_agent: string | null;
   created_at: string;
@@ -28,7 +28,7 @@ export const listAuditLog = createServerFn({ method: "POST" })
     if (data.severity) q = q.eq("severity", data.severity);
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
-    return (rows ?? []) as AuditEntry[];
+    return (rows ?? []) as unknown as AuditEntry[];
   });
 
 export const recordAudit = createServerFn({ method: "POST" })
@@ -45,8 +45,8 @@ export const recordAudit = createServerFn({ method: "POST" })
     const { error } = await supabase.rpc("log_audit", {
       _action: data.action,
       _resource_type: data.resource_type,
-      _resource_id: data.resource_id ?? null,
-      _metadata: data.metadata ?? {},
+      _resource_id: data.resource_id ?? "",
+      _metadata: (data.metadata ?? {}) as never,
       _severity: data.severity ?? "info",
     });
     if (error) throw new Error(error.message);
