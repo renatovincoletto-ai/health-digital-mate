@@ -303,9 +303,20 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
+interface AppointmentDialogProps {
+  open: boolean;
+  onOpenChange: (o: boolean) => void;
+  editing: any;
+  pros: any[];
+  services: any[];
+  onSave: (d: any) => void;
+  onDelete: (id: string) => void;
+  onChangeStatus: (id: string, s: string) => void;
+  saving: boolean;
+}
 function AppointmentDialog({
-  open, onOpenChange, editing, pros, services, onSave, onDelete, onChangeStatus, saving,
-}: any) {
+  open, onOpenChange, editing, pros, services, onSave, onDelete, saving,
+}: AppointmentDialogProps) {
   const [form, setForm] = useState<any>({});
 
   // reset when opening/editing changes
