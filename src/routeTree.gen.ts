@@ -14,15 +14,30 @@ import { Route as PrecosRouteImport } from './routes/precos'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
 import { Route as AuthenticatedUnidadesRouteImport } from './routes/_authenticated/unidades'
+import { Route as AuthenticatedTeleconsultaRouteImport } from './routes/_authenticated/teleconsulta'
 import { Route as AuthenticatedSiteRouteImport } from './routes/_authenticated/site'
 import { Route as AuthenticatedReputacaoRouteImport } from './routes/_authenticated/reputacao'
 import { Route as AuthenticatedProntuarioRouteImport } from './routes/_authenticated/prontuario'
+import { Route as AuthenticatedPrescricoesRouteImport } from './routes/_authenticated/prescricoes'
+import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated/planos'
+import { Route as AuthenticatedPagamentosRouteImport } from './routes/_authenticated/pagamentos'
+import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated/pacientes'
+import { Route as AuthenticatedOrcamentosRouteImport } from './routes/_authenticated/orcamentos'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedNpsRouteImport } from './routes/_authenticated/nps'
+import { Route as AuthenticatedLembretesRouteImport } from './routes/_authenticated/lembretes'
+import { Route as AuthenticatedIndicacoesRouteImport } from './routes/_authenticated/indicacoes'
+import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
+import { Route as AuthenticatedEstoqueRouteImport } from './routes/_authenticated/estoque'
 import { Route as AuthenticatedEmailRouteImport } from './routes/_authenticated/email'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedConteudoRouteImport } from './routes/_authenticated/conteudo'
+import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
+import { Route as AuthenticatedCallcenterRouteImport } from './routes/_authenticated/callcenter'
+import { Route as AuthenticatedBiRouteImport } from './routes/_authenticated/bi'
 import { Route as AuthenticatedAnunciosRouteImport } from './routes/_authenticated/anuncios'
 import { Route as AuthenticatedAnamneseRouteImport } from './routes/_authenticated/anamnese'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
@@ -53,6 +68,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortalIndexRoute = PortalIndexRouteImport.update({
+  id: '/portal/',
+  path: '/portal/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SSlugRoute = SSlugRouteImport.update({
   id: '/s/$slug',
   path: '/s/$slug',
@@ -63,6 +83,12 @@ const AuthenticatedUnidadesRoute = AuthenticatedUnidadesRouteImport.update({
   path: '/unidades',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTeleconsultaRoute =
+  AuthenticatedTeleconsultaRouteImport.update({
+    id: '/teleconsulta',
+    path: '/teleconsulta',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSiteRoute = AuthenticatedSiteRouteImport.update({
   id: '/site',
   path: '/site',
@@ -78,9 +104,60 @@ const AuthenticatedProntuarioRoute = AuthenticatedProntuarioRouteImport.update({
   path: '/prontuario',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPrescricoesRoute =
+  AuthenticatedPrescricoesRouteImport.update({
+    id: '/prescricoes',
+    path: '/prescricoes',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPlanosRoute = AuthenticatedPlanosRouteImport.update({
+  id: '/planos',
+  path: '/planos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPagamentosRoute = AuthenticatedPagamentosRouteImport.update({
+  id: '/pagamentos',
+  path: '/pagamentos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedPacientesRoute = AuthenticatedPacientesRouteImport.update({
+  id: '/pacientes',
+  path: '/pacientes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOrcamentosRoute = AuthenticatedOrcamentosRouteImport.update({
+  id: '/orcamentos',
+  path: '/orcamentos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedNpsRoute = AuthenticatedNpsRouteImport.update({
+  id: '/nps',
+  path: '/nps',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLembretesRoute = AuthenticatedLembretesRouteImport.update({
+  id: '/lembretes',
+  path: '/lembretes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedIndicacoesRoute = AuthenticatedIndicacoesRouteImport.update({
+  id: '/indicacoes',
+  path: '/indicacoes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedFinanceiroRoute = AuthenticatedFinanceiroRouteImport.update({
+  id: '/financeiro',
+  path: '/financeiro',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEstoqueRoute = AuthenticatedEstoqueRouteImport.update({
+  id: '/estoque',
+  path: '/estoque',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedEmailRoute = AuthenticatedEmailRouteImport.update({
@@ -96,6 +173,21 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 const AuthenticatedConteudoRoute = AuthenticatedConteudoRouteImport.update({
   id: '/conteudo',
   path: '/conteudo',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCallcenterRoute = AuthenticatedCallcenterRouteImport.update({
+  id: '/callcenter',
+  path: '/callcenter',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedBiRoute = AuthenticatedBiRouteImport.update({
+  id: '/bi',
+  path: '/bi',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAnunciosRoute = AuthenticatedAnunciosRouteImport.update({
@@ -132,15 +224,30 @@ export interface FileRoutesByFullPath {
   '/agenda': typeof AuthenticatedAgendaRoute
   '/anamnese': typeof AuthenticatedAnamneseRoute
   '/anuncios': typeof AuthenticatedAnunciosRoute
+  '/bi': typeof AuthenticatedBiRoute
+  '/callcenter': typeof AuthenticatedCallcenterRoute
+  '/chat': typeof AuthenticatedChatRoute
   '/conteudo': typeof AuthenticatedConteudoRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/email': typeof AuthenticatedEmailRoute
+  '/estoque': typeof AuthenticatedEstoqueRoute
+  '/financeiro': typeof AuthenticatedFinanceiroRoute
+  '/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/lembretes': typeof AuthenticatedLembretesRoute
+  '/nps': typeof AuthenticatedNpsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/orcamentos': typeof AuthenticatedOrcamentosRoute
+  '/pacientes': typeof AuthenticatedPacientesRoute
+  '/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/planos': typeof AuthenticatedPlanosRoute
+  '/prescricoes': typeof AuthenticatedPrescricoesRoute
   '/prontuario': typeof AuthenticatedProntuarioRoute
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/site': typeof AuthenticatedSiteRoute
+  '/teleconsulta': typeof AuthenticatedTeleconsultaRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
   '/s/$slug': typeof SSlugRouteWithChildren
+  '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
 }
@@ -152,15 +259,30 @@ export interface FileRoutesByTo {
   '/agenda': typeof AuthenticatedAgendaRoute
   '/anamnese': typeof AuthenticatedAnamneseRoute
   '/anuncios': typeof AuthenticatedAnunciosRoute
+  '/bi': typeof AuthenticatedBiRoute
+  '/callcenter': typeof AuthenticatedCallcenterRoute
+  '/chat': typeof AuthenticatedChatRoute
   '/conteudo': typeof AuthenticatedConteudoRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/email': typeof AuthenticatedEmailRoute
+  '/estoque': typeof AuthenticatedEstoqueRoute
+  '/financeiro': typeof AuthenticatedFinanceiroRoute
+  '/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/lembretes': typeof AuthenticatedLembretesRoute
+  '/nps': typeof AuthenticatedNpsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/orcamentos': typeof AuthenticatedOrcamentosRoute
+  '/pacientes': typeof AuthenticatedPacientesRoute
+  '/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/planos': typeof AuthenticatedPlanosRoute
+  '/prescricoes': typeof AuthenticatedPrescricoesRoute
   '/prontuario': typeof AuthenticatedProntuarioRoute
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/site': typeof AuthenticatedSiteRoute
+  '/teleconsulta': typeof AuthenticatedTeleconsultaRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
   '/s/$slug': typeof SSlugRouteWithChildren
+  '/portal': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
 }
@@ -174,15 +296,30 @@ export interface FileRoutesById {
   '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
   '/_authenticated/anamnese': typeof AuthenticatedAnamneseRoute
   '/_authenticated/anuncios': typeof AuthenticatedAnunciosRoute
+  '/_authenticated/bi': typeof AuthenticatedBiRoute
+  '/_authenticated/callcenter': typeof AuthenticatedCallcenterRoute
+  '/_authenticated/chat': typeof AuthenticatedChatRoute
   '/_authenticated/conteudo': typeof AuthenticatedConteudoRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/email': typeof AuthenticatedEmailRoute
+  '/_authenticated/estoque': typeof AuthenticatedEstoqueRoute
+  '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
+  '/_authenticated/indicacoes': typeof AuthenticatedIndicacoesRoute
+  '/_authenticated/lembretes': typeof AuthenticatedLembretesRoute
+  '/_authenticated/nps': typeof AuthenticatedNpsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/orcamentos': typeof AuthenticatedOrcamentosRoute
+  '/_authenticated/pacientes': typeof AuthenticatedPacientesRoute
+  '/_authenticated/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/_authenticated/planos': typeof AuthenticatedPlanosRoute
+  '/_authenticated/prescricoes': typeof AuthenticatedPrescricoesRoute
   '/_authenticated/prontuario': typeof AuthenticatedProntuarioRoute
   '/_authenticated/reputacao': typeof AuthenticatedReputacaoRoute
   '/_authenticated/site': typeof AuthenticatedSiteRoute
+  '/_authenticated/teleconsulta': typeof AuthenticatedTeleconsultaRoute
   '/_authenticated/unidades': typeof AuthenticatedUnidadesRoute
   '/s/$slug': typeof SSlugRouteWithChildren
+  '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
 }
@@ -196,15 +333,30 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/anamnese'
     | '/anuncios'
+    | '/bi'
+    | '/callcenter'
+    | '/chat'
     | '/conteudo'
     | '/dashboard'
     | '/email'
+    | '/estoque'
+    | '/financeiro'
+    | '/indicacoes'
+    | '/lembretes'
+    | '/nps'
     | '/onboarding'
+    | '/orcamentos'
+    | '/pacientes'
+    | '/pagamentos'
+    | '/planos'
+    | '/prescricoes'
     | '/prontuario'
     | '/reputacao'
     | '/site'
+    | '/teleconsulta'
     | '/unidades'
     | '/s/$slug'
+    | '/portal/'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
   fileRoutesByTo: FileRoutesByTo
@@ -216,15 +368,30 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/anamnese'
     | '/anuncios'
+    | '/bi'
+    | '/callcenter'
+    | '/chat'
     | '/conteudo'
     | '/dashboard'
     | '/email'
+    | '/estoque'
+    | '/financeiro'
+    | '/indicacoes'
+    | '/lembretes'
+    | '/nps'
     | '/onboarding'
+    | '/orcamentos'
+    | '/pacientes'
+    | '/pagamentos'
+    | '/planos'
+    | '/prescricoes'
     | '/prontuario'
     | '/reputacao'
     | '/site'
+    | '/teleconsulta'
     | '/unidades'
     | '/s/$slug'
+    | '/portal'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
   id:
@@ -237,15 +404,30 @@ export interface FileRouteTypes {
     | '/_authenticated/agenda'
     | '/_authenticated/anamnese'
     | '/_authenticated/anuncios'
+    | '/_authenticated/bi'
+    | '/_authenticated/callcenter'
+    | '/_authenticated/chat'
     | '/_authenticated/conteudo'
     | '/_authenticated/dashboard'
     | '/_authenticated/email'
+    | '/_authenticated/estoque'
+    | '/_authenticated/financeiro'
+    | '/_authenticated/indicacoes'
+    | '/_authenticated/lembretes'
+    | '/_authenticated/nps'
     | '/_authenticated/onboarding'
+    | '/_authenticated/orcamentos'
+    | '/_authenticated/pacientes'
+    | '/_authenticated/pagamentos'
+    | '/_authenticated/planos'
+    | '/_authenticated/prescricoes'
     | '/_authenticated/prontuario'
     | '/_authenticated/reputacao'
     | '/_authenticated/site'
+    | '/_authenticated/teleconsulta'
     | '/_authenticated/unidades'
     | '/s/$slug'
+    | '/portal/'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
   fileRoutesById: FileRoutesById
@@ -257,6 +439,7 @@ export interface RootRouteChildren {
   PrecosRoute: typeof PrecosRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SSlugRoute: typeof SSlugRouteWithChildren
+  PortalIndexRoute: typeof PortalIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -296,6 +479,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portal/': {
+      id: '/portal/'
+      path: '/portal'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof PortalIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/s/$slug': {
       id: '/s/$slug'
       path: '/s/$slug'
@@ -308,6 +498,13 @@ declare module '@tanstack/react-router' {
       path: '/unidades'
       fullPath: '/unidades'
       preLoaderRoute: typeof AuthenticatedUnidadesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/teleconsulta': {
+      id: '/_authenticated/teleconsulta'
+      path: '/teleconsulta'
+      fullPath: '/teleconsulta'
+      preLoaderRoute: typeof AuthenticatedTeleconsultaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/site': {
@@ -331,11 +528,81 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProntuarioRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/prescricoes': {
+      id: '/_authenticated/prescricoes'
+      path: '/prescricoes'
+      fullPath: '/prescricoes'
+      preLoaderRoute: typeof AuthenticatedPrescricoesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/planos': {
+      id: '/_authenticated/planos'
+      path: '/planos'
+      fullPath: '/planos'
+      preLoaderRoute: typeof AuthenticatedPlanosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pagamentos': {
+      id: '/_authenticated/pagamentos'
+      path: '/pagamentos'
+      fullPath: '/pagamentos'
+      preLoaderRoute: typeof AuthenticatedPagamentosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pacientes': {
+      id: '/_authenticated/pacientes'
+      path: '/pacientes'
+      fullPath: '/pacientes'
+      preLoaderRoute: typeof AuthenticatedPacientesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/orcamentos': {
+      id: '/_authenticated/orcamentos'
+      path: '/orcamentos'
+      fullPath: '/orcamentos'
+      preLoaderRoute: typeof AuthenticatedOrcamentosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/nps': {
+      id: '/_authenticated/nps'
+      path: '/nps'
+      fullPath: '/nps'
+      preLoaderRoute: typeof AuthenticatedNpsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/lembretes': {
+      id: '/_authenticated/lembretes'
+      path: '/lembretes'
+      fullPath: '/lembretes'
+      preLoaderRoute: typeof AuthenticatedLembretesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/indicacoes': {
+      id: '/_authenticated/indicacoes'
+      path: '/indicacoes'
+      fullPath: '/indicacoes'
+      preLoaderRoute: typeof AuthenticatedIndicacoesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/financeiro': {
+      id: '/_authenticated/financeiro'
+      path: '/financeiro'
+      fullPath: '/financeiro'
+      preLoaderRoute: typeof AuthenticatedFinanceiroRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/estoque': {
+      id: '/_authenticated/estoque'
+      path: '/estoque'
+      fullPath: '/estoque'
+      preLoaderRoute: typeof AuthenticatedEstoqueRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/email': {
@@ -357,6 +624,27 @@ declare module '@tanstack/react-router' {
       path: '/conteudo'
       fullPath: '/conteudo'
       preLoaderRoute: typeof AuthenticatedConteudoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/chat': {
+      id: '/_authenticated/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof AuthenticatedChatRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/callcenter': {
+      id: '/_authenticated/callcenter'
+      path: '/callcenter'
+      fullPath: '/callcenter'
+      preLoaderRoute: typeof AuthenticatedCallcenterRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/bi': {
+      id: '/_authenticated/bi'
+      path: '/bi'
+      fullPath: '/bi'
+      preLoaderRoute: typeof AuthenticatedBiRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/anuncios': {
@@ -401,13 +689,27 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
   AuthenticatedAnamneseRoute: typeof AuthenticatedAnamneseRoute
   AuthenticatedAnunciosRoute: typeof AuthenticatedAnunciosRoute
+  AuthenticatedBiRoute: typeof AuthenticatedBiRoute
+  AuthenticatedCallcenterRoute: typeof AuthenticatedCallcenterRoute
+  AuthenticatedChatRoute: typeof AuthenticatedChatRoute
   AuthenticatedConteudoRoute: typeof AuthenticatedConteudoRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEmailRoute: typeof AuthenticatedEmailRoute
+  AuthenticatedEstoqueRoute: typeof AuthenticatedEstoqueRoute
+  AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
+  AuthenticatedIndicacoesRoute: typeof AuthenticatedIndicacoesRoute
+  AuthenticatedLembretesRoute: typeof AuthenticatedLembretesRoute
+  AuthenticatedNpsRoute: typeof AuthenticatedNpsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedOrcamentosRoute: typeof AuthenticatedOrcamentosRoute
+  AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRoute
+  AuthenticatedPagamentosRoute: typeof AuthenticatedPagamentosRoute
+  AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
+  AuthenticatedPrescricoesRoute: typeof AuthenticatedPrescricoesRoute
   AuthenticatedProntuarioRoute: typeof AuthenticatedProntuarioRoute
   AuthenticatedReputacaoRoute: typeof AuthenticatedReputacaoRoute
   AuthenticatedSiteRoute: typeof AuthenticatedSiteRoute
+  AuthenticatedTeleconsultaRoute: typeof AuthenticatedTeleconsultaRoute
   AuthenticatedUnidadesRoute: typeof AuthenticatedUnidadesRoute
 }
 
@@ -415,13 +717,27 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAgendaRoute: AuthenticatedAgendaRoute,
   AuthenticatedAnamneseRoute: AuthenticatedAnamneseRoute,
   AuthenticatedAnunciosRoute: AuthenticatedAnunciosRoute,
+  AuthenticatedBiRoute: AuthenticatedBiRoute,
+  AuthenticatedCallcenterRoute: AuthenticatedCallcenterRoute,
+  AuthenticatedChatRoute: AuthenticatedChatRoute,
   AuthenticatedConteudoRoute: AuthenticatedConteudoRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEmailRoute: AuthenticatedEmailRoute,
+  AuthenticatedEstoqueRoute: AuthenticatedEstoqueRoute,
+  AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
+  AuthenticatedIndicacoesRoute: AuthenticatedIndicacoesRoute,
+  AuthenticatedLembretesRoute: AuthenticatedLembretesRoute,
+  AuthenticatedNpsRoute: AuthenticatedNpsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedOrcamentosRoute: AuthenticatedOrcamentosRoute,
+  AuthenticatedPacientesRoute: AuthenticatedPacientesRoute,
+  AuthenticatedPagamentosRoute: AuthenticatedPagamentosRoute,
+  AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
+  AuthenticatedPrescricoesRoute: AuthenticatedPrescricoesRoute,
   AuthenticatedProntuarioRoute: AuthenticatedProntuarioRoute,
   AuthenticatedReputacaoRoute: AuthenticatedReputacaoRoute,
   AuthenticatedSiteRoute: AuthenticatedSiteRoute,
+  AuthenticatedTeleconsultaRoute: AuthenticatedTeleconsultaRoute,
   AuthenticatedUnidadesRoute: AuthenticatedUnidadesRoute,
 }
 
@@ -447,6 +763,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrecosRoute: PrecosRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SSlugRoute: SSlugRouteWithChildren,
+  PortalIndexRoute: PortalIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
