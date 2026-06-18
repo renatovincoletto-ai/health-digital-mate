@@ -3265,6 +3265,68 @@ export type Database = {
           },
         ]
       }
+      subscription_quotes: {
+        Row: {
+          base_price: number
+          created_at: string
+          created_by: string | null
+          id: string
+          package_key: string
+          patient_pack: string
+          patient_pack_price: number
+          professionals: number
+          professionals_surcharge: number
+          status: string
+          tenant_id: string
+          total_monthly: number
+          units: number
+          units_surcharge: number
+          updated_at: string
+        }
+        Insert: {
+          base_price: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          package_key: string
+          patient_pack?: string
+          patient_pack_price?: number
+          professionals?: number
+          professionals_surcharge?: number
+          status?: string
+          tenant_id: string
+          total_monthly: number
+          units?: number
+          units_surcharge?: number
+          updated_at?: string
+        }
+        Update: {
+          base_price?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          package_key?: string
+          patient_pack?: string
+          patient_pack_price?: number
+          professionals?: number
+          professionals_surcharge?: number
+          status?: string
+          tenant_id?: string
+          total_monthly?: number
+          units?: number
+          units_surcharge?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_quotes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_ticket_comments: {
         Row: {
           author_id: string
