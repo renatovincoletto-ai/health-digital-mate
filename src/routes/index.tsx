@@ -1,9 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  Sparkles, Globe, Calendar, Megaphone, Star, CreditCard, CheckCircle2, ArrowRight,
-  Stethoscope, ShieldCheck, MessageSquare, ClipboardList, Mail, Building2,
-  Image as ImageIcon, Users, Video, FileText, ClipboardCheck, Wallet, Link2,
-  FileSignature, Package, Phone, Bell, Gift, Smile, TrendingUp,
+  Sparkles, CheckCircle2, ArrowRight, Stethoscope, ShieldCheck,
+  Heart, TrendingUp, Wallet, Receipt, Layers,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 
