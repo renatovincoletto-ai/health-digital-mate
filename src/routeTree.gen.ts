@@ -17,6 +17,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
+import { Route as PortalAcessoRouteImport } from './routes/portal.acesso'
 import { Route as AuthenticatedWhatsappAgenteRouteImport } from './routes/_authenticated/whatsapp-agente'
 import { Route as AuthenticatedUnidadesRouteImport } from './routes/_authenticated/unidades'
 import { Route as AuthenticatedTributosRouteImport } from './routes/_authenticated/tributos'
@@ -40,10 +41,13 @@ import { Route as AuthenticatedLembretesRouteImport } from './routes/_authentica
 import { Route as AuthenticatedJornadasRouteImport } from './routes/_authenticated/jornadas'
 import { Route as AuthenticatedIntegracoesRouteImport } from './routes/_authenticated/integracoes'
 import { Route as AuthenticatedIndicacoesRouteImport } from './routes/_authenticated/indicacoes'
+import { Route as AuthenticatedFolhaRouteImport } from './routes/_authenticated/folha'
 import { Route as AuthenticatedFiscalRouteImport } from './routes/_authenticated/fiscal'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
 import { Route as AuthenticatedEstoqueRouteImport } from './routes/_authenticated/estoque'
+import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated/equipe'
 import { Route as AuthenticatedEmailRouteImport } from './routes/_authenticated/email'
+import { Route as AuthenticatedDreRouteImport } from './routes/_authenticated/dre'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedConveniosRouteImport } from './routes/_authenticated/convenios'
 import { Route as AuthenticatedConteudoRouteImport } from './routes/_authenticated/conteudo'
@@ -97,6 +101,11 @@ const PortalIndexRoute = PortalIndexRouteImport.update({
 const SSlugRoute = SSlugRouteImport.update({
   id: '/s/$slug',
   path: '/s/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalAcessoRoute = PortalAcessoRouteImport.update({
+  id: '/portal/acesso',
+  path: '/portal/acesso',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedWhatsappAgenteRoute =
@@ -219,6 +228,11 @@ const AuthenticatedIndicacoesRoute = AuthenticatedIndicacoesRouteImport.update({
   path: '/indicacoes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFolhaRoute = AuthenticatedFolhaRouteImport.update({
+  id: '/folha',
+  path: '/folha',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedFiscalRoute = AuthenticatedFiscalRouteImport.update({
   id: '/fiscal',
   path: '/fiscal',
@@ -234,9 +248,19 @@ const AuthenticatedEstoqueRoute = AuthenticatedEstoqueRouteImport.update({
   path: '/estoque',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedEquipeRoute = AuthenticatedEquipeRouteImport.update({
+  id: '/equipe',
+  path: '/equipe',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedEmailRoute = AuthenticatedEmailRouteImport.update({
   id: '/email',
   path: '/email',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDreRoute = AuthenticatedDreRouteImport.update({
+  id: '/dre',
+  path: '/dre',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -333,10 +357,13 @@ export interface FileRoutesByFullPath {
   '/conteudo': typeof AuthenticatedConteudoRoute
   '/convenios': typeof AuthenticatedConveniosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dre': typeof AuthenticatedDreRoute
   '/email': typeof AuthenticatedEmailRoute
+  '/equipe': typeof AuthenticatedEquipeRoute
   '/estoque': typeof AuthenticatedEstoqueRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/fiscal': typeof AuthenticatedFiscalRoute
+  '/folha': typeof AuthenticatedFolhaRoute
   '/indicacoes': typeof AuthenticatedIndicacoesRoute
   '/integracoes': typeof AuthenticatedIntegracoesRoute
   '/jornadas': typeof AuthenticatedJornadasRoute
@@ -360,6 +387,7 @@ export interface FileRoutesByFullPath {
   '/tributos': typeof AuthenticatedTributosRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
   '/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
+  '/portal/acesso': typeof PortalAcessoRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -384,10 +412,13 @@ export interface FileRoutesByTo {
   '/conteudo': typeof AuthenticatedConteudoRoute
   '/convenios': typeof AuthenticatedConveniosRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dre': typeof AuthenticatedDreRoute
   '/email': typeof AuthenticatedEmailRoute
+  '/equipe': typeof AuthenticatedEquipeRoute
   '/estoque': typeof AuthenticatedEstoqueRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/fiscal': typeof AuthenticatedFiscalRoute
+  '/folha': typeof AuthenticatedFolhaRoute
   '/indicacoes': typeof AuthenticatedIndicacoesRoute
   '/integracoes': typeof AuthenticatedIntegracoesRoute
   '/jornadas': typeof AuthenticatedJornadasRoute
@@ -411,6 +442,7 @@ export interface FileRoutesByTo {
   '/tributos': typeof AuthenticatedTributosRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
   '/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
+  '/portal/acesso': typeof PortalAcessoRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -437,10 +469,13 @@ export interface FileRoutesById {
   '/_authenticated/conteudo': typeof AuthenticatedConteudoRoute
   '/_authenticated/convenios': typeof AuthenticatedConveniosRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/dre': typeof AuthenticatedDreRoute
   '/_authenticated/email': typeof AuthenticatedEmailRoute
+  '/_authenticated/equipe': typeof AuthenticatedEquipeRoute
   '/_authenticated/estoque': typeof AuthenticatedEstoqueRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/fiscal': typeof AuthenticatedFiscalRoute
+  '/_authenticated/folha': typeof AuthenticatedFolhaRoute
   '/_authenticated/indicacoes': typeof AuthenticatedIndicacoesRoute
   '/_authenticated/integracoes': typeof AuthenticatedIntegracoesRoute
   '/_authenticated/jornadas': typeof AuthenticatedJornadasRoute
@@ -464,6 +499,7 @@ export interface FileRoutesById {
   '/_authenticated/tributos': typeof AuthenticatedTributosRoute
   '/_authenticated/unidades': typeof AuthenticatedUnidadesRoute
   '/_authenticated/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
+  '/portal/acesso': typeof PortalAcessoRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
@@ -490,10 +526,13 @@ export interface FileRouteTypes {
     | '/conteudo'
     | '/convenios'
     | '/dashboard'
+    | '/dre'
     | '/email'
+    | '/equipe'
     | '/estoque'
     | '/financeiro'
     | '/fiscal'
+    | '/folha'
     | '/indicacoes'
     | '/integracoes'
     | '/jornadas'
@@ -517,6 +556,7 @@ export interface FileRouteTypes {
     | '/tributos'
     | '/unidades'
     | '/whatsapp-agente'
+    | '/portal/acesso'
     | '/s/$slug'
     | '/portal/'
     | '/s/$slug/agendar'
@@ -541,10 +581,13 @@ export interface FileRouteTypes {
     | '/conteudo'
     | '/convenios'
     | '/dashboard'
+    | '/dre'
     | '/email'
+    | '/equipe'
     | '/estoque'
     | '/financeiro'
     | '/fiscal'
+    | '/folha'
     | '/indicacoes'
     | '/integracoes'
     | '/jornadas'
@@ -568,6 +611,7 @@ export interface FileRouteTypes {
     | '/tributos'
     | '/unidades'
     | '/whatsapp-agente'
+    | '/portal/acesso'
     | '/s/$slug'
     | '/portal'
     | '/s/$slug/agendar'
@@ -593,10 +637,13 @@ export interface FileRouteTypes {
     | '/_authenticated/conteudo'
     | '/_authenticated/convenios'
     | '/_authenticated/dashboard'
+    | '/_authenticated/dre'
     | '/_authenticated/email'
+    | '/_authenticated/equipe'
     | '/_authenticated/estoque'
     | '/_authenticated/financeiro'
     | '/_authenticated/fiscal'
+    | '/_authenticated/folha'
     | '/_authenticated/indicacoes'
     | '/_authenticated/integracoes'
     | '/_authenticated/jornadas'
@@ -620,6 +667,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tributos'
     | '/_authenticated/unidades'
     | '/_authenticated/whatsapp-agente'
+    | '/portal/acesso'
     | '/s/$slug'
     | '/portal/'
     | '/s/$slug/agendar'
@@ -635,6 +683,7 @@ export interface RootRouteChildren {
   PrecosRoute: typeof PrecosRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  PortalAcessoRoute: typeof PortalAcessoRoute
   SSlugRoute: typeof SSlugRouteWithChildren
   PortalIndexRoute: typeof PortalIndexRoute
   ApiPublicHooksAsaasRoute: typeof ApiPublicHooksAsaasRoute
@@ -697,6 +746,13 @@ declare module '@tanstack/react-router' {
       path: '/s/$slug'
       fullPath: '/s/$slug'
       preLoaderRoute: typeof SSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/acesso': {
+      id: '/portal/acesso'
+      path: '/portal/acesso'
+      fullPath: '/portal/acesso'
+      preLoaderRoute: typeof PortalAcessoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/whatsapp-agente': {
@@ -860,6 +916,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndicacoesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/folha': {
+      id: '/_authenticated/folha'
+      path: '/folha'
+      fullPath: '/folha'
+      preLoaderRoute: typeof AuthenticatedFolhaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/fiscal': {
       id: '/_authenticated/fiscal'
       path: '/fiscal'
@@ -881,11 +944,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEstoqueRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/equipe': {
+      id: '/_authenticated/equipe'
+      path: '/equipe'
+      fullPath: '/equipe'
+      preLoaderRoute: typeof AuthenticatedEquipeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/email': {
       id: '/_authenticated/email'
       path: '/email'
       fullPath: '/email'
       preLoaderRoute: typeof AuthenticatedEmailRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dre': {
+      id: '/_authenticated/dre'
+      path: '/dre'
+      fullPath: '/dre'
+      preLoaderRoute: typeof AuthenticatedDreRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
@@ -1008,10 +1085,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedConteudoRoute: typeof AuthenticatedConteudoRoute
   AuthenticatedConveniosRoute: typeof AuthenticatedConveniosRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDreRoute: typeof AuthenticatedDreRoute
   AuthenticatedEmailRoute: typeof AuthenticatedEmailRoute
+  AuthenticatedEquipeRoute: typeof AuthenticatedEquipeRoute
   AuthenticatedEstoqueRoute: typeof AuthenticatedEstoqueRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedFiscalRoute: typeof AuthenticatedFiscalRoute
+  AuthenticatedFolhaRoute: typeof AuthenticatedFolhaRoute
   AuthenticatedIndicacoesRoute: typeof AuthenticatedIndicacoesRoute
   AuthenticatedIntegracoesRoute: typeof AuthenticatedIntegracoesRoute
   AuthenticatedJornadasRoute: typeof AuthenticatedJornadasRoute
@@ -1049,10 +1129,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConteudoRoute: AuthenticatedConteudoRoute,
   AuthenticatedConveniosRoute: AuthenticatedConveniosRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDreRoute: AuthenticatedDreRoute,
   AuthenticatedEmailRoute: AuthenticatedEmailRoute,
+  AuthenticatedEquipeRoute: AuthenticatedEquipeRoute,
   AuthenticatedEstoqueRoute: AuthenticatedEstoqueRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedFiscalRoute: AuthenticatedFiscalRoute,
+  AuthenticatedFolhaRoute: AuthenticatedFolhaRoute,
   AuthenticatedIndicacoesRoute: AuthenticatedIndicacoesRoute,
   AuthenticatedIntegracoesRoute: AuthenticatedIntegracoesRoute,
   AuthenticatedJornadasRoute: AuthenticatedJornadasRoute,
@@ -1100,6 +1183,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrecosRoute: PrecosRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  PortalAcessoRoute: PortalAcessoRoute,
   SSlugRoute: SSlugRouteWithChildren,
   PortalIndexRoute: PortalIndexRoute,
   ApiPublicHooksAsaasRoute: ApiPublicHooksAsaasRoute,
