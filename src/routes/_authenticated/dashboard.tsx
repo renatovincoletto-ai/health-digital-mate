@@ -41,9 +41,12 @@ function DashboardPage() {
               {tenant.specialty ? `${tenant.specialty} · ` : ""}{tenant.city ? `${tenant.city}${tenant.state ? `/${tenant.state}` : ""}` : "Brasil"}
             </p>
           </div>
-          <a href={`/s/${tenant.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-elevated px-4 py-2 text-sm font-medium hover:bg-accent/10">
-            Ver site público <ExternalLink className="h-3.5 w-3.5" />
-          </a>
+          <div className="flex items-center gap-2">
+            <SectionOnboarding section="default" />
+            <a href={`/s/${tenant.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface-elevated px-4 py-2 text-sm font-medium hover:bg-accent/10">
+              Ver site público <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
         </div>
 
         {/* KPIs principais */}
