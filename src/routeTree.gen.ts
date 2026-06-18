@@ -18,6 +18,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as SSlugRouteImport } from './routes/s.$slug'
 import { Route as PortalAcessoRouteImport } from './routes/portal.acesso'
+import { Route as PortalSlugRouteImport } from './routes/portal.$slug'
 import { Route as AuthenticatedWhatsappAgenteRouteImport } from './routes/_authenticated/whatsapp-agente'
 import { Route as AuthenticatedUnidadesRouteImport } from './routes/_authenticated/unidades'
 import { Route as AuthenticatedTributosRouteImport } from './routes/_authenticated/tributos'
@@ -107,6 +108,11 @@ const SSlugRoute = SSlugRouteImport.update({
 const PortalAcessoRoute = PortalAcessoRouteImport.update({
   id: '/portal/acesso',
   path: '/portal/acesso',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalSlugRoute = PortalSlugRouteImport.update({
+  id: '/portal/$slug',
+  path: '/portal/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedWhatsappAgenteRoute =
@@ -394,6 +400,7 @@ export interface FileRoutesByFullPath {
   '/tributos': typeof AuthenticatedTributosRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
   '/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
+  '/portal/$slug': typeof PortalSlugRoute
   '/portal/acesso': typeof PortalAcessoRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
@@ -450,6 +457,7 @@ export interface FileRoutesByTo {
   '/tributos': typeof AuthenticatedTributosRoute
   '/unidades': typeof AuthenticatedUnidadesRoute
   '/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
+  '/portal/$slug': typeof PortalSlugRoute
   '/portal/acesso': typeof PortalAcessoRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal': typeof PortalIndexRoute
@@ -508,6 +516,7 @@ export interface FileRoutesById {
   '/_authenticated/tributos': typeof AuthenticatedTributosRoute
   '/_authenticated/unidades': typeof AuthenticatedUnidadesRoute
   '/_authenticated/whatsapp-agente': typeof AuthenticatedWhatsappAgenteRoute
+  '/portal/$slug': typeof PortalSlugRoute
   '/portal/acesso': typeof PortalAcessoRoute
   '/s/$slug': typeof SSlugRouteWithChildren
   '/portal/': typeof PortalIndexRoute
@@ -566,6 +575,7 @@ export interface FileRouteTypes {
     | '/tributos'
     | '/unidades'
     | '/whatsapp-agente'
+    | '/portal/$slug'
     | '/portal/acesso'
     | '/s/$slug'
     | '/portal/'
@@ -622,6 +632,7 @@ export interface FileRouteTypes {
     | '/tributos'
     | '/unidades'
     | '/whatsapp-agente'
+    | '/portal/$slug'
     | '/portal/acesso'
     | '/s/$slug'
     | '/portal'
@@ -679,6 +690,7 @@ export interface FileRouteTypes {
     | '/_authenticated/tributos'
     | '/_authenticated/unidades'
     | '/_authenticated/whatsapp-agente'
+    | '/portal/$slug'
     | '/portal/acesso'
     | '/s/$slug'
     | '/portal/'
@@ -695,6 +707,7 @@ export interface RootRouteChildren {
   PrecosRoute: typeof PrecosRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  PortalSlugRoute: typeof PortalSlugRoute
   PortalAcessoRoute: typeof PortalAcessoRoute
   SSlugRoute: typeof SSlugRouteWithChildren
   PortalIndexRoute: typeof PortalIndexRoute
@@ -765,6 +778,13 @@ declare module '@tanstack/react-router' {
       path: '/portal/acesso'
       fullPath: '/portal/acesso'
       preLoaderRoute: typeof PortalAcessoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/$slug': {
+      id: '/portal/$slug'
+      path: '/portal/$slug'
+      fullPath: '/portal/$slug'
+      preLoaderRoute: typeof PortalSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/whatsapp-agente': {
@@ -1204,6 +1224,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrecosRoute: PrecosRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  PortalSlugRoute: PortalSlugRoute,
   PortalAcessoRoute: PortalAcessoRoute,
   SSlugRoute: SSlugRouteWithChildren,
   PortalIndexRoute: PortalIndexRoute,
