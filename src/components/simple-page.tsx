@@ -7,18 +7,26 @@ export function SimplePage({
   description,
   eyebrow,
   actions,
+  onboardingSection,
   children,
 }: {
   title: string;
   description?: string;
   eyebrow?: string;
   actions?: ReactNode;
+  onboardingSection?: string;
   children: ReactNode;
 }) {
   return (
     <AppShell>
       <div className="container-page py-8">
-        <PageHeader eyebrow={eyebrow} title={title} description={description} actions={actions} />
+        <PageHeader
+          eyebrow={eyebrow}
+          title={title}
+          description={description}
+          actions={actions}
+          onboardingSection={onboardingSection}
+        />
         {children}
       </div>
     </AppShell>
