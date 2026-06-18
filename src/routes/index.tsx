@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import {
   Sparkles, CheckCircle2, ArrowRight, Stethoscope, ShieldCheck,
-  Heart, TrendingUp, Wallet, Receipt, Layers,
+  Heart, TrendingUp, Wallet, Receipt, Layers, Check,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 
@@ -24,6 +25,10 @@ export const Route = createFileRoute("/")({
   }),
   component: LandingPage,
 });
+
+const BUNDLE_PRICE = 799;
+const formatBRL = (v: number) =>
+  v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 });
 
 function LandingPage() {
   return (
