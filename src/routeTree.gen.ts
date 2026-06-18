@@ -48,6 +48,7 @@ import { Route as AuthenticatedIndicacoesRouteImport } from './routes/_authentic
 import { Route as AuthenticatedFolhaRouteImport } from './routes/_authenticated/folha'
 import { Route as AuthenticatedFiscalRouteImport } from './routes/_authenticated/fiscal'
 import { Route as AuthenticatedFinanceiroRouteImport } from './routes/_authenticated/financeiro'
+import { Route as AuthenticatedFaturamentoRouteImport } from './routes/_authenticated/faturamento'
 import { Route as AuthenticatedEstoqueRouteImport } from './routes/_authenticated/estoque'
 import { Route as AuthenticatedEquipeRouteImport } from './routes/_authenticated/equipe'
 import { Route as AuthenticatedEmailRouteImport } from './routes/_authenticated/email'
@@ -267,6 +268,12 @@ const AuthenticatedFinanceiroRoute = AuthenticatedFinanceiroRouteImport.update({
   path: '/financeiro',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFaturamentoRoute =
+  AuthenticatedFaturamentoRouteImport.update({
+    id: '/faturamento',
+    path: '/faturamento',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedEstoqueRoute = AuthenticatedEstoqueRouteImport.update({
   id: '/estoque',
   path: '/estoque',
@@ -385,6 +392,7 @@ export interface FileRoutesByFullPath {
   '/email': typeof AuthenticatedEmailRoute
   '/equipe': typeof AuthenticatedEquipeRoute
   '/estoque': typeof AuthenticatedEstoqueRoute
+  '/faturamento': typeof AuthenticatedFaturamentoRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/fiscal': typeof AuthenticatedFiscalRoute
   '/folha': typeof AuthenticatedFolhaRoute
@@ -444,6 +452,7 @@ export interface FileRoutesByTo {
   '/email': typeof AuthenticatedEmailRoute
   '/equipe': typeof AuthenticatedEquipeRoute
   '/estoque': typeof AuthenticatedEstoqueRoute
+  '/faturamento': typeof AuthenticatedFaturamentoRoute
   '/financeiro': typeof AuthenticatedFinanceiroRoute
   '/fiscal': typeof AuthenticatedFiscalRoute
   '/folha': typeof AuthenticatedFolhaRoute
@@ -505,6 +514,7 @@ export interface FileRoutesById {
   '/_authenticated/email': typeof AuthenticatedEmailRoute
   '/_authenticated/equipe': typeof AuthenticatedEquipeRoute
   '/_authenticated/estoque': typeof AuthenticatedEstoqueRoute
+  '/_authenticated/faturamento': typeof AuthenticatedFaturamentoRoute
   '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRoute
   '/_authenticated/fiscal': typeof AuthenticatedFiscalRoute
   '/_authenticated/folha': typeof AuthenticatedFolhaRoute
@@ -566,6 +576,7 @@ export interface FileRouteTypes {
     | '/email'
     | '/equipe'
     | '/estoque'
+    | '/faturamento'
     | '/financeiro'
     | '/fiscal'
     | '/folha'
@@ -625,6 +636,7 @@ export interface FileRouteTypes {
     | '/email'
     | '/equipe'
     | '/estoque'
+    | '/faturamento'
     | '/financeiro'
     | '/fiscal'
     | '/folha'
@@ -685,6 +697,7 @@ export interface FileRouteTypes {
     | '/_authenticated/email'
     | '/_authenticated/equipe'
     | '/_authenticated/estoque'
+    | '/_authenticated/faturamento'
     | '/_authenticated/financeiro'
     | '/_authenticated/fiscal'
     | '/_authenticated/folha'
@@ -1015,6 +1028,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFinanceiroRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/faturamento': {
+      id: '/_authenticated/faturamento'
+      path: '/faturamento'
+      fullPath: '/faturamento'
+      preLoaderRoute: typeof AuthenticatedFaturamentoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/estoque': {
       id: '/_authenticated/estoque'
       path: '/estoque'
@@ -1167,6 +1187,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedEmailRoute: typeof AuthenticatedEmailRoute
   AuthenticatedEquipeRoute: typeof AuthenticatedEquipeRoute
   AuthenticatedEstoqueRoute: typeof AuthenticatedEstoqueRoute
+  AuthenticatedFaturamentoRoute: typeof AuthenticatedFaturamentoRoute
   AuthenticatedFinanceiroRoute: typeof AuthenticatedFinanceiroRoute
   AuthenticatedFiscalRoute: typeof AuthenticatedFiscalRoute
   AuthenticatedFolhaRoute: typeof AuthenticatedFolhaRoute
@@ -1213,6 +1234,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEmailRoute: AuthenticatedEmailRoute,
   AuthenticatedEquipeRoute: AuthenticatedEquipeRoute,
   AuthenticatedEstoqueRoute: AuthenticatedEstoqueRoute,
+  AuthenticatedFaturamentoRoute: AuthenticatedFaturamentoRoute,
   AuthenticatedFinanceiroRoute: AuthenticatedFinanceiroRoute,
   AuthenticatedFiscalRoute: AuthenticatedFiscalRoute,
   AuthenticatedFolhaRoute: AuthenticatedFolhaRoute,

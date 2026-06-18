@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2, Stethoscope, Wallet, Sparkles, Calculator, Megaphone, Layers } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import { PricingCalculator } from "@/components/pricing-calculator";
+
 
 export const Route = createFileRoute("/precos")({
   head: () => ({
@@ -127,6 +129,10 @@ function PricingPage() {
               </Link>
             </div>
           ))}
+        </div>
+
+        <div className="mt-14">
+          <PricingCalculator defaultPackage="one" />
         </div>
 
         <p className="mt-10 text-center text-sm text-muted-foreground">
