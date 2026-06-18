@@ -129,6 +129,13 @@ export const saveRolePermission = createServerFn({ method: "POST" })
       { onConflict: "tenant_id,role,module" },
     );
     if (error) throw error;
+    await context.supabase.rpc("log_audit", {
+      _action: "role_permission.updated",
+      _resource_type: "role_permissions",
+      _resource_id: `${(data as any).role}:${(data as any).module}`,
+      _metadata: data as never,
+      _severity: "critical",
+    });
     return { ok: true };
   });
 
@@ -184,6 +191,13 @@ export const createDebtNegotiation = createServerFn({ method: "POST" })
       status: "agreed",
     }).select().single();
     if (error) throw error;
+    await context.supabase.rpc("log_audit", {
+      _action: "debt_negotiation.created",
+      _resource_type: "debt_negotiations",
+      _resource_id: (row as any)?.id ?? "",
+      _metadata: { original: data.original_amount, final: final_amount, installments: data.installments } as never,
+      _severity: "warn",
+    });
     return row;
   });
 

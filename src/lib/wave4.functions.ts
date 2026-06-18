@@ -178,6 +178,13 @@ export const issueNfse = createServerFn({ method: "POST" })
       metadata: { sandbox: isSandbox, provider: "focus_nfe" },
     }).select().single();
     if (error) throw error;
+    await context.supabase.rpc("log_audit", {
+      _action: "nfse.issued",
+      _resource_type: "nfse_invoices",
+      _resource_id: (row as any)?.id ?? "",
+      _metadata: { amount: data.amount, sandbox: isSandbox, number } as never,
+      _severity: "info",
+    });
     return { ...row, sandbox: isSandbox };
   });
 
