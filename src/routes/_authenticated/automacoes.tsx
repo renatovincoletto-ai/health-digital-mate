@@ -77,7 +77,7 @@ function QueueTab() {
     onSuccess: () => { toast.success("Cancelado"); qc.invalidateQueries({ queryKey: ["automation-jobs"] }); },
   });
   const process = useMutation({
-    mutationFn: () => procFn({ data: {} }),
+    mutationFn: () => procFn(),
     onSuccess: (r: any) => {
       toast.success(`Processados: ${r.processed ?? 0}`);
       qc.invalidateQueries({ queryKey: ["automation-jobs"] });
