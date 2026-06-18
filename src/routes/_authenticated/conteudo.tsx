@@ -333,18 +333,19 @@ function BrandTab() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
-  useState(() => { /* noop */ });
-  if (data && Object.keys(form).length === 0) {
-    setForm({
-      logo_url: data.logo_url ?? "",
-      primary_color: data.primary_color ?? "#3B82F6",
-      secondary_color: data.secondary_color ?? "#10B981",
-      accent_color: data.accent_color ?? "#F59E0B",
-      font_heading: data.font_heading ?? "",
-      font_body: data.font_body ?? "",
-      tone_of_voice: data.tone_of_voice ?? "",
-    });
-  }
+  useEffect(() => {
+    if (data && Object.keys(form).length === 0) {
+      setForm({
+        logo_url: data.logo_url ?? "",
+        primary_color: data.primary_color ?? "#3B82F6",
+        secondary_color: data.secondary_color ?? "#10B981",
+        accent_color: data.accent_color ?? "#F59E0B",
+        font_heading: data.font_heading ?? "",
+        font_body: data.font_body ?? "",
+        tone_of_voice: data.tone_of_voice ?? "",
+      });
+    }
+  }, [data]);
 
   const save = useMutation({
     mutationFn: () => saveFn({ data: form }),
