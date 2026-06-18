@@ -14,6 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_campaigns: {
+        Row: {
+          audience: string | null
+          created_at: string
+          daily_budget_cents: number
+          description: string | null
+          ended_at: string | null
+          external_campaign_id: string | null
+          headline: string | null
+          id: string
+          image_url: string | null
+          landing_url: string | null
+          metrics: Json
+          name: string
+          objective: string
+          platform: string
+          started_at: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          audience?: string | null
+          created_at?: string
+          daily_budget_cents?: number
+          description?: string | null
+          ended_at?: string | null
+          external_campaign_id?: string | null
+          headline?: string | null
+          id?: string
+          image_url?: string | null
+          landing_url?: string | null
+          metrics?: Json
+          name: string
+          objective: string
+          platform: string
+          started_at?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          audience?: string | null
+          created_at?: string
+          daily_budget_cents?: number
+          description?: string | null
+          ended_at?: string | null
+          external_campaign_id?: string | null
+          headline?: string | null
+          id?: string
+          image_url?: string | null
+          landing_url?: string | null
+          metrics?: Json
+          name?: string
+          objective?: string
+          platform?: string
+          started_at?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_campaigns_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
           created_at: string
@@ -231,6 +302,44 @@ export type Database = {
             foreignKeyName: "brands_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_ideas: {
+        Row: {
+          body: string
+          category: string | null
+          created_at: string
+          id: string
+          tenant_id: string
+          title: string
+          used: boolean
+        }
+        Insert: {
+          body: string
+          category?: string | null
+          created_at?: string
+          id?: string
+          tenant_id: string
+          title: string
+          used?: boolean
+        }
+        Update: {
+          body?: string
+          category?: string | null
+          created_at?: string
+          id?: string
+          tenant_id?: string
+          title?: string
+          used?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_ideas_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
@@ -509,6 +618,65 @@ export type Database = {
             foreignKeyName: "sites_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_posts: {
+        Row: {
+          caption: string
+          created_at: string
+          created_by: string | null
+          hashtags: string | null
+          id: string
+          image_url: string | null
+          metadata: Json
+          platforms: string[]
+          published_at: string | null
+          scheduled_for: string | null
+          status: string
+          tenant_id: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          caption?: string
+          created_at?: string
+          created_by?: string | null
+          hashtags?: string | null
+          id?: string
+          image_url?: string | null
+          metadata?: Json
+          platforms?: string[]
+          published_at?: string | null
+          scheduled_for?: string | null
+          status?: string
+          tenant_id: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          caption?: string
+          created_at?: string
+          created_by?: string | null
+          hashtags?: string | null
+          id?: string
+          image_url?: string | null
+          metadata?: Json
+          platforms?: string[]
+          published_at?: string | null
+          scheduled_for?: string | null
+          status?: string
+          tenant_id?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_posts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
