@@ -86,6 +86,6 @@ export const searchPatientNames = createServerFn({ method: "POST" })
       .eq("tenant_id", tid)
       .ilike("patient_name", `%${data.q}%`)
       .limit(50);
-    const unique = Array.from(new Set((names ?? []).map((n: any) => n.patient_name as string)));
+    const unique: string[] = Array.from(new Set((names ?? []).map((n: any) => String(n.patient_name))));
     return unique.slice(0, 10);
   });
