@@ -211,6 +211,7 @@ export const generateSoapNote = createServerFn({ method: "POST" })
       patient_phone: z.string().max(40).optional().nullable(),
       transcript: z.string().min(20).max(20000),
       specialty: z.string().optional(),
+      professional_id: z.string().uuid().optional().nullable(),
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -236,10 +237,12 @@ O campo patient_summary deve ter no máximo 6 linhas, em português claro, sem j
     const soap = JSON.parse(match[0]) as {
       subjective: string; objective: string; assessment: string; plan: string; patient_summary: string;
     };
-    const { data: row, error } = await context.supabase.from("consultation_notes").insert({
+    const sb = context.supabase as any;
+    const { data: row, error } = await sb.from("consultation_notes").insert({
       tenant_id: tid,
       patient_name: data.patient_name,
       patient_phone: data.patient_phone || null,
+      professional_id: data.professional_id || null,
       transcript: data.transcript,
       soap_subjective: soap.subjective,
       soap_objective: soap.objective,
