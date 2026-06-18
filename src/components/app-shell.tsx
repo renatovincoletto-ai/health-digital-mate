@@ -13,14 +13,21 @@ import { BrandMark } from "./brand-mark";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
-const nav = [
+type NavItem = {
+  to: "/dashboard" | "/site" | "/agenda" | "/conteudo" | "/anuncios" | "/reputacao";
+  label: string;
+  icon: typeof LayoutDashboard;
+  soon?: boolean;
+};
+
+const nav: NavItem[] = [
   { to: "/dashboard", label: "Painel", icon: LayoutDashboard },
   { to: "/site", label: "Site", icon: Globe },
   { to: "/agenda", label: "Agenda", icon: Calendar, soon: true },
   { to: "/conteudo", label: "Conteúdo", icon: Sparkles, soon: true },
   { to: "/anuncios", label: "Anúncios", icon: Megaphone, soon: true },
   { to: "/reputacao", label: "Reputação", icon: Star, soon: true },
-] as const;
+];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
