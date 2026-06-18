@@ -88,7 +88,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Site, agenda, conteúdo e anúncios automatizados pela IA. Tudo o que sua clínica precisa para crescer, sem contratar agência.",
       },
       { name: "author", content: "SaúdeOS" },
-      { property: "og:title", content: "SaúdeOS — Sua clínica no piloto automático" },
+      { property: "og:title", content: "SaúdeOS — Agência digital autônoma para médicos e dentistas" },
       {
         property: "og:description",
         content:
@@ -97,6 +97,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "SaúdeOS — Agência digital autônoma para médicos e dentistas" },
+      { name: "description", content: "Health Brand Studio empowers healthcare professionals to build and manage their online presence." },
+      { property: "og:description", content: "Health Brand Studio empowers healthcare professionals to build and manage their online presence." },
+      { name: "twitter:description", content: "Health Brand Studio empowers healthcare professionals to build and manage their online presence." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
