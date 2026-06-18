@@ -55,6 +55,7 @@ import { Route as AuthenticatedAnamneseRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
 import { Route as SSlugAnamneseRouteImport } from './routes/s.$slug.anamnese'
 import { Route as SSlugAgendarRouteImport } from './routes/s.$slug.agendar'
+import { Route as ApiPublicHooksRunAutomationsRouteImport } from './routes/api/public/hooks/run-automations'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -289,6 +290,12 @@ const SSlugAgendarRoute = SSlugAgendarRouteImport.update({
   path: '/agendar',
   getParentRoute: () => SSlugRoute,
 } as any)
+const ApiPublicHooksRunAutomationsRoute =
+  ApiPublicHooksRunAutomationsRouteImport.update({
+    id: '/api/public/hooks/run-automations',
+    path: '/api/public/hooks/run-automations',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -336,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
+  '/api/public/hooks/run-automations': typeof ApiPublicHooksRunAutomationsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -383,6 +391,7 @@ export interface FileRoutesByTo {
   '/portal': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
+  '/api/public/hooks/run-automations': typeof ApiPublicHooksRunAutomationsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -432,6 +441,7 @@ export interface FileRoutesById {
   '/portal/': typeof PortalIndexRoute
   '/s/$slug/agendar': typeof SSlugAgendarRoute
   '/s/$slug/anamnese': typeof SSlugAnamneseRoute
+  '/api/public/hooks/run-automations': typeof ApiPublicHooksRunAutomationsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -481,6 +491,7 @@ export interface FileRouteTypes {
     | '/portal/'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
+    | '/api/public/hooks/run-automations'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -528,6 +539,7 @@ export interface FileRouteTypes {
     | '/portal'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
+    | '/api/public/hooks/run-automations'
   id:
     | '__root__'
     | '/'
@@ -576,6 +588,7 @@ export interface FileRouteTypes {
     | '/portal/'
     | '/s/$slug/agendar'
     | '/s/$slug/anamnese'
+    | '/api/public/hooks/run-automations'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -587,6 +600,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SSlugRoute: typeof SSlugRouteWithChildren
   PortalIndexRoute: typeof PortalIndexRoute
+  ApiPublicHooksRunAutomationsRoute: typeof ApiPublicHooksRunAutomationsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -913,6 +927,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SSlugAgendarRouteImport
       parentRoute: typeof SSlugRoute
     }
+    '/api/public/hooks/run-automations': {
+      id: '/api/public/hooks/run-automations'
+      path: '/api/public/hooks/run-automations'
+      fullPath: '/api/public/hooks/run-automations'
+      preLoaderRoute: typeof ApiPublicHooksRunAutomationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1018,6 +1039,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SSlugRoute: SSlugRouteWithChildren,
   PortalIndexRoute: PortalIndexRoute,
+  ApiPublicHooksRunAutomationsRoute: ApiPublicHooksRunAutomationsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
