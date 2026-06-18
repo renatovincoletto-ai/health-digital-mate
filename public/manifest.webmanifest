@@ -1,0 +1,14 @@
+{
+  "name": "SaúdeOS — Sua clínica no piloto automático",
+  "short_name": "SaúdeOS",
+  "description": "Site, agenda, conteúdo e anúncios automatizados por IA para médicos e dentistas no Brasil.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FAFAF7",
+  "theme_color": "#3B82F6",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "any", "type": "image/x-icon" }
+  ]
+}
