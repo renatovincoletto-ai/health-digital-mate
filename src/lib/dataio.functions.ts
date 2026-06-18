@@ -62,7 +62,8 @@ export const exportTable = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const tid = await tenantOf(context);
-    const { data: rows, error } = await context.supabase.from(data.table).select("*").eq("tenant_id", tid).limit(50000);
+    const sb = context.supabase as any;
+    const { data: rows, error } = await sb.from(data.table).select("*").eq("tenant_id", tid).limit(50000);
     if (error) throw error;
     const payload = data.format === "json" ? JSON.stringify(rows ?? [], null, 2) : toCsv(rows ?? []);
     return { filename: `${data.table}.${data.format}`, content: payload, count: rows?.length ?? 0 };
