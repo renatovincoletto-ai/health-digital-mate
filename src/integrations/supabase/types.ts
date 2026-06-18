@@ -727,6 +727,7 @@ export type Database = {
           created_at: string
           duration_seconds: number | null
           id: string
+          patient_id: string | null
           patient_name: string
           patient_phone: string | null
           patient_summary: string | null
@@ -746,6 +747,7 @@ export type Database = {
           created_at?: string
           duration_seconds?: number | null
           id?: string
+          patient_id?: string | null
           patient_name: string
           patient_phone?: string | null
           patient_summary?: string | null
@@ -765,6 +767,7 @@ export type Database = {
           created_at?: string
           duration_seconds?: number | null
           id?: string
+          patient_id?: string | null
           patient_name?: string
           patient_phone?: string | null
           patient_summary?: string | null
@@ -785,6 +788,13 @@ export type Database = {
             columns: ["appointment_id"]
             isOneToOne: false
             referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consultation_notes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
             referencedColumns: ["id"]
           },
           {
@@ -1836,6 +1846,83 @@ export type Database = {
           },
         ]
       }
+      patient_attachments: {
+        Row: {
+          consultation_note_id: string | null
+          created_at: string
+          description: string | null
+          file_name: string | null
+          id: string
+          kind: string
+          mime_type: string | null
+          patient_id: string
+          professional_id: string | null
+          size_bytes: number | null
+          storage_path: string
+          tenant_id: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          consultation_note_id?: string | null
+          created_at?: string
+          description?: string | null
+          file_name?: string | null
+          id?: string
+          kind?: string
+          mime_type?: string | null
+          patient_id: string
+          professional_id?: string | null
+          size_bytes?: number | null
+          storage_path: string
+          tenant_id: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          consultation_note_id?: string | null
+          created_at?: string
+          description?: string | null
+          file_name?: string | null
+          id?: string
+          kind?: string
+          mime_type?: string | null
+          patient_id?: string
+          professional_id?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+          tenant_id?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_attachments_consultation_note_id_fkey"
+            columns: ["consultation_note_id"]
+            isOneToOne: false
+            referencedRelation: "consultation_notes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_attachments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_attachments_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_attachments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patient_journeys: {
         Row: {
           active: boolean | null
@@ -1880,54 +1967,93 @@ export type Database = {
       patients: {
         Row: {
           address: Json | null
+          allergies_summary: string | null
+          archived_at: string | null
           birth_date: string | null
+          blood_type: string | null
+          bmi: number | null
           cpf: string | null
           created_at: string
           email: string | null
+          emergency_contact: Json | null
           full_name: string
           gender: string | null
+          height_cm: number | null
           id: string
+          last_visit_at: string | null
           lifetime_value: number | null
+          marital_status: string | null
           notes: string | null
+          payment_preference: string | null
           phone: string | null
+          photo_url: string | null
           portal_user_id: string | null
+          profession: string | null
+          rg: string | null
           tags: string[] | null
           tenant_id: string
           updated_at: string
+          weight_kg: number | null
         }
         Insert: {
           address?: Json | null
+          allergies_summary?: string | null
+          archived_at?: string | null
           birth_date?: string | null
+          blood_type?: string | null
+          bmi?: number | null
           cpf?: string | null
           created_at?: string
           email?: string | null
+          emergency_contact?: Json | null
           full_name: string
           gender?: string | null
+          height_cm?: number | null
           id?: string
+          last_visit_at?: string | null
           lifetime_value?: number | null
+          marital_status?: string | null
           notes?: string | null
+          payment_preference?: string | null
           phone?: string | null
+          photo_url?: string | null
           portal_user_id?: string | null
+          profession?: string | null
+          rg?: string | null
           tags?: string[] | null
           tenant_id: string
           updated_at?: string
+          weight_kg?: number | null
         }
         Update: {
           address?: Json | null
+          allergies_summary?: string | null
+          archived_at?: string | null
           birth_date?: string | null
+          blood_type?: string | null
+          bmi?: number | null
           cpf?: string | null
           created_at?: string
           email?: string | null
+          emergency_contact?: Json | null
           full_name?: string
           gender?: string | null
+          height_cm?: number | null
           id?: string
+          last_visit_at?: string | null
           lifetime_value?: number | null
+          marital_status?: string | null
           notes?: string | null
+          payment_preference?: string | null
           phone?: string | null
+          photo_url?: string | null
           portal_user_id?: string | null
+          profession?: string | null
+          rg?: string | null
           tags?: string[] | null
           tenant_id?: string
           updated_at?: string
+          weight_kg?: number | null
         }
         Relationships: [
           {
@@ -3684,6 +3810,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
       user_tenant_id: { Args: { _user_id: string }; Returns: string }
     }
     Enums: {
