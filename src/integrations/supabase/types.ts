@@ -365,6 +365,44 @@ export type Database = {
           },
         ]
       }
+      bi_snapshots: {
+        Row: {
+          created_at: string
+          id: string
+          meta: Json | null
+          metric_key: string
+          metric_value: number
+          snapshot_date: string
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          meta?: Json | null
+          metric_key: string
+          metric_value?: number
+          snapshot_date?: string
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          meta?: Json | null
+          metric_key?: string
+          metric_value?: number
+          snapshot_date?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bi_snapshots_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brands: {
         Row: {
           accent_color: string | null
@@ -410,6 +448,69 @@ export type Database = {
             foreignKeyName: "brands_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      call_logs: {
+        Row: {
+          agent_id: string | null
+          created_at: string
+          direction: string
+          duration_seconds: number | null
+          from_number: string | null
+          id: string
+          notes: string | null
+          outcome: string | null
+          patient_id: string | null
+          recording_url: string | null
+          started_at: string | null
+          tenant_id: string
+          to_number: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          created_at?: string
+          direction: string
+          duration_seconds?: number | null
+          from_number?: string | null
+          id?: string
+          notes?: string | null
+          outcome?: string | null
+          patient_id?: string | null
+          recording_url?: string | null
+          started_at?: string | null
+          tenant_id: string
+          to_number?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          created_at?: string
+          direction?: string
+          duration_seconds?: number | null
+          from_number?: string | null
+          id?: string
+          notes?: string | null
+          outcome?: string | null
+          patient_id?: string | null
+          recording_url?: string | null
+          started_at?: string | null
+          tenant_id?: string
+          to_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_logs_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "call_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
@@ -635,6 +736,143 @@ export type Database = {
           },
         ]
       }
+      financial_accounts: {
+        Row: {
+          account_type: string
+          balance: number | null
+          bank_name: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          name: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          account_type?: string
+          balance?: number | null
+          bank_name?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          account_type?: string
+          balance?: number | null
+          bank_name?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_accounts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_transactions: {
+        Row: {
+          account_id: string | null
+          amount: number
+          appointment_id: string | null
+          category: string | null
+          created_at: string
+          description: string
+          direction: string
+          due_date: string | null
+          id: string
+          paid_at: string | null
+          patient_id: string | null
+          payment_method: string | null
+          professional_id: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          account_id?: string | null
+          amount: number
+          appointment_id?: string | null
+          category?: string | null
+          created_at?: string
+          description: string
+          direction: string
+          due_date?: string | null
+          id?: string
+          paid_at?: string | null
+          patient_id?: string | null
+          payment_method?: string | null
+          professional_id?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string | null
+          amount?: number
+          appointment_id?: string | null
+          category?: string | null
+          created_at?: string
+          description?: string
+          direction?: string
+          due_date?: string | null
+          id?: string
+          paid_at?: string | null
+          patient_id?: string | null
+          payment_method?: string | null
+          professional_id?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_transactions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "financial_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_transactions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_transactions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_transactions_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_transactions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integration_accounts: {
         Row: {
           account_email: string | null
@@ -692,6 +930,158 @@ export type Database = {
           },
         ]
       }
+      internal_messages: {
+        Row: {
+          channel: string | null
+          content: string
+          created_at: string
+          id: string
+          read_at: string | null
+          recipient_id: string | null
+          sender_id: string
+          tenant_id: string
+        }
+        Insert: {
+          channel?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_id?: string | null
+          sender_id: string
+          tenant_id: string
+        }
+        Update: {
+          channel?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_id?: string | null
+          sender_id?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internal_messages_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_items: {
+        Row: {
+          category: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          location_id: string | null
+          min_quantity: number | null
+          name: string
+          quantity: number | null
+          sku: string | null
+          tenant_id: string
+          unit: string | null
+          unit_cost: number | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          location_id?: string | null
+          min_quantity?: number | null
+          name: string
+          quantity?: number | null
+          sku?: string | null
+          tenant_id: string
+          unit?: string | null
+          unit_cost?: number | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          location_id?: string | null
+          min_quantity?: number | null
+          name?: string
+          quantity?: number | null
+          sku?: string | null
+          tenant_id?: string
+          unit?: string | null
+          unit_cost?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_items_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_items_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_movements: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          movement_type: string
+          quantity: number
+          reason: string | null
+          tenant_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          movement_type: string
+          quantity: number
+          reason?: string | null
+          tenant_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          movement_type?: string
+          quantity?: number
+          reason?: string | null
+          tenant_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_movements_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_movements_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           active: boolean
@@ -741,6 +1131,400 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "locations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nps_surveys: {
+        Row: {
+          appointment_id: string | null
+          category: string | null
+          comment: string | null
+          created_at: string
+          id: string
+          patient_id: string | null
+          responded_at: string | null
+          score: number | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          category?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          patient_id?: string | null
+          responded_at?: string | null
+          score?: number | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          category?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          patient_id?: string | null
+          responded_at?: string | null
+          score?: number | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nps_surveys_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nps_surveys_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nps_surveys_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      odontogram_entries: {
+        Row: {
+          condition: string
+          created_at: string
+          face: string | null
+          id: string
+          notes: string | null
+          patient_id: string
+          procedure: string | null
+          recorded_by: string | null
+          tenant_id: string
+          tooth: string
+          updated_at: string
+        }
+        Insert: {
+          condition: string
+          created_at?: string
+          face?: string | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          procedure?: string | null
+          recorded_by?: string | null
+          tenant_id: string
+          tooth: string
+          updated_at?: string
+        }
+        Update: {
+          condition?: string
+          created_at?: string
+          face?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          procedure?: string | null
+          recorded_by?: string | null
+          tenant_id?: string
+          tooth?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "odontogram_entries_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "odontogram_entries_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patients: {
+        Row: {
+          address: Json | null
+          birth_date: string | null
+          cpf: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          gender: string | null
+          id: string
+          lifetime_value: number | null
+          notes: string | null
+          phone: string | null
+          portal_user_id: string | null
+          tags: string[] | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          address?: Json | null
+          birth_date?: string | null
+          cpf?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          lifetime_value?: number | null
+          notes?: string | null
+          phone?: string | null
+          portal_user_id?: string | null
+          tags?: string[] | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          address?: Json | null
+          birth_date?: string | null
+          cpf?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          lifetime_value?: number | null
+          notes?: string | null
+          phone?: string | null
+          portal_user_id?: string | null
+          tags?: string[] | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patients_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_links: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          expires_at: string | null
+          external_id: string | null
+          id: string
+          patient_id: string | null
+          provider: string
+          qr_code: string | null
+          status: string
+          tenant_id: string
+          transaction_id: string | null
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          external_id?: string | null
+          id?: string
+          patient_id?: string | null
+          provider?: string
+          qr_code?: string | null
+          status?: string
+          tenant_id: string
+          transaction_id?: string | null
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          external_id?: string | null
+          id?: string
+          patient_id?: string | null
+          provider?: string
+          qr_code?: string | null
+          status?: string
+          tenant_id?: string
+          transaction_id?: string | null
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_links_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_links_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_links_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "financial_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prescriptions: {
+        Row: {
+          appointment_id: string | null
+          content: string
+          created_at: string
+          doc_type: string
+          id: string
+          patient_id: string
+          pdf_url: string | null
+          professional_id: string | null
+          qr_code: string | null
+          signature_id: string | null
+          signature_provider: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          content: string
+          created_at?: string
+          doc_type?: string
+          id?: string
+          patient_id: string
+          pdf_url?: string | null
+          professional_id?: string | null
+          qr_code?: string | null
+          signature_id?: string | null
+          signature_provider?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          content?: string
+          created_at?: string
+          doc_type?: string
+          id?: string
+          patient_id?: string
+          pdf_url?: string | null
+          professional_id?: string | null
+          qr_code?: string | null
+          signature_id?: string | null
+          signature_provider?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescriptions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_splits: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          id: string
+          professional_id: string
+          rule_type: string
+          rule_value: number
+          service_id: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          professional_id: string
+          rule_type?: string
+          rule_value?: number
+          service_id?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          professional_id?: string
+          rule_type?: string
+          rule_value?: number
+          service_id?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_splits_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_splits_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_splits_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -836,6 +1620,206 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      quotes: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          id: string
+          items: Json
+          patient_id: string | null
+          pdf_url: string | null
+          signature: string | null
+          status: string
+          tenant_id: string
+          title: string
+          total_value: number | null
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          id?: string
+          items?: Json
+          patient_id?: string | null
+          pdf_url?: string | null
+          signature?: string | null
+          status?: string
+          tenant_id: string
+          title: string
+          total_value?: number | null
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          id?: string
+          items?: Json
+          patient_id?: string | null
+          pdf_url?: string | null
+          signature?: string | null
+          status?: string
+          tenant_id?: string
+          title?: string
+          total_value?: number | null
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referrals: {
+        Row: {
+          code: string | null
+          created_at: string
+          id: string
+          redeemed_at: string | null
+          referred_email: string | null
+          referred_patient_id: string | null
+          referrer_email: string | null
+          referrer_patient_id: string | null
+          reward_type: string | null
+          reward_value: number | null
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          redeemed_at?: string | null
+          referred_email?: string | null
+          referred_patient_id?: string | null
+          referrer_email?: string | null
+          referrer_patient_id?: string | null
+          reward_type?: string | null
+          reward_value?: number | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          redeemed_at?: string | null
+          referred_email?: string | null
+          referred_patient_id?: string | null
+          referrer_email?: string | null
+          referrer_patient_id?: string | null
+          reward_type?: string | null
+          reward_value?: number | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_patient_id_fkey"
+            columns: ["referred_patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_patient_id_fkey"
+            columns: ["referrer_patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reminders: {
+        Row: {
+          appointment_id: string | null
+          channel: string
+          confirmation: string | null
+          created_at: string
+          id: string
+          message: string
+          patient_id: string | null
+          scheduled_for: string
+          sent_at: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          channel?: string
+          confirmation?: string | null
+          created_at?: string
+          id?: string
+          message: string
+          patient_id?: string | null
+          scheduled_for: string
+          sent_at?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          channel?: string
+          confirmation?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          patient_id?: string | null
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminders_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reminders_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reminders_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       review_requests: {
         Row: {
@@ -1141,6 +2125,83 @@ export type Database = {
           },
         ]
       }
+      telemedicine_sessions: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          ended_at: string | null
+          id: string
+          patient_id: string | null
+          professional_id: string | null
+          recording_url: string | null
+          room_token: string | null
+          room_url: string
+          started_at: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          patient_id?: string | null
+          professional_id?: string | null
+          recording_url?: string | null
+          room_token?: string | null
+          room_url: string
+          started_at?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          patient_id?: string | null
+          professional_id?: string | null
+          recording_url?: string | null
+          room_token?: string | null
+          room_url?: string
+          started_at?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "telemedicine_sessions_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "telemedicine_sessions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "telemedicine_sessions_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "telemedicine_sessions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenants: {
         Row: {
           city: string | null
@@ -1200,6 +2261,130 @@ export type Database = {
           whatsapp?: string | null
         }
         Relationships: []
+      }
+      treatment_plan_items: {
+        Row: {
+          created_at: string
+          face: string | null
+          id: string
+          plan_id: string
+          procedure_name: string
+          quantity: number | null
+          sequence: number | null
+          status: string
+          tenant_id: string
+          tooth: string | null
+          unit_value: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          face?: string | null
+          id?: string
+          plan_id: string
+          procedure_name: string
+          quantity?: number | null
+          sequence?: number | null
+          status?: string
+          tenant_id: string
+          tooth?: string | null
+          unit_value?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          face?: string | null
+          id?: string
+          plan_id?: string
+          procedure_name?: string
+          quantity?: number | null
+          sequence?: number | null
+          status?: string
+          tenant_id?: string
+          tooth?: string | null
+          unit_value?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatment_plan_items_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "treatment_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "treatment_plan_items_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      treatment_plans: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          description: string | null
+          id: string
+          patient_id: string
+          professional_id: string | null
+          status: string
+          tenant_id: string
+          title: string
+          total_value: number | null
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          patient_id: string
+          professional_id?: string | null
+          status?: string
+          tenant_id: string
+          title: string
+          total_value?: number | null
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          patient_id?: string
+          professional_id?: string | null
+          status?: string
+          tenant_id?: string
+          title?: string
+          total_value?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatment_plans_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "treatment_plans_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "treatment_plans_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
