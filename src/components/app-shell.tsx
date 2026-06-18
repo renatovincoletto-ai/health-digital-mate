@@ -80,6 +80,7 @@ const groups: NavGroup[] = [
   ]},
   { label: "Configuração", items: [
     { to: "/equipe", label: "Equipe & permissões", icon: ShieldCheck, pkg: "core" },
+    { to: "/tasks", label: "Tasks & Feedback", icon: MessageSquare, pkg: "core" },
   ]},
 ];
 
