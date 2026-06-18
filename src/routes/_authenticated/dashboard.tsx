@@ -99,8 +99,9 @@ function DashboardPage() {
             to="/agenda"
             icon={Calendar}
             title="Agenda"
-            body="Sincronização com Google Calendar e Outlook. Confirmação via WhatsApp."
-            cta="Em desenvolvimento"
+            body="Profissionais, serviços, horários e agendamento público. Google/Outlook em breve."
+            cta="Abrir agenda"
+            ready
           />
           <ModuleCard
             to="/conteudo"

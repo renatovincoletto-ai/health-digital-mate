@@ -14,6 +14,178 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          created_at: string
+          ends_at: string
+          external_event_id: string | null
+          external_provider: string | null
+          id: string
+          internal_notes: string | null
+          origin: string
+          patient_email: string | null
+          patient_name: string
+          patient_notes: string | null
+          patient_phone: string | null
+          professional_id: string
+          service_id: string | null
+          starts_at: string
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          external_event_id?: string | null
+          external_provider?: string | null
+          id?: string
+          internal_notes?: string | null
+          origin?: string
+          patient_email?: string | null
+          patient_name: string
+          patient_notes?: string | null
+          patient_phone?: string | null
+          professional_id: string
+          service_id?: string | null
+          starts_at: string
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          external_event_id?: string | null
+          external_provider?: string | null
+          id?: string
+          internal_notes?: string | null
+          origin?: string
+          patient_email?: string | null
+          patient_name?: string
+          patient_notes?: string | null
+          patient_phone?: string | null
+          professional_id?: string
+          service_id?: string | null
+          starts_at?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      availability_blocks: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          professional_id: string
+          reason: string | null
+          starts_at: string
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          professional_id: string
+          reason?: string | null
+          starts_at: string
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          professional_id?: string
+          reason?: string | null
+          starts_at?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "availability_blocks_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "availability_blocks_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      availability_rules: {
+        Row: {
+          created_at: string
+          end_minute: number
+          id: string
+          professional_id: string
+          start_minute: number
+          tenant_id: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          end_minute: number
+          id?: string
+          professional_id: string
+          start_minute: number
+          tenant_id: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          end_minute?: number
+          id?: string
+          professional_id?: string
+          start_minute?: number
+          tenant_id?: string
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "availability_rules_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "availability_rules_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brands: {
         Row: {
           accent_color: string | null
@@ -64,6 +236,125 @@ export type Database = {
           },
         ]
       }
+      integration_accounts: {
+        Row: {
+          account_email: string | null
+          calendar_id: string | null
+          created_at: string
+          id: string
+          last_sync_at: string | null
+          metadata: Json
+          professional_id: string | null
+          provider: string
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          account_email?: string | null
+          calendar_id?: string | null
+          created_at?: string
+          id?: string
+          last_sync_at?: string | null
+          metadata?: Json
+          professional_id?: string | null
+          provider: string
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          account_email?: string | null
+          calendar_id?: string | null
+          created_at?: string
+          id?: string
+          last_sync_at?: string | null
+          metadata?: Json
+          professional_id?: string | null
+          provider?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_accounts_professional_id_fkey"
+            columns: ["professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "integration_accounts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professionals: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          color: string
+          council_number: string | null
+          council_state: string | null
+          council_type: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          is_active: boolean
+          phone: string | null
+          specialty: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          color?: string
+          council_number?: string | null
+          council_state?: string | null
+          council_type?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          is_active?: boolean
+          phone?: string | null
+          specialty?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          color?: string
+          council_number?: string | null
+          council_state?: string | null
+          council_type?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          is_active?: boolean
+          phone?: string | null
+          specialty?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professionals_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -90,6 +381,62 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      services: {
+        Row: {
+          color: string
+          created_at: string
+          deposit_cents: number | null
+          description: string | null
+          duration_minutes: number
+          id: string
+          is_active: boolean
+          is_public: boolean
+          name: string
+          price_cents: number | null
+          requires_deposit: boolean
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          deposit_cents?: number | null
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean
+          is_public?: boolean
+          name: string
+          price_cents?: number | null
+          requires_deposit?: boolean
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          deposit_cents?: number | null
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean
+          is_public?: boolean
+          name?: string
+          price_cents?: number | null
+          requires_deposit?: boolean
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_messages: {
         Row: {

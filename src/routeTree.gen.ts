@@ -22,6 +22,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedConteudoRouteImport } from './routes/_authenticated/conteudo'
 import { Route as AuthenticatedAnunciosRouteImport } from './routes/_authenticated/anuncios'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
+import { Route as SSlugAgendarRouteImport } from './routes/s.$slug.agendar'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -87,6 +88,11 @@ const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const SSlugAgendarRoute = SSlugAgendarRouteImport.update({
+  id: '/agendar',
+  path: '/agendar',
+  getParentRoute: () => SSlugRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -100,7 +106,8 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/site': typeof AuthenticatedSiteRoute
-  '/s/$slug': typeof SSlugRoute
+  '/s/$slug': typeof SSlugRouteWithChildren
+  '/s/$slug/agendar': typeof SSlugAgendarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -114,7 +121,8 @@ export interface FileRoutesByTo {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/reputacao': typeof AuthenticatedReputacaoRoute
   '/site': typeof AuthenticatedSiteRoute
-  '/s/$slug': typeof SSlugRoute
+  '/s/$slug': typeof SSlugRouteWithChildren
+  '/s/$slug/agendar': typeof SSlugAgendarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -130,7 +138,8 @@ export interface FileRoutesById {
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/reputacao': typeof AuthenticatedReputacaoRoute
   '/_authenticated/site': typeof AuthenticatedSiteRoute
-  '/s/$slug': typeof SSlugRoute
+  '/s/$slug': typeof SSlugRouteWithChildren
+  '/s/$slug/agendar': typeof SSlugAgendarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -147,6 +156,7 @@ export interface FileRouteTypes {
     | '/reputacao'
     | '/site'
     | '/s/$slug'
+    | '/s/$slug/agendar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/reputacao'
     | '/site'
     | '/s/$slug'
+    | '/s/$slug/agendar'
   id:
     | '__root__'
     | '/'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reputacao'
     | '/_authenticated/site'
     | '/s/$slug'
+    | '/s/$slug/agendar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,7 +196,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   PrecosRoute: typeof PrecosRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  SSlugRoute: typeof SSlugRoute
+  SSlugRoute: typeof SSlugRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -280,6 +292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgendaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/s/$slug/agendar': {
+      id: '/s/$slug/agendar'
+      path: '/agendar'
+      fullPath: '/s/$slug/agendar'
+      preLoaderRoute: typeof SSlugAgendarRouteImport
+      parentRoute: typeof SSlugRoute
+    }
   }
 }
 
@@ -306,13 +325,23 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface SSlugRouteChildren {
+  SSlugAgendarRoute: typeof SSlugAgendarRoute
+}
+
+const SSlugRouteChildren: SSlugRouteChildren = {
+  SSlugAgendarRoute: SSlugAgendarRoute,
+}
+
+const SSlugRouteWithChildren = SSlugRoute._addFileChildren(SSlugRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   PrecosRoute: PrecosRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  SSlugRoute: SSlugRoute,
+  SSlugRoute: SSlugRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
