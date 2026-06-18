@@ -61,7 +61,7 @@ export const ensureMyTenant = createServerFn({ method: "POST" })
         display_name: displayName,
         owner_id: context.userId,
         slug,
-        onboarding_status: "draft",
+        onboarding_status: "pending",
       })
       .select()
       .single();
