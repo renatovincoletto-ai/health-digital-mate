@@ -65,11 +65,11 @@ function Page() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-6 flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">CRM Clínico</p>
-            <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Pacientes</h1>
+            <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">Pacientes</h1>
             <p className="mt-1.5 text-muted-foreground">Ficha completa, prontuário, anexos e histórico multi-profissional.</p>
           </div>
           <div className="flex gap-2">

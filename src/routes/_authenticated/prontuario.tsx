@@ -135,10 +135,10 @@ function ProntuarioPage() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Prontuário</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Gravação, nota SOAP & histórico do paciente</h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">Gravação, nota SOAP & histórico do paciente</h1>
           <p className="mt-1.5 text-muted-foreground">Grave a consulta, vincule ao profissional atendente e veja todo o histórico do paciente entre profissionais da clínica.</p>
         </header>
 

@@ -51,10 +51,10 @@ function Page() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Financeiro</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Fluxo de caixa</h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">Fluxo de caixa</h1>
           <p className="mt-1.5 text-muted-foreground">Contas, lançamentos, recebimentos e repasse automático para profissionais.</p>
         </header>
         <div className="grid grid-cols-3 gap-4 mb-8">

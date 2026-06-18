@@ -33,10 +33,10 @@ function UnidadesPage() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Multi-unidade</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Unidades & consultórios</h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">Unidades & consultórios</h1>
           <p className="mt-1.5 text-muted-foreground">Cadastre múltiplos endereços. Aparecerão no site público e na agenda.</p>
         </header>
 

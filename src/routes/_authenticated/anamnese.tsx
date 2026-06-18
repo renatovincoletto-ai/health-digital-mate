@@ -41,10 +41,10 @@ function AnamnesePage() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Prontuário</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Anamnese digital</h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">Anamnese digital</h1>
           <p className="mt-1.5 text-muted-foreground">Pacientes preenchem antes da consulta, com consentimento LGPD. Link público: <code className="rounded bg-surface px-1.5 py-0.5">/s/SEU-SLUG/anamnese</code></p>
         </header>
 

@@ -48,10 +48,10 @@ function ReputationPage() {
 
   return (
     <AppShell>
-      <div className="container-page py-10">
+      <div className="container-page py-8">
         <header className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Reputação</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight">Avaliações & respostas com IA</h1>
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight">Avaliações & respostas com IA</h1>
           <p className="mt-1.5 text-muted-foreground">Solicite avaliações após cada consulta e responda com tom profissional, dentro das normas dos conselhos.</p>
         </header>
 
