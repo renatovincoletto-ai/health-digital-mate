@@ -73,9 +73,10 @@ export const exportAll = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const tid = await tenantOf(context);
+    const sb = context.supabase as any;
     const bundle: Record<string, any[]> = {};
     for (const t of EXPORTABLE_TABLES) {
-      const { data } = await context.supabase.from(t).select("*").eq("tenant_id", tid).limit(50000);
+      const { data } = await sb.from(t).select("*").eq("tenant_id", tid).limit(50000);
       bundle[t] = data ?? [];
     }
     return {
