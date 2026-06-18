@@ -4217,8 +4217,6 @@ export type Database = {
         }
         Returns: string
       }
-      show_limit: { Args: never; Returns: number }
-      show_trgm: { Args: { "": string }; Returns: string[] }
       user_tenant_id: { Args: { _user_id: string }; Returns: string }
     }
     Enums: {
