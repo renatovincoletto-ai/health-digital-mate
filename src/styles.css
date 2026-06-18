@@ -229,4 +229,29 @@
   .bg-cta-gradient {
     background: linear-gradient(135deg, oklch(0.38 0.075 165) 0%, oklch(0.32 0.06 175) 100%);
   }
+
+  /* Acessibilidade: foco visível consistente */
+  :where(a, button, [role="button"], input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Skip-to-content link */
+  .skip-to-content {
+    position: absolute;
+    top: -100px;
+    left: 8px;
+    z-index: 100;
+    padding: 8px 14px;
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: top 0.15s;
+  }
+  .skip-to-content:focus {
+    top: 8px;
+  }
 }

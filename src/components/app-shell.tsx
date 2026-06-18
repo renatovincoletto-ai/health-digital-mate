@@ -1,5 +1,5 @@
 import { Link, useRouter, useRouterState } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import {
   LayoutDashboard, Globe, Calendar, Sparkles, Megaphone, Star,
   ClipboardList, Stethoscope, Mail, Building2, LogOut,
@@ -7,10 +7,14 @@ import {
   Package, MessageSquare, Phone, Bell, Gift, Smile, TrendingUp,
   Receipt, Banknote, CreditCard, Building, FileBarChart, Workflow, Calculator,
   ListChecks, PlugZap, ShieldCheck, BarChart3, HandCoins, DatabaseBackup,
+  Search,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import {
+  CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,
+} from "@/components/ui/command";
 
 type Pkg = "clinic" | "pay" | "flow" | "contabil" | "presenca" | "core";
 type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; pkg: Pkg };
@@ -89,19 +93,50 @@ const groups: NavGroup[] = [
 export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((o) => !o);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   async function handleSignOut() {
     await supabase.auth.signOut();
     router.navigate({ to: "/auth" });
   }
 
+  function go(to: string) {
+    setPaletteOpen(false);
+    router.navigate({ to });
+  }
+
   return (
     <div className="flex min-h-screen bg-surface">
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-border/70 bg-sidebar p-3 lg:flex overflow-y-auto">
+      <a href="#main-content" className="skip-to-content">Pular para o conteúdo</a>
+
+      <aside
+        className="hidden w-64 shrink-0 flex-col border-r border-border/70 bg-sidebar p-3 lg:flex overflow-y-auto"
+        aria-label="Navegação principal"
+      >
         <div className="px-2 py-2">
           <BrandMark to="/dashboard" />
         </div>
-        <nav className="mt-4 flex flex-1 flex-col gap-4">
+        <button
+          onClick={() => setPaletteOpen(true)}
+          className="mt-3 flex items-center gap-2 rounded-md border border-border/60 bg-background px-3 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent/60"
+          aria-label="Abrir busca rápida (Ctrl+K)"
+        >
+          <Search className="h-3.5 w-3.5" />
+          <span className="flex-1 text-left">Buscar…</span>
+          <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
+        </button>
+        <nav className="mt-4 flex flex-1 flex-col gap-4" role="navigation">
           {groups.map((g) => (
             <div key={g.label}>
               <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">{g.label}</p>
@@ -114,6 +149,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <Link
                       key={item.to}
                       to={item.to}
+                      aria-current={active ? "page" : undefined}
                       className={cn(
                         "flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition",
                         active
@@ -121,7 +157,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                           : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground",
                       )}
                     >
-                      <Icon className="h-3.5 w-3.5" />
+                      <Icon className="h-3.5 w-3.5" aria-hidden="true" />
                       <span className="flex-1">{item.label}</span>
                       {item.pkg !== "core" && active && (
                         <span className={cn("rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase", b.color)}>{b.label}</span>
@@ -137,10 +173,37 @@ export function AppShell({ children }: { children: ReactNode }) {
           onClick={handleSignOut}
           className="mt-4 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-sidebar-accent/60 hover:text-foreground"
         >
-          <LogOut className="h-4 w-4" /> Sair
+          <LogOut className="h-4 w-4" aria-hidden="true" /> Sair
         </button>
       </aside>
-      <main className="flex-1 overflow-x-hidden">{children}</main>
+
+      <main id="main-content" tabIndex={-1} className="flex-1 overflow-x-hidden focus:outline-none">
+        {children}
+      </main>
+
+      <CommandDialog open={paletteOpen} onOpenChange={setPaletteOpen}>
+        <CommandInput placeholder="Buscar página… (ex: agenda, NPS, financeiro)" />
+        <CommandList>
+          <CommandEmpty>Nenhum resultado.</CommandEmpty>
+          {groups.map((g) => (
+            <CommandGroup key={g.label} heading={g.label}>
+              {g.items.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <CommandItem
+                    key={item.to}
+                    value={`${item.label} ${g.label} ${item.to}`}
+                    onSelect={() => go(item.to)}
+                  >
+                    <Icon className="mr-2 h-4 w-4" />
+                    <span>{item.label}</span>
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
+          ))}
+        </CommandList>
+      </CommandDialog>
     </div>
   );
 }
