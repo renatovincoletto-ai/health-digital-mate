@@ -202,7 +202,7 @@ function ModuleCard({
   cta,
   ready,
 }: {
-  to: "/site" | "/agenda" | "/conteudo" | "/anuncios" | "/reputacao" | "/dashboard";
+  to: "/site" | "/agenda" | "/conteudo" | "/anuncios" | "/reputacao" | "/dashboard" | "/anamnese" | "/prontuario" | "/email" | "/unidades";
   icon: typeof Globe;
   title: string;
   body: string;
