@@ -67,6 +67,13 @@ export const exportTable = createServerFn({ method: "POST" })
     const { data: rows, error } = await sb.from(data.table).select("*").eq("tenant_id", tid).limit(50000);
     if (error) throw error;
     const payload = data.format === "json" ? JSON.stringify(rows ?? [], null, 2) : toCsv(rows ?? []);
+    await sb.rpc("log_audit", {
+      _action: "data.exported",
+      _resource_type: data.table,
+      _resource_id: "",
+      _metadata: { format: data.format, count: rows?.length ?? 0 } as never,
+      _severity: "warn",
+    });
     return { filename: `${data.table}.${data.format}`, content: payload, count: rows?.length ?? 0 };
   });
 
@@ -80,6 +87,13 @@ export const exportAll = createServerFn({ method: "POST" })
       const { data } = await sb.from(t).select("*").eq("tenant_id", tid).limit(50000);
       bundle[t] = data ?? [];
     }
+    await sb.rpc("log_audit", {
+      _action: "data.export_all",
+      _resource_type: "tenant",
+      _resource_id: tid ?? "",
+      _metadata: { tables: EXPORTABLE_TABLES.length } as never,
+      _severity: "critical",
+    });
     return {
       filename: `export-lgpd-${new Date().toISOString().slice(0, 10)}.json`,
       content: JSON.stringify({ exported_at: new Date().toISOString(), tenant_id: tid, data: bundle }, null, 2),
