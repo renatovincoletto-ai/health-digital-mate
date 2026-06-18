@@ -103,7 +103,7 @@ function LandingPage() {
               Escolha por dor. Combine quando crescer.
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Quatro pacotes especializados — ou tudo junto no SaúdeOS One. Painel e BI estão
+              Cinco pacotes especializados — ou tudo junto no SaúdeOS One. Painel e BI estão
               inclusos em qualquer combinação.
             </p>
           </div>
@@ -208,7 +208,7 @@ function LandingPage() {
 }
 
 type Pkg = {
-  id: "clinic" | "grow" | "pay" | "fiscal";
+  id: "presenca" | "clinic" | "pay" | "flow" | "contabil";
   icon: typeof Stethoscope;
   title: string;
   tagline: string;
@@ -220,36 +220,35 @@ type Pkg = {
 
 const packages: Pkg[] = [
   {
+    id: "presenca",
+    icon: Megaphone,
+    title: "Presença",
+    tagline: "Atraia mais pacientes",
+    tone: "bg-accent/15 text-accent",
+    price: 197,
+    body: "Site profissional com IA, conteúdo, SEO local, anúncios Google/Meta e gestão de reputação.",
+    items: [
+      "Site profissional com IA",
+      "Conteúdo e SEO local",
+      "Anúncios Google e Meta",
+      "E-mail marketing",
+      "Reputação Google/Doctoralia",
+    ],
+  },
+  {
     id: "clinic",
     icon: Stethoscope,
     title: "Clinic",
     tagline: "Operar a clínica",
     tone: "bg-primary/10 text-primary",
-    price: 299,
+    price: 297,
     body: "Tudo que sua equipe usa do agendamento ao atendimento — com prontuário inteligente e teleconsulta.",
     items: [
-      "Agenda + Pacientes/CRM",
-      "Prontuário (SOAP) + Anamnese",
-      "Teleconsulta + Prescrições",
-      "Planos, Estoque, Unidades",
-      "Chat interno + Call center",
-      "Portal do paciente",
-    ],
-  },
-  {
-    id: "grow",
-    icon: TrendingUp,
-    title: "Grow",
-    tagline: "Crescer e fidelizar",
-    tone: "bg-accent/15 text-accent",
-    price: 249,
-    body: "Atrai pacientes novos e mantém os atuais voltando, com IA cuidando da presença digital ponta a ponta.",
-    items: [
-      "Site + Conteúdo + SEO",
-      "Anúncios Google e Meta",
-      "E-mail marketing + Reputação",
-      "Jornadas IA + Lembretes",
-      "Agente WhatsApp + Indicações",
+      "Agenda multi-profissional",
+      "Prontuário + Anamnese",
+      "Prescrição digital + QR",
+      "Teleconsulta integrada",
+      "Estoque e multi-unidade",
     ],
   },
   {
@@ -258,29 +257,46 @@ const packages: Pkg[] = [
     title: "Pay",
     tagline: "Receber, repassar, faturar",
     tone: "bg-success/15 text-success",
-    price: 199,
+    price: 247,
     body: "Do orçamento ao repasse do profissional — incluindo maquininha TEF e faturamento de convênios.",
     items: [
-      "Caixa + Pagamentos online",
-      "Maquininhas TEF",
-      "Orçamentos + Contratos",
-      "Repasses automatizados",
+      "Caixa e fluxo financeiro",
+      "Pix, link, maquininha (TEF)",
+      "Repasse a profissionais",
+      "Orçamentos digitais",
       "Convênios + Guias TISS",
     ],
   },
   {
-    id: "fiscal",
-    icon: Receipt,
-    title: "Fiscal",
-    tagline: "Ficar legal",
-    tone: "bg-warning/15 text-warning",
-    price: 149,
-    body: "Notas, impostos e painel do contador integrados ao financeiro — sem planilha, sem retrabalho.",
+    id: "flow",
+    icon: Sparkles,
+    title: "Flow",
+    tagline: "Engaje o paciente",
+    tone: "bg-primary/10 text-primary",
+    price: 197,
+    body: "Jornadas automáticas com IA, lembretes multicanal, programa de indicação e portal do paciente.",
     items: [
-      "Emissão de NFS-e",
-      "Tributos (DAS, ISS, IR)",
-      "Painel do contador",
-      "Documentos compartilhados",
+      "Jornadas automáticas com IA",
+      "Lembretes WhatsApp/SMS/e-mail",
+      "Programa de indicação",
+      "NPS pós-consulta",
+      "Portal do paciente (PWA)",
+    ],
+  },
+  {
+    id: "contabil",
+    icon: Calculator,
+    title: "Contábil",
+    tagline: "Fique em dia",
+    tone: "bg-warning/15 text-warning",
+    price: 349,
+    body: "Emissão de notas, impostos, painel do contador e suporte fiscal humano integrado ao financeiro.",
+    items: [
+      "Emissão de NFS-e (ISS auto)",
+      "DAS, IRPJ, INSS, ISS",
+      "Abertura/regularização CNPJ",
+      "Painel para o contador",
+      "Suporte fiscal humano",
     ],
   },
 ];
