@@ -18,7 +18,7 @@ export const getProfessionalPerformance = createServerFn({ method: "GET" })
     const [{ data: pros }, { data: appts }, { data: tx }, { data: nps }] = await Promise.all([
       sb.from("professionals").select("id,name,specialty,color").eq("tenant_id", tenant_id),
       sb.from("appointments").select("id,professional_id,service_id,status,starts_at").eq("tenant_id", tenant_id).gte("starts_at", since.toISOString()),
-      sb.from("financial_transactions").select("amount,kind,professional_id,occurred_at").eq("tenant_id", tenant_id).gte("occurred_at", since.toISOString()),
+      sb.from("financial_transactions").select("amount,direction,professional_id,paid_at,due_date").eq("tenant_id", tenant_id).gte("due_date", since.toISOString().slice(0, 10)),
       sb.from("nps_surveys").select("score,professional_id,created_at").eq("tenant_id", tenant_id).gte("created_at", since.toISOString()),
     ]);
 
