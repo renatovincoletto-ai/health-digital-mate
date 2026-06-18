@@ -60,7 +60,7 @@ const packages = [
     name: "Contábil",
     price: "R$ 349",
     tagline: "Fique em dia",
-    features: ["Emissão de NFS-e (ISS auto)", "DAS, IRPJ, INSS, ISS", "Abertura/regularização CNPJ", "Painel para o contador", "Suporte fiscal humano"],
+    features: ["Emissão de NFS-e (ISS auto)", "DAS, IRPJ, INSS, ISS", "Painel para o contador", "Suporte fiscal humano"],
   },
 ];
 

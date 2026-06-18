@@ -680,7 +680,6 @@ const packages: Pkg[] = [
     items: [
       "Emissão de NFS-e (ISS automático)",
       "DAS, IRPJ, INSS, ISS",
-      "Abertura/regularização CNPJ",
       "Painel para o contador",
       "Folha de pagamento simplificada",
       "Suporte fiscal humano",
