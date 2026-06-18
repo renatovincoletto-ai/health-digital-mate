@@ -66,6 +66,8 @@ const ptBR: Dict = {
   "item.faturamento": "Plano & Faturamento",
   "item.dados": "Importar & Exportar",
   "item.tasks": "Tasks & Feedback",
+  "item.auditoria": "Auditoria",
+  "nav.menu": "Abrir menu",
 };
 
 const en: Dict = {
@@ -128,6 +130,8 @@ const en: Dict = {
   "item.faturamento": "Plan & Billing",
   "item.dados": "Import & Export",
   "item.tasks": "Tasks & Feedback",
+  "item.auditoria": "Audit log",
+  "nav.menu": "Open menu",
 };
 
 const dicts: Record<Locale, Dict> = { "pt-BR": ptBR, en };

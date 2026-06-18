@@ -325,6 +325,59 @@ export type Database = {
           },
         ]
       }
+      audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          created_at: string
+          id: string
+          ip_address: string | null
+          metadata: Json
+          resource_id: string | null
+          resource_type: string
+          severity: string
+          tenant_id: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          resource_id?: string | null
+          resource_type: string
+          severity?: string
+          tenant_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          resource_id?: string | null
+          resource_type?: string
+          severity?: string
+          tenant_id?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       automation_jobs: {
         Row: {
           appointment_id: string | null
@@ -2774,6 +2827,33 @@ export type Database = {
           },
         ]
       }
+      rate_limit_hits: {
+        Row: {
+          bucket: string
+          created_at: string
+          hit_count: number
+          id: number
+          ip: string | null
+          window_start: string
+        }
+        Insert: {
+          bucket: string
+          created_at?: string
+          hit_count?: number
+          id?: number
+          ip?: string | null
+          window_start?: string
+        }
+        Update: {
+          bucket?: string
+          created_at?: string
+          hit_count?: number
+          id?: number
+          ip?: string | null
+          window_start?: string
+        }
+        Relationships: []
+      }
       referrals: {
         Row: {
           code: string | null
@@ -4110,6 +4190,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_audit_log: { Args: never; Returns: number }
       enqueue_appointment_automations_for: {
         Args: { _appointment_id: string }
         Returns: undefined
@@ -4125,6 +4206,16 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      log_audit: {
+        Args: {
+          _action: string
+          _metadata?: Json
+          _resource_id: string
+          _resource_type: string
+          _severity?: string
+        }
+        Returns: string
       }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }

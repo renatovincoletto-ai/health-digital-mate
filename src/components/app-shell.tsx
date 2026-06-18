@@ -7,7 +7,7 @@ import {
   Package, MessageSquare, Phone, Bell, Gift, Smile, TrendingUp,
   Receipt, Banknote, CreditCard, Building, FileBarChart, Workflow, Calculator,
   ListChecks, PlugZap, ShieldCheck, BarChart3, HandCoins, DatabaseBackup,
-  Search, Languages,
+  Search, Languages, Menu, ScrollText,
 } from "lucide-react";
 import { BrandMark } from "./brand-mark";
 import { supabase } from "@/integrations/supabase/client";
@@ -85,6 +85,7 @@ const groups: NavGroup[] = [
   ]},
   { labelKey: "group.config", items: [
     { to: "/equipe", labelKey: "item.equipe", icon: ShieldCheck, pkg: "core" },
+    { to: "/auditoria", labelKey: "item.auditoria", icon: ScrollText, pkg: "core" },
     { to: "/faturamento", labelKey: "item.faturamento", icon: Receipt, pkg: "core" },
     { to: "/dados", labelKey: "item.dados", icon: DatabaseBackup, pkg: "core" },
     { to: "/tasks", labelKey: "item.tasks", icon: MessageSquare, pkg: "core" },
@@ -95,7 +96,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { t, locale, setLocale } = useI18n();
+
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
+
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -127,10 +132,42 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-surface">
       <a href="#main-content" className="skip-to-content">{t("nav.skip")}</a>
 
+      {/* Mobile top bar */}
+      <header className="fixed top-0 inset-x-0 z-30 flex h-12 items-center justify-between border-b border-border/70 bg-background/95 px-3 backdrop-blur lg:hidden">
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="flex h-9 w-9 items-center justify-center rounded-md border border-border/60 hover:bg-sidebar-accent/60"
+          aria-label={t("nav.menu")}
+        >
+          <Menu className="h-4 w-4" />
+        </button>
+        <BrandMark to="/dashboard" />
+        <button
+          onClick={() => setPaletteOpen(true)}
+          className="flex h-9 w-9 items-center justify-center rounded-md border border-border/60 hover:bg-sidebar-accent/60"
+          aria-label={t("nav.search.aria")}
+        >
+          <Search className="h-4 w-4" />
+        </button>
+      </header>
+
+      {/* Mobile drawer overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-foreground/40 lg:hidden"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       <aside
-        className="hidden w-64 shrink-0 flex-col border-r border-border/70 bg-sidebar p-3 lg:flex overflow-y-auto"
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-64 shrink-0 flex-col border-r border-border/70 bg-sidebar p-3 overflow-y-auto transition-transform lg:static lg:flex lg:translate-x-0",
+          mobileOpen ? "flex translate-x-0" : "hidden -translate-x-full lg:flex",
+        )}
         aria-label={t("nav.main")}
       >
+
         <div className="px-2 py-2">
           <BrandMark to="/dashboard" />
         </div>
@@ -195,9 +232,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         </button>
       </aside>
 
-      <main id="main-content" tabIndex={-1} className="flex-1 overflow-x-hidden focus:outline-none">
+      <main id="main-content" tabIndex={-1} className="flex-1 overflow-x-hidden focus:outline-none pt-12 lg:pt-0">
         {children}
       </main>
+
 
       <CommandDialog open={paletteOpen} onOpenChange={setPaletteOpen}>
         <CommandInput placeholder={t("palette.placeholder")} />
