@@ -126,6 +126,7 @@ function Page() {
 
   return (
     <SimplePage
+      onboardingSection="repasses"
       title="Repasses a profissionais"
       description="Fechamento de comissões por período, líquido após taxas, com pagamento por Pix ou transferência."
       actions={

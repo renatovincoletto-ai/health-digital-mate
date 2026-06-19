@@ -94,7 +94,7 @@ function Page() {
   }, [filtered]);
 
   return (
-    <SimplePage title="Guias TISS" description="Faturamento de planos de saúde: guias de consulta, SADT e internação. Controle glosas e recebimentos.">
+    <SimplePage onboardingSection="tiss" title="Guias TISS" description="Faturamento de planos de saúde: guias de consulta, SADT e internação. Controle glosas e recebimentos.">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <Kpi icon={Clock} label="Em aberto" value={brl(totals.open)} hint={`${totals.openCount} guia(s)`} tone="warn" />
         <Kpi icon={ShieldCheck} label="Recebido" value={brl(totals.received)} hint={`${totals.settledCount} liquidadas`} tone="success" />

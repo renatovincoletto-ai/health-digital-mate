@@ -59,7 +59,7 @@ function Page() {
   }, [filteredTx]);
 
   return (
-    <SimplePage title="Maquininhas & TEF" description="Cadastre POS físicas (Stone, Cielo, Rede, GetNet) e acompanhe transações de cartão integradas.">
+    <SimplePage onboardingSection="maquininhas" title="Maquininhas & TEF" description="Cadastre POS físicas (Stone, Cielo, Rede, GetNet) e acompanhe transações de cartão integradas.">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <Kpi icon={Smartphone} label="Terminais ativos" value={String(terminals.length)} />
         <Kpi icon={TrendingUp} label="Vendas hoje" value={brl(totals.today)} hint={`${totals.todayCount} transações`} tone="success" />

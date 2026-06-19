@@ -72,7 +72,7 @@ function Page() {
   }, [data]);
 
   return (
-    <SimplePage title="Notas fiscais (NFS-e)" description="Emita notas de serviço com cálculo automático de ISS e armazene PDF/XML.">
+    <SimplePage onboardingSection="fiscal" title="Notas fiscais (NFS-e)" description="Emita notas de serviço com cálculo automático de ISS e armazene PDF/XML.">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <Kpi icon={FileCheck2} label="Notas emitidas" value={String(totals.issued)} hint={`${totals.total} total`} />
         <Kpi icon={TrendingUp} label="Faturado no mês" value={brl(totals.month)} tone="success" />

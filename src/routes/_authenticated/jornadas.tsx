@@ -125,7 +125,7 @@ function Page() {
   const totalSteps = data.reduce((s, j) => s + (j.journey_steps?.length ?? 0), 0);
 
   return (
-    <SimplePage title="Jornadas do paciente" description="Automatize sequências de mensagens: lembretes, recall, pós-atendimento, aniversário e mais.">
+    <SimplePage onboardingSection="jornadas" title="Jornadas do paciente" description="Automatize sequências de mensagens: lembretes, recall, pós-atendimento, aniversário e mais.">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <Kpi icon={Workflow} label="Jornadas criadas" value={String(data.length)} />
         <Kpi icon={Power} label="Ativas" value={String(totalActive)} tone="success" />

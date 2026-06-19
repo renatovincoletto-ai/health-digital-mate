@@ -59,6 +59,7 @@ function TasksPage() {
           title="Tasks & Feedback"
           description="Reporte problemas, tire dúvidas e sugira melhorias do sistema."
           actions={<NewTicketDialog onCreated={() => qc.invalidateQueries({ queryKey: ["tickets"] })} />}
+          onboardingSection="tasks"
           className="mb-2"
         />
 

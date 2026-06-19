@@ -60,6 +60,7 @@ function DataIOPage() {
           eyebrow="Dados"
           title="Importar & Exportar"
           description="Portabilidade total (LGPD): baixe seus dados a qualquer momento. Importe com ajuda da IA."
+          onboardingSection="dados"
           className="mb-2"
         />
 

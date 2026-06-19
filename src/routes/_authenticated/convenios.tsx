@@ -62,7 +62,7 @@ function Page() {
   }), [data, guides]);
 
   return (
-    <SimplePage title="Convênios" description="Cadastro de operadoras e planos de saúde aceitos. Use junto com Guias TISS para faturamento.">
+    <SimplePage onboardingSection="convenios" title="Convênios" description="Cadastro de operadoras e planos de saúde aceitos. Use junto com Guias TISS para faturamento.">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <Kpi icon={Building} label="Planos cadastrados" value={String(totals.plans)} hint={`${totals.operators} operadora(s)`} />
         <Kpi icon={FileBarChart} label="Guias emitidas" value={String(guides.length)} />
