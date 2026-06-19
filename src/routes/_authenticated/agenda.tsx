@@ -52,6 +52,10 @@ import {
   saveAppointment,
   updateAppointmentStatus,
   deleteAppointment,
+  listIntegrations,
+  saveIntegration,
+  deleteIntegration,
+  assignIntegrationToProfessional,
 } from "@/lib/agenda.functions";
 import { getMyTenant } from "@/lib/tenant.functions";
 
