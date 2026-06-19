@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Plus, Trash2, Users, Search, Camera, Paperclip, Archive,
-  AlertTriangle, Activity, FileText, X, Save, History,
+  AlertTriangle, Activity, FileText, X, Save, History, Wallet,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
@@ -14,6 +14,7 @@ import {
   listInactivePatients, registerPatientAttachment, deletePatientAttachment,
   signAttachmentUrl, savePatientAllergy, deletePatientAllergy,
 } from "@/lib/wave7.functions";
+import { listPatientWallet, addWalletTransaction, deleteWalletTransaction } from "@/lib/wallet.functions";
 
 export const Route = createFileRoute("/_authenticated/pacientes")({ component: Page });
 
