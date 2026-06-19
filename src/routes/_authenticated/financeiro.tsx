@@ -64,9 +64,9 @@ function Page() {
           <Stat label="A receber" value={pending} tone="muted" />
         </div>
         <div className="mb-6 flex gap-2">
-          {(["tx", "accounts", "splits"] as const).map(t => (
+          {(["tx", "accounts", "splits", "wallets"] as const).map(t => (
             <button key={t} onClick={() => setTab(t)} className={`rounded-lg px-3 py-1.5 text-sm ${tab === t ? "bg-primary text-primary-foreground" : "border border-border"}`}>
-              {t === "tx" ? "Lançamentos" : t === "accounts" ? "Contas" : "Repasses"}
+              {t === "tx" ? "Lançamentos" : t === "accounts" ? "Contas" : t === "splits" ? "Repasses" : "Carteira de pacientes"}
             </button>
           ))}
         </div>
