@@ -157,6 +157,85 @@ const REGISTRY: Record<string, SectionConfig> = {
       { label: "Configurar fornecedores" },
     ],
   },
+  convenios: {
+    title: "Configurar Convênios",
+    intro: "Cadastre operadoras e planos aceitos para faturar via TISS.",
+    steps: [
+      { label: "Cadastrar operadoras (Unimed, Bradesco, etc.)" },
+      { label: "Vincular planos a cada operadora" },
+      { label: "Definir tabela de procedimentos e valores" },
+      { label: "Configurar guias TISS", href: "/tiss" },
+    ],
+  },
+  dados: {
+    title: "Importar & Exportar dados",
+    intro: "Migre sua base atual e configure exportações automáticas.",
+    steps: [
+      { label: "Baixar modelos de planilha CSV" },
+      { label: "Importar pacientes, agendamentos e financeiro" },
+      { label: "Validar e revisar registros importados" },
+      { label: "Agendar exportações automáticas (backup)" },
+    ],
+  },
+  maquininhas: {
+    title: "Configurar Maquininhas (TEF)",
+    intro: "Conecte POS físicas (Stone, Cielo, Rede, GetNet) ao caixa.",
+    steps: [
+      { label: "Cadastrar terminais com número de série" },
+      { label: "Definir taxas por bandeira e parcelamento" },
+      { label: "Testar transação em modo homologação" },
+      { label: "Ativar conciliação automática", href: "/financeiro" },
+    ],
+  },
+  modelos: {
+    title: "Configurar Modelos clínicos",
+    intro: "Modelos prontos de evolução, atestado, declaração e laudos.",
+    steps: [
+      { label: "Escolher modelos por especialidade" },
+      { label: "Personalizar cabeçalho com logo e dados", href: "/site" },
+      { label: "Configurar assinatura eletrônica" },
+      { label: "Definir modelos favoritos por profissional" },
+    ],
+  },
+  repasses: {
+    title: "Configurar Repasses",
+    intro: "Defina regras de comissão e fechamento por profissional.",
+    steps: [
+      { label: "Cadastrar profissionais e percentuais", href: "/equipe" },
+      { label: "Definir regras por procedimento ou convênio" },
+      { label: "Escolher periodicidade do fechamento" },
+      { label: "Conectar conta para pagamento via Pix" },
+    ],
+  },
+  tasks: {
+    title: "Configurar Tasks & Feedback",
+    intro: "Organize tarefas internas e canalize sugestões da equipe.",
+    steps: [
+      { label: "Criar quadros por área (clínico, financeiro, marketing)" },
+      { label: "Definir responsáveis e prazos padrão" },
+      { label: "Habilitar coleta de feedback dos usuários" },
+    ],
+  },
+  tiss: {
+    title: "Configurar Guias TISS",
+    intro: "Faturamento de planos: SP/SADT, consulta, internação.",
+    steps: [
+      { label: "Cadastrar operadoras e planos", href: "/convenios" },
+      { label: "Importar tabela TUSS e valores contratados" },
+      { label: "Configurar lote XML padrão ANS" },
+      { label: "Habilitar controle de glosas e recursos" },
+    ],
+  },
+  tributos: {
+    title: "Configurar Tributos",
+    intro: "DAS, IRPJ, ISS, INSS — vencimentos e comprovantes em um lugar.",
+    steps: [
+      { label: "Importar regime tributário do CNPJ" },
+      { label: "Cadastrar alíquotas municipais (ISS)" },
+      { label: "Ativar geração automática de guias" },
+      { label: "Configurar alertas de vencimento" },
+    ],
+  },
   default: {
     title: "Configurar esta seção",
     intro: "Siga os passos para deixar esta funcionalidade pronta para uso.",
