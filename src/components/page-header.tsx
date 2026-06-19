@@ -31,8 +31,8 @@ export function PageHeader({
   settingsHref?: string;
   className?: string;
 }) {
-  const resolvedSettings =
-    settingsHref ?? (onboardingSection ? `/setup#${onboardingSection}` : undefined);
+  const settingsHash = onboardingSection ?? undefined;
+  const showSettings = Boolean(settingsHref || settingsHash);
 
   return (
     <header className={`flex flex-wrap items-end justify-between gap-4 ${className}`}>
@@ -45,15 +45,22 @@ export function PageHeader({
           <p className="mt-1.5 text-sm text-muted-foreground max-w-2xl">{description}</p>
         )}
       </div>
-      {(actions || onboardingSection || resolvedSettings) && (
+      {(actions || onboardingSection || showSettings) && (
         <div className="flex flex-wrap items-center gap-2 shrink-0">
           {onboardingSection && <SectionOnboarding section={onboardingSection} />}
-          {resolvedSettings && (
+          {showSettings && (
             <Button asChild variant="outline" size="sm" className="gap-2">
-              <Link to={resolvedSettings}>
-                <Settings2 className="h-4 w-4" />
-                Ajustes
-              </Link>
+              {settingsHref ? (
+                <a href={settingsHref}>
+                  <Settings2 className="h-4 w-4" />
+                  Ajustes
+                </a>
+              ) : (
+                <Link to="/setup" hash={settingsHash}>
+                  <Settings2 className="h-4 w-4" />
+                  Ajustes
+                </Link>
+              )}
             </Button>
           )}
           {actions}
