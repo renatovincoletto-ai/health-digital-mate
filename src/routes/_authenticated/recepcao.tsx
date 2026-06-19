@@ -346,6 +346,160 @@ function WaitlistTab() {
   );
 }
 
+// ============ ANTECIPAÇÃO DE CONSULTAS ============
+function AntecipacaoTab() {
+  const listApptsFn = useServerFn(listTodayAppointments);
+  const listWaitFn = useServerFn(listWaitlist);
+  const { data: appts = [] } = useQuery({ queryKey: ["today-appts"], queryFn: () => listApptsFn() });
+  const { data: waitlist = [] } = useQuery({ queryKey: ["waitlist"], queryFn: () => listWaitFn() });
+
+  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [customDate, setCustomDate] = useState("");
+  const [customTime, setCustomTime] = useState("");
+  const [notified, setNotified] = useState<Record<string, boolean>>({});
+
+  const openSlots = useMemo(
+    () => (appts as any[]).filter((a) => ["cancelled", "no_show"].includes(a.status)),
+    [appts],
+  );
+
+  const slot = selectedSlot ?? (customDate && customTime ? { custom: true, starts_at: `${customDate}T${customTime}` } : null);
+
+  function matchesSlot(w: any) {
+    if (!slot) return true;
+    if (slot.custom) return true;
+    if (w.professional_id && slot.professional_id && w.professional_id !== slot.professional_id) return false;
+    if (w.service_id && slot.service_id && w.service_id !== slot.service_id) return false;
+    return true;
+  }
+
+  const candidates = (waitlist as any[]).filter((w) => w.status === "waiting" && matchesSlot(w));
+
+  function prettySlotLabel() {
+    if (!slot) return "—";
+    const d = new Date(slot.starts_at);
+    const date = d.toLocaleDateString("pt-BR");
+    const time = d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    const who = slot.professionals?.full_name ? ` com ${slot.professionals.full_name}` : "";
+    const svc = slot.services?.name ? ` (${slot.services.name})` : "";
+    return `${date} às ${time}${who}${svc}`;
+  }
+
+  function buildMessage(w: any) {
+    const label = prettySlotLabel();
+    return `Olá ${w.patient_name}! Abriu um horário na agenda: ${label}. Quer antecipar sua consulta? Responda este WhatsApp para confirmarmos. 💙`;
+  }
+
+  function notifyWhatsapp(w: any) {
+    const phone = (w.patient_phone || "").replace(/\D/g, "");
+    if (!phone) { toast.error("Paciente sem WhatsApp"); return; }
+    const msg = encodeURIComponent(buildMessage(w));
+    window.open(`https://wa.me/${phone.startsWith("55") ? phone : "55" + phone}?text=${msg}`, "_blank");
+    setNotified((s) => ({ ...s, [w.id]: true }));
+  }
+
+  function notifyAll() {
+    if (candidates.length === 0) { toast.error("Sem pacientes elegíveis"); return; }
+    candidates.forEach((w, i) => setTimeout(() => notifyWhatsapp(w), i * 250));
+    toast.success(`Avisando ${candidates.length} pacientes`);
+  }
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[420px_1fr]">
+      <div className="space-y-4">
+        <div className="rounded-xl border border-border bg-gradient-to-br from-primary/10 via-surface-elevated to-surface-elevated p-5">
+          <div className="flex items-start gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-primary/15 text-primary"><Zap className="h-5 w-5" /></span>
+            <div>
+              <h2 className="font-display text-lg font-semibold">Antecipação de consultas</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Vagou um horário de repente? Avise outros pacientes para que antecipem sua consulta. Todos ganham.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-border bg-surface-elevated p-4">
+          <h3 className="mb-3 text-sm font-semibold">1. Escolha o horário que vagou</h3>
+          {openSlots.length === 0 ? (
+            <p className="text-xs text-muted-foreground">Nenhum cancelamento ou falta detectado hoje.</p>
+          ) : (
+            <div className="space-y-1.5">
+              {openSlots.map((a: any) => {
+                const active = selectedSlot?.id === a.id;
+                return (
+                  <button
+                    key={a.id}
+                    onClick={() => { setSelectedSlot(a); setCustomDate(""); setCustomTime(""); }}
+                    className={`w-full rounded-lg border p-2.5 text-left text-sm transition ${active ? "border-primary bg-primary/5" : "border-border hover:bg-muted/40"}`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium tabular-nums">{fmtTime(a.starts_at)}</span>
+                      <Badge variant="outline" className="text-[10px]">{a.status === "cancelled" ? "Cancelada" : "Falta"}</Badge>
+                    </div>
+                    <p className="mt-0.5 text-xs text-muted-foreground truncate">
+                      {a.professionals?.full_name ?? "—"} · {a.services?.name ?? "Consulta"}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="mt-4 border-t border-border pt-3">
+            <p className="mb-2 text-xs font-medium text-muted-foreground">Ou informe manualmente:</p>
+            <div className="grid grid-cols-2 gap-2">
+              <Input type="date" value={customDate} onChange={(e) => { setCustomDate(e.target.value); setSelectedSlot(null); }} />
+              <Input type="time" value={customTime} onChange={(e) => { setCustomTime(e.target.value); setSelectedSlot(null); }} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-border bg-surface-elevated p-5">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h3 className="font-display text-base font-semibold">2. Pacientes elegíveis</h3>
+            <p className="text-xs text-muted-foreground">
+              {slot ? prettySlotLabel() : "Selecione um horário ao lado para filtrar a lista de espera."}
+            </p>
+          </div>
+          <Button onClick={notifyAll} disabled={!slot || candidates.length === 0}>
+            <Send className="mr-2 h-4 w-4" /> Avisar todos ({candidates.length})
+          </Button>
+        </div>
+
+        {candidates.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-border p-10 text-center">
+            <Users className="mx-auto h-8 w-8 text-muted-foreground" />
+            <p className="mt-3 text-sm font-medium">Nenhum paciente na lista de espera compatível</p>
+            <p className="mt-1 text-xs text-muted-foreground">Adicione pacientes em "Lista de espera" para que apareçam aqui.</p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {candidates.map((w: any) => (
+              <div key={w.id} className="flex items-center justify-between gap-3 rounded-lg border border-border bg-background p-3">
+                <div className="min-w-0">
+                  <p className="font-medium truncate">{w.patient_name}</p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {w.patient_phone || w.patient_email || "Sem contato"} · {w.professionals?.full_name ?? "Qualquer prof."} · {w.services?.name ?? "Consulta"}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  {notified[w.id] && <Badge className="bg-emerald-500/15 text-emerald-600">Avisado</Badge>}
+                  <Button size="sm" variant="outline" onClick={() => notifyWhatsapp(w)} disabled={!slot || !w.patient_phone}>
+                    <MessageCircle className="mr-1.5 h-3.5 w-3.5" /> WhatsApp
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ============ RECORRENTE ============
 function RecurringTab() {
   const recFn = useServerFn(createRecurringAppointments);
