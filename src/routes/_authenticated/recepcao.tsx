@@ -4,7 +4,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import {
   Clock, CheckCircle2, XCircle, UserCheck, Stethoscope, Users, Plus, Trash2,
-  Phone, AlertTriangle, Calendar, Loader2, ArrowRight,
+  Phone, AlertTriangle, Calendar, Loader2, ArrowRight, Zap, MessageCircle, Send,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
