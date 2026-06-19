@@ -31,7 +31,7 @@ function Page() {
   const { data: splits = [] } = useQuery({ queryKey: ["splits"], queryFn: () => splitFn() });
   const { data: patients = [] } = useQuery({ queryKey: ["patients"], queryFn: () => patFn() });
 
-  const [tab, setTab] = useState<"tx" | "accounts" | "splits">("tx");
+  const [tab, setTab] = useState<"tx" | "accounts" | "splits" | "wallets">("tx");
   const [accForm, setAccForm] = useState({ name: "", account_type: "bank", bank_name: "", balance: 0 });
   const [txForm, setTxForm] = useState({ direction: "in" as "in" | "out", description: "", amount: 0, due_date: "", category: "", patient_id: "" });
 
