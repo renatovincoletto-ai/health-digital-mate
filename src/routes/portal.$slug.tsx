@@ -36,7 +36,7 @@ function PortalClinic() {
 
   if (!token) return <PortalLogin slug={slug} onLogin={(t) => { localStorage.setItem(`${STORAGE_KEY}:${slug}`, t); setToken(t); }} />;
   if (!me) return <main className="mx-auto max-w-3xl p-8 text-center text-sm text-muted-foreground">Carregando…</main>;
-  return <PortalHome slug={slug} me={me} onLogout={() => { localStorage.removeItem(`${STORAGE_KEY}:${slug}`); setToken(null); setMe(null); }} />;
+  return <PortalHome slug={slug} me={me} token={token} onLogout={() => { localStorage.removeItem(`${STORAGE_KEY}:${slug}`); setToken(null); setMe(null); }} />;
 }
 
 function PortalLogin({ slug, onLogin }: { slug: string; onLogin: (t: string) => void }) {
