@@ -56,11 +56,13 @@ function RecepcaoPage() {
           <TabsList className="mb-6">
             <TabsTrigger value="today"><Clock className="mr-2 h-4 w-4" />Hoje</TabsTrigger>
             <TabsTrigger value="waitlist"><Users className="mr-2 h-4 w-4" />Lista de espera</TabsTrigger>
+            <TabsTrigger value="antecipacao"><Zap className="mr-2 h-4 w-4" />Antecipação</TabsTrigger>
             <TabsTrigger value="recurring"><Calendar className="mr-2 h-4 w-4" />Recorrente</TabsTrigger>
           </TabsList>
 
           <TabsContent value="today"><TodayBoard /></TabsContent>
           <TabsContent value="waitlist"><WaitlistTab /></TabsContent>
+          <TabsContent value="antecipacao"><AntecipacaoTab /></TabsContent>
           <TabsContent value="recurring"><RecurringTab /></TabsContent>
         </Tabs>
       </div>
