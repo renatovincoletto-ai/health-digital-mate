@@ -556,3 +556,112 @@ function AttachmentCard({ att, onOpen, onDelete }: { att: any; onOpen: () => voi
     </div>
   );
 }
+
+function PatientWalletCard({ patientId }: { patientId: string }) {
+  const qc = useQueryClient();
+  const listFn = useServerFn(listPatientWallet);
+  const addFn = useServerFn(addWalletTransaction);
+  const delFn = useServerFn(deleteWalletTransaction);
+  const { data } = useQuery({
+    queryKey: ["wallet", patientId],
+    queryFn: () => listFn({ data: { patient_id: patientId } }),
+  });
+  const [form, setForm] = useState({ kind: "credit" as "credit" | "debit" | "refund" | "adjustment", amount: "", description: "" });
+  const add = useMutation({
+    mutationFn: () => addFn({ data: { patient_id: patientId, kind: form.kind, amount: Number(form.amount), description: form.description || undefined } }),
+    onSuccess: () => {
+      toast.success("Movimentação registrada");
+      setForm({ kind: "credit", amount: "", description: "" });
+      qc.invalidateQueries({ queryKey: ["wallet", patientId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const del = useMutation({
+    mutationFn: (id: string) => delFn({ data: { id } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["wallet", patientId] }),
+  });
+
+  const balance = data?.balance ?? 0;
+  const positive = balance >= 0;
+  const kindLabel: Record<string, string> = { credit: "Crédito", debit: "Débito", refund: "Reembolso", adjustment: "Ajuste" };
+
+  return (
+    <div className="rounded-2xl border border-border bg-surface-elevated p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-display text-lg font-semibold flex items-center gap-2">
+          <Wallet className="h-4 w-4" /> Carteira do paciente
+        </h3>
+        <div className={`rounded-xl px-4 py-2 text-right ${positive ? "bg-emerald-500/10" : "bg-rose-500/10"}`}>
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Saldo disponível</p>
+          <p className={`font-display text-xl font-semibold ${positive ? "text-emerald-600" : "text-rose-600"}`}>
+            R$ {balance.toFixed(2)}
+          </p>
+        </div>
+      </div>
+      <p className="text-xs text-muted-foreground mb-4">
+        Valores pagos que o paciente pode usar em consultas/procedimentos futuros. Útil quando um serviço já pago é cancelado.
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_120px_140px_auto] gap-2 mb-4">
+        <input
+          value={form.description}
+          onChange={e => setForm({ ...form, description: e.target.value })}
+          placeholder="Descrição (ex: cancelamento procedimento X)"
+          className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+        <select
+          value={form.kind}
+          onChange={e => setForm({ ...form, kind: e.target.value as any })}
+          className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        >
+          <option value="credit">Crédito (+)</option>
+          <option value="debit">Uso (−)</option>
+          <option value="refund">Reembolso (+)</option>
+          <option value="adjustment">Ajuste</option>
+        </select>
+        <input
+          type="number"
+          step="0.01"
+          value={form.amount}
+          onChange={e => setForm({ ...form, amount: e.target.value })}
+          placeholder="Valor"
+          className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+        <button
+          onClick={() => add.mutate()}
+          disabled={!form.amount || Number(form.amount) === 0}
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
+        >
+          Lançar
+        </button>
+      </div>
+
+      <div className="space-y-1.5">
+        {(data?.transactions ?? []).map((t: any) => {
+          const isIn = t.kind === "credit" || t.kind === "refund" || (t.kind === "adjustment" && Number(t.amount) >= 0);
+          return (
+            <div key={t.id} className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2 text-sm">
+              <div>
+                <p className="font-medium">{t.description || kindLabel[t.kind]}</p>
+                <p className="text-[10px] text-muted-foreground">
+                  {kindLabel[t.kind]} · {new Date(t.created_at).toLocaleString("pt-BR")}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`font-semibold ${isIn ? "text-emerald-600" : "text-rose-600"}`}>
+                  {isIn ? "+" : "−"} R$ {Math.abs(Number(t.amount)).toFixed(2)}
+                </span>
+                <button onClick={() => del.mutate(t.id)} className="text-muted-foreground hover:text-destructive">
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+        {(data?.transactions ?? []).length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-4">Nenhuma movimentação na carteira.</p>
+        )}
+      </div>
+    </div>
+  );
+}
