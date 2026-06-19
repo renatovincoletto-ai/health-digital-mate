@@ -8,6 +8,7 @@ export function SimplePage({
   eyebrow,
   actions,
   onboardingSection,
+  settingsHref,
   children,
 }: {
   title: string;
@@ -15,6 +16,7 @@ export function SimplePage({
   eyebrow?: string;
   actions?: ReactNode;
   onboardingSection?: string;
+  settingsHref?: string;
   children: ReactNode;
 }) {
   return (
@@ -26,6 +28,7 @@ export function SimplePage({
           description={description}
           actions={actions}
           onboardingSection={onboardingSection}
+          settingsHref={settingsHref}
         />
         {children}
       </div>

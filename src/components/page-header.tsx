@@ -1,15 +1,18 @@
 import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
+import { Settings2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { SectionOnboarding } from "./section-onboarding";
 
 /**
  * Cabeçalho padrão das telas internas do Minha Clínica.
  * Garante mesma densidade, hierarquia visual e tipografia em todo o app.
  *
- * Estrutura: eyebrow (uppercase) + título display + descrição + ações.
- * Use sempre dentro de `<div className="container-page py-8">`.
+ * `onboardingSection`: chave do registro em SectionOnboarding. Quando definida,
+ * exibe automaticamente o botão Onboarding daquele módulo + um botão Ajustes
+ * que leva para a Central de configuração ancorada no módulo (`/setup#<id>`).
  *
- * `onboardingSection`: chave do registro em SectionOnboarding (ex.: "agenda",
- * "financeiro"). Quando definida, exibe automaticamente o botão Onboarding.
+ * `settingsHref`: opcional, sobrescreve o link do botão Ajustes.
  */
 export function PageHeader({
   eyebrow,
@@ -17,6 +20,7 @@ export function PageHeader({
   description,
   actions,
   onboardingSection,
+  settingsHref,
   className = "mb-8",
 }: {
   eyebrow?: string;
@@ -24,8 +28,12 @@ export function PageHeader({
   description?: ReactNode;
   actions?: ReactNode;
   onboardingSection?: string;
+  settingsHref?: string;
   className?: string;
 }) {
+  const resolvedSettings =
+    settingsHref ?? (onboardingSection ? `/setup#${onboardingSection}` : undefined);
+
   return (
     <header className={`flex flex-wrap items-end justify-between gap-4 ${className}`}>
       <div className="min-w-0">
@@ -37,9 +45,17 @@ export function PageHeader({
           <p className="mt-1.5 text-sm text-muted-foreground max-w-2xl">{description}</p>
         )}
       </div>
-      {(actions || onboardingSection) && (
+      {(actions || onboardingSection || resolvedSettings) && (
         <div className="flex flex-wrap items-center gap-2 shrink-0">
           {onboardingSection && <SectionOnboarding section={onboardingSection} />}
+          {resolvedSettings && (
+            <Button asChild variant="outline" size="sm" className="gap-2">
+              <Link to={resolvedSettings}>
+                <Settings2 className="h-4 w-4" />
+                Ajustes
+              </Link>
+            </Button>
+          )}
           {actions}
         </div>
       )}

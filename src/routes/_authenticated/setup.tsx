@@ -293,6 +293,16 @@ function SetupPage() {
 
   useEffect(() => { setProgress(loadProgress()); }, []);
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sync = () => {
+      const hash = window.location.hash.replace(/^#/, "");
+      if (hash && modules.some((m) => m.id === hash)) setActive(hash);
+    };
+    sync();
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+  useEffect(() => {
     if (typeof window !== "undefined") localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   }, [progress]);
 
