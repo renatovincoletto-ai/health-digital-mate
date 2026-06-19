@@ -962,7 +962,7 @@ function HoursTab() {
 
   const [draft, setDraft] = useState<Record<number, { start: string; end: string; on: boolean }>>({});
 
-  useMemo(() => {
+  useEffect(() => {
     const init: Record<number, { start: string; end: string; on: boolean }> = {};
     for (let i = 0; i < 7; i++) {
       const rule = myRules.find((r: any) => r.weekday === i);
