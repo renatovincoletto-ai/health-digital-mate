@@ -157,6 +157,7 @@ function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
   const [anchor, setAnchor] = useState<Date>(() => startOfDay(new Date()));
   const [rangeStart, setRangeStart] = useState<Date>(() => startOfDay(new Date()));
   const [rangeEnd, setRangeEnd] = useState<Date>(() => addDays(startOfDay(new Date()), 30));
+  const [selectedPros, setSelectedPros] = useState<string[] | null>(null);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const queryClient = useQueryClient();
