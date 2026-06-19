@@ -395,9 +395,10 @@ function ApptCard({ a, onPick }: { a: any; onPick: (a: any) => void }) {
 function DaysGrid({
   start, count, apptsByDay, onPick,
 }: { start: Date; count: number; apptsByDay: Record<string, any[]>; onPick: (a: any) => void; columns?: number }) {
-  const cols = `grid-cols-1 md:grid-cols-${columns}`;
+  void columns;
   return (
-    <div className={`grid gap-3 ${cols}`}>
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-7">
+
       {Array.from({ length: count }).map((_, i) => {
         const d = addDays(start, i);
         const k = d.toDateString();
