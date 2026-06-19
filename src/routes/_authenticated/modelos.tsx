@@ -55,6 +55,7 @@ function ModelosPage() {
         <PageHeader
           eyebrow="Clínico"
           title="Modelos de documentos"
+          onboardingSection="modelos"
           description={
             <>
               Biblioteca de atestados, receituários, prontuários, pedidos de exame, laudos e termos. Use variáveis como

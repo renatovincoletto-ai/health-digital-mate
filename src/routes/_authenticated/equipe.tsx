@@ -29,6 +29,7 @@ function EquipePage() {
           eyebrow="Configurações"
           title="Equipe & Permissões"
           description="Controle quem acessa o quê e o limite máximo de desconto por perfil."
+          onboardingSection="equipe"
           className="mb-2"
         />
         <Tabs defaultValue="rbac">
