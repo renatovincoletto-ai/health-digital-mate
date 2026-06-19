@@ -136,6 +136,7 @@ function Page() {
         )}
 
         {tab === "splits" && <SplitsTab splits={splits} saveSp={saveSp} qc={qc} />}
+        {tab === "wallets" && <WalletsTab />}
       </div>
     </AppShell>
   );
