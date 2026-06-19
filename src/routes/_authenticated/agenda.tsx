@@ -52,6 +52,10 @@ import {
   saveAppointment,
   updateAppointmentStatus,
   deleteAppointment,
+  listIntegrations,
+  saveIntegration,
+  deleteIntegration,
+  assignIntegrationToProfessional,
 } from "@/lib/agenda.functions";
 import { getMyTenant } from "@/lib/tenant.functions";
 
@@ -703,16 +707,36 @@ function ProfessionalsTab() {
   const listFn = useServerFn(listProfessionals);
   const saveFn = useServerFn(saveProfessional);
   const delFn = useServerFn(deleteProfessional);
+  const integrationsFn = useServerFn(listIntegrations);
+  const assignFn = useServerFn(assignIntegrationToProfessional);
   const { data = [] } = useQuery({ queryKey: ["pros"], queryFn: () => listFn() });
+  const { data: integrations = [] } = useQuery({
+    queryKey: ["integrations"],
+    queryFn: () => integrationsFn(),
+  });
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState<any>({});
+  const [linkedIds, setLinkedIds] = useState<string[]>([]);
 
   const save = useMutation({
-    mutationFn: (d: any) => saveFn({ data: d }),
+    mutationFn: async (d: any) => {
+      const saved: any = await saveFn({ data: d });
+      // sync integration links
+      const proId = saved.id;
+      const current = (integrations as any[]).filter((i) => i.professional_id === proId).map((i) => i.id);
+      const toAttach = linkedIds.filter((id) => !current.includes(id));
+      const toDetach = current.filter((id) => !linkedIds.includes(id));
+      await Promise.all([
+        ...toAttach.map((id) => assignFn({ data: { integration_id: id, professional_id: proId } })),
+        ...toDetach.map((id) => assignFn({ data: { integration_id: id, professional_id: null } })),
+      ]);
+      return saved;
+    },
     onSuccess: () => {
       toast.success("Profissional salvo");
       queryClient.invalidateQueries({ queryKey: ["pros"] });
+      queryClient.invalidateQueries({ queryKey: ["integrations"] });
       setOpen(false);
     },
     onError: (e: any) => toast.error(e.message),
@@ -725,16 +749,24 @@ function ProfessionalsTab() {
     },
   });
 
+
   function openNew() {
     setEditing(null);
     setForm({ full_name: "", color: "#3B82F6", is_active: true });
+    setLinkedIds([]);
     setOpen(true);
   }
   function openEdit(p: any) {
     setEditing(p);
     setForm({ ...p });
+    setLinkedIds((integrations as any[]).filter((i) => i.professional_id === p.id).map((i) => i.id));
     setOpen(true);
   }
+
+  function toggleLink(id: string) {
+    setLinkedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }
+
 
   return (
     <div>
@@ -807,7 +839,47 @@ function ProfessionalsTab() {
               <Switch checked={form.is_active ?? true} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
               <Label>Ativo (aparece na agenda pública)</Label>
             </div>
+
+            <div className="rounded-lg border border-border bg-surface-muted/40 p-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm">Integrações vinculadas</Label>
+                <a href="#" onClick={(e) => { e.preventDefault(); toast.info("Cadastre integrações na aba Integrações."); }} className="text-xs text-primary hover:underline">
+                  Gerenciar
+                </a>
+              </div>
+              {(integrations as any[]).length === 0 ? (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Nenhuma integração cadastrada. Adicione contas na aba <strong>Integrações</strong>.
+                </p>
+              ) : (
+                <div className="mt-2 space-y-1.5 max-h-40 overflow-auto">
+                  {(integrations as any[]).map((i) => {
+                    const checked = linkedIds.includes(i.id);
+                    const otherPro = i.professional_id && i.professional_id !== editing?.id
+                      ? i.professionals?.full_name
+                      : null;
+                    return (
+                      <label key={i.id} className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 rounded border-border"
+                          checked={checked}
+                          onChange={() => toggleLink(i.id)}
+                        />
+                        <span className="flex-1 truncate">
+                          {i.label} <span className="text-xs text-muted-foreground">· {PROVIDERS.find((p) => p.value === i.provider)?.label ?? i.provider}</span>
+                        </span>
+                        {otherPro && (
+                          <span className="text-[10px] text-muted-foreground">já em {otherPro}</span>
+                        )}
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
             <Button onClick={() => save.mutate(form)} disabled={save.isPending}>
@@ -1049,39 +1121,226 @@ function strToMin(s: string) {
 }
 
 // ============= INTEGRATIONS =============
+const PROVIDERS: { value: "google_calendar" | "outlook" | "whatsapp"; label: string; hint: string }[] = [
+  { value: "google_calendar", label: "Google Calendar", hint: "Sincronização bidirecional com Google Agenda." },
+  { value: "outlook", label: "Microsoft Outlook", hint: "Microsoft 365 / Outlook Calendar." },
+  { value: "whatsapp", label: "WhatsApp Business", hint: "Confirmações, lembretes e respostas com IA." },
+];
+
+const STATUS_LABEL: Record<string, string> = {
+  pending: "Pendente",
+  connected: "Conectado",
+  expired: "Expirado",
+  revoked: "Revogado",
+};
+
 function IntegrationsTab() {
+  const queryClient = useQueryClient();
+  const listFn = useServerFn(listIntegrations);
+  const saveFn = useServerFn(saveIntegration);
+  const delFn = useServerFn(deleteIntegration);
+  const prosFn = useServerFn(listProfessionals);
+
+  const { data = [] } = useQuery({ queryKey: ["integrations"], queryFn: () => listFn() });
+  const { data: pros = [] } = useQuery({ queryKey: ["pros"], queryFn: () => prosFn() });
+
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<any>(null);
+  const [form, setForm] = useState<any>({});
+
+  const save = useMutation({
+    mutationFn: (d: any) => saveFn({ data: d }),
+    onSuccess: () => {
+      toast.success("Integração salva");
+      queryClient.invalidateQueries({ queryKey: ["integrations"] });
+      setOpen(false);
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+  const remove = useMutation({
+    mutationFn: (id: string) => delFn({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Removida");
+      queryClient.invalidateQueries({ queryKey: ["integrations"] });
+    },
+  });
+
+  function openNew(provider?: string) {
+    setEditing(null);
+    setForm({
+      provider: provider ?? "google_calendar",
+      label: "",
+      account_email: "",
+      calendar_id: "",
+      professional_id: null,
+      status: "pending",
+    });
+    setOpen(true);
+  }
+  function openEdit(row: any) {
+    setEditing(row);
+    setForm({ ...row, professional_id: row.professional_id ?? null });
+    setOpen(true);
+  }
+
+  const grouped = useMemo(() => {
+    const map: Record<string, any[]> = {};
+    for (const p of PROVIDERS) map[p.value] = [];
+    for (const r of data as any[]) {
+      if (!map[r.provider]) map[r.provider] = [];
+      map[r.provider].push(r);
+    }
+    return map;
+  }, [data]);
+
   return (
-    <div className="max-w-2xl space-y-4">
-      <div className="rounded-xl border border-border bg-surface-elevated p-5">
-        <h3 className="font-display text-lg font-semibold">Google Calendar</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Sincronização bidirecional por profissional. Cada profissional conecta a própria conta Google.
-        </p>
-        <Button variant="outline" className="mt-3" disabled>
-          <Plug className="mr-2 h-4 w-4" /> Conectar (em breve)
-        </Button>
-        <p className="mt-2 text-xs text-muted-foreground">
-          Para ativar, conecte o OAuth do Google na próxima onda do projeto.
-        </p>
+    <div className="max-w-3xl space-y-5">
+      <div className="rounded-xl border border-dashed border-border bg-surface-muted/40 p-4 text-sm text-muted-foreground">
+        Cadastre <strong>quantas contas precisar</strong> por integração (uma por médico, recepção,
+        unidade etc.). Cada conta tem um <strong>nome personalizado</strong> usado na hora de
+        vincular ao profissional.
       </div>
-      <div className="rounded-xl border border-border bg-surface-elevated p-5">
-        <h3 className="font-display text-lg font-semibold">Microsoft Outlook</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Sincronização com Microsoft 365 / Outlook Calendar.
-        </p>
-        <Button variant="outline" className="mt-3" disabled>
-          <Plug className="mr-2 h-4 w-4" /> Conectar (em breve)
-        </Button>
-      </div>
-      <div className="rounded-xl border border-border bg-surface-elevated p-5">
-        <h3 className="font-display text-lg font-semibold">WhatsApp Business</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Confirmações automáticas 24h e 2h antes, lembrete pós-consulta e respostas com IA.
-        </p>
-        <Button variant="outline" className="mt-3" disabled>
-          <Plug className="mr-2 h-4 w-4" /> Conectar (em breve)
-        </Button>
-      </div>
+
+      {PROVIDERS.map((p) => (
+        <div key={p.value} className="rounded-xl border border-border bg-surface-elevated p-5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <h3 className="font-display text-lg font-semibold">{p.label}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{p.hint}</p>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => openNew(p.value)}>
+              <Plus className="mr-2 h-4 w-4" /> Adicionar conta
+            </Button>
+          </div>
+
+          <div className="mt-4 space-y-2">
+            {grouped[p.value].length === 0 && (
+              <p className="text-xs text-muted-foreground">Nenhuma conta cadastrada.</p>
+            )}
+            {grouped[p.value].map((row: any) => (
+              <div
+                key={row.id}
+                className="flex items-center justify-between rounded-lg border border-border bg-background p-3"
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="truncate font-medium">{row.label}</p>
+                    <Badge variant="outline" className="text-[10px]">
+                      {STATUS_LABEL[row.status] ?? row.status}
+                    </Badge>
+                  </div>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {row.account_email || "—"}
+                    {row.professionals?.full_name ? ` · ${row.professionals.full_name}` : " · sem profissional"}
+                  </p>
+                </div>
+                <div className="flex gap-1">
+                  <Button variant="ghost" size="sm" onClick={() => openEdit(row)}>Editar</Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      if (confirm("Remover esta integração?")) remove.mutate(row.id);
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editing ? "Editar" : "Nova"} integração</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label>Provedor</Label>
+              <Select
+                value={form.provider ?? "google_calendar"}
+                onValueChange={(v) => setForm({ ...form, provider: v })}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {PROVIDERS.map((p) => (
+                    <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Nome desta conta *</Label>
+              <Input
+                placeholder="Ex.: Agenda Dr. João Silva"
+                value={form.label ?? ""}
+                onChange={(e) => setForm({ ...form, label: e.target.value })}
+              />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Este nome aparecerá ao vincular a integração a um profissional.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>E-mail / conta</Label>
+                <Input
+                  placeholder="joao@clinica.com"
+                  value={form.account_email ?? ""}
+                  onChange={(e) => setForm({ ...form, account_email: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>ID do calendário</Label>
+                <Input
+                  placeholder="primary"
+                  value={form.calendar_id ?? ""}
+                  onChange={(e) => setForm({ ...form, calendar_id: e.target.value })}
+                />
+              </div>
+            </div>
+            <div>
+              <Label>Profissional vinculado</Label>
+              <Select
+                value={form.professional_id ?? "none"}
+                onValueChange={(v) => setForm({ ...form, professional_id: v === "none" ? null : v })}
+              >
+                <SelectTrigger><SelectValue placeholder="Sem vínculo" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Sem vínculo</SelectItem>
+                  {(pros as any[]).map((p) => (
+                    <SelectItem key={p.id} value={p.id}>{p.full_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Status</Label>
+              <Select
+                value={form.status ?? "pending"}
+                onValueChange={(v) => setForm({ ...form, status: v })}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pending">Pendente</SelectItem>
+                  <SelectItem value="connected">Conectado</SelectItem>
+                  <SelectItem value="expired">Expirado</SelectItem>
+                  <SelectItem value="revoked">Revogado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+            <Button onClick={() => save.mutate(form)} disabled={save.isPending}>
+              {save.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Salvar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+

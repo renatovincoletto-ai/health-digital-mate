@@ -1,0 +1,1 @@
+ALTER TABLE public.integration_accounts ADD COLUMN IF NOT EXISTS label text;
