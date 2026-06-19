@@ -224,9 +224,15 @@ function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["appts"] }),
   });
 
+  const filteredAppts = useMemo(() => {
+    if (!selectedPros || selectedPros.length === 0) return appts;
+    const set = new Set(selectedPros);
+    return appts.filter((a: any) => set.has(a.professional_id));
+  }, [appts, selectedPros]);
+
   const apptsByDay = useMemo(() => {
     const map: Record<string, any[]> = {};
-    for (const a of appts) {
+    for (const a of filteredAppts) {
       const k = new Date(a.starts_at).toDateString();
       (map[k] ??= []).push(a);
     }
@@ -234,7 +240,7 @@ function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
       map[k].sort((a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime());
     }
     return map;
-  }, [appts]);
+  }, [filteredAppts]);
 
   function shift(dir: -1 | 1) {
     if (view === "day") setAnchor(addDays(anchor, dir));
