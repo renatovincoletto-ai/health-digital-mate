@@ -1319,6 +1319,7 @@ export type Database = {
           calendar_id: string | null
           created_at: string
           id: string
+          label: string | null
           last_sync_at: string | null
           metadata: Json
           professional_id: string | null
@@ -1332,6 +1333,7 @@ export type Database = {
           calendar_id?: string | null
           created_at?: string
           id?: string
+          label?: string | null
           last_sync_at?: string | null
           metadata?: Json
           professional_id?: string | null
@@ -1345,6 +1347,7 @@ export type Database = {
           calendar_id?: string | null
           created_at?: string
           id?: string
+          label?: string | null
           last_sync_at?: string | null
           metadata?: Json
           professional_id?: string | null
