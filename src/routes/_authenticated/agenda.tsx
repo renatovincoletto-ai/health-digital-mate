@@ -839,7 +839,47 @@ function ProfessionalsTab() {
               <Switch checked={form.is_active ?? true} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
               <Label>Ativo (aparece na agenda pública)</Label>
             </div>
+
+            <div className="rounded-lg border border-border bg-surface-muted/40 p-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm">Integrações vinculadas</Label>
+                <a href="#" onClick={(e) => { e.preventDefault(); toast.info("Cadastre integrações na aba Integrações."); }} className="text-xs text-primary hover:underline">
+                  Gerenciar
+                </a>
+              </div>
+              {(integrations as any[]).length === 0 ? (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Nenhuma integração cadastrada. Adicione contas na aba <strong>Integrações</strong>.
+                </p>
+              ) : (
+                <div className="mt-2 space-y-1.5 max-h-40 overflow-auto">
+                  {(integrations as any[]).map((i) => {
+                    const checked = linkedIds.includes(i.id);
+                    const otherPro = i.professional_id && i.professional_id !== editing?.id
+                      ? i.professionals?.full_name
+                      : null;
+                    return (
+                      <label key={i.id} className="flex items-center gap-2 text-sm">
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 rounded border-border"
+                          checked={checked}
+                          onChange={() => toggleLink(i.id)}
+                        />
+                        <span className="flex-1 truncate">
+                          {i.label} <span className="text-xs text-muted-foreground">· {PROVIDERS.find((p) => p.value === i.provider)?.label ?? i.provider}</span>
+                        </span>
+                        {otherPro && (
+                          <span className="text-[10px] text-muted-foreground">já em {otherPro}</span>
+                        )}
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
             <Button onClick={() => save.mutate(form)} disabled={save.isPending}>
