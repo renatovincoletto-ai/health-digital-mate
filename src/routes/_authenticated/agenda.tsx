@@ -753,13 +753,20 @@ function ProfessionalsTab() {
   function openNew() {
     setEditing(null);
     setForm({ full_name: "", color: "#3B82F6", is_active: true });
+    setLinkedIds([]);
     setOpen(true);
   }
   function openEdit(p: any) {
     setEditing(p);
     setForm({ ...p });
+    setLinkedIds((integrations as any[]).filter((i) => i.professional_id === p.id).map((i) => i.id));
     setOpen(true);
   }
+
+  function toggleLink(id: string) {
+    setLinkedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }
+
 
   return (
     <div>
