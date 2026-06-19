@@ -178,3 +178,68 @@ function SplitsTab({ splits, saveSp, qc }: any) {
     </div>
   );
 }
+
+function WalletsTab() {
+  const balancesFn = useServerFn(listWalletBalances);
+  const { data: balances = [] } = useQuery({ queryKey: ["wallet-balances"], queryFn: () => balancesFn() });
+  const withCredit = balances.filter((b: any) => Number(b.balance) > 0);
+  const withDebt = balances.filter((b: any) => Number(b.balance) < 0);
+  const totalCredit = withCredit.reduce((s: number, b: any) => s + Number(b.balance), 0);
+  const totalDebt = withDebt.reduce((s: number, b: any) => s + Number(b.balance), 0);
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-border bg-surface-elevated p-5">
+        <div className="flex items-center gap-2 mb-2">
+          <PiggyBank className="h-4 w-4 text-primary" />
+          <h2 className="font-display text-lg font-semibold">Carteira de pacientes</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Créditos disponibilizados a pacientes (ex: cancelamento de procedimento já pago). Esses valores ficam separados do faturamento e podem ser usados em consultas/procedimentos futuros.
+        </p>
+        <div className="mt-4 grid grid-cols-3 gap-3">
+          <div className="rounded-lg bg-emerald-500/10 p-3">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Total em créditos</p>
+            <p className="text-xl font-semibold text-emerald-600">R$ {totalCredit.toFixed(2)}</p>
+          </div>
+          <div className="rounded-lg bg-rose-500/10 p-3">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Valores em aberto</p>
+            <p className="text-xl font-semibold text-rose-600">R$ {Math.abs(totalDebt).toFixed(2)}</p>
+          </div>
+          <div className="rounded-lg bg-background border border-border p-3">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Pacientes com saldo</p>
+            <p className="text-xl font-semibold">{withCredit.length + withDebt.length}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="rounded-2xl border border-border bg-surface-elevated p-5">
+          <h3 className="font-display text-base font-semibold mb-3 text-emerald-600">Pacientes com crédito</h3>
+          <div className="space-y-1.5 max-h-[480px] overflow-y-auto">
+            {withCredit.map((b: any) => (
+              <div key={b.patient_id} className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2 text-sm">
+                <span className="font-medium">{b.full_name}</span>
+                <span className="font-semibold text-emerald-600">R$ {Number(b.balance).toFixed(2)}</span>
+              </div>
+            ))}
+            {withCredit.length === 0 && <p className="text-sm text-muted-foreground py-4 text-center">Nenhum paciente com crédito.</p>}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-border bg-surface-elevated p-5">
+          <h3 className="font-display text-base font-semibold mb-3 text-rose-600">Pacientes com valores em aberto</h3>
+          <div className="space-y-1.5 max-h-[480px] overflow-y-auto">
+            {withDebt.map((b: any) => (
+              <div key={b.patient_id} className="flex items-center justify-between rounded-lg border border-border bg-background px-3 py-2 text-sm">
+                <span className="font-medium">{b.full_name}</span>
+                <span className="font-semibold text-rose-600">R$ {Math.abs(Number(b.balance)).toFixed(2)}</span>
+              </div>
+            ))}
+            {withDebt.length === 0 && <p className="text-sm text-muted-foreground py-4 text-center">Nenhum valor em aberto.</p>}
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
