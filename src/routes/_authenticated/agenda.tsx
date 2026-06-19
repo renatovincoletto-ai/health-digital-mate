@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Calendar as CalendarIcon,
   Plus,
@@ -117,8 +117,42 @@ function AgendaPage() {
 }
 
 // ============= CALENDAR =============
+type ViewMode = "day" | "week" | "month" | "range";
+
+function startOfDay(d: Date) {
+  const x = new Date(d);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+function startOfMonth(d: Date) {
+  const x = new Date(d.getFullYear(), d.getMonth(), 1);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+function endOfMonth(d: Date) {
+  const x = new Date(d.getFullYear(), d.getMonth() + 1, 1);
+  x.setHours(0, 0, 0, 0);
+  return x;
+}
+function toInputDate(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+function parseInputDate(s: string) {
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1);
+}
+function fmtLong(d: Date) {
+  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+}
+
 function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
-  const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  const [view, setView] = useState<ViewMode>("week");
+  const [anchor, setAnchor] = useState<Date>(() => startOfDay(new Date()));
+  const [rangeStart, setRangeStart] = useState<Date>(() => startOfDay(new Date()));
+  const [rangeEnd, setRangeEnd] = useState<Date>(() => addDays(startOfDay(new Date()), 30));
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const queryClient = useQueryClient();
@@ -130,11 +164,33 @@ function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
   const delFn = useServerFn(deleteAppointment);
   const statusFn = useServerFn(updateAppointmentStatus);
 
-  const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
+  const { from, to, label } = useMemo(() => {
+    if (view === "day") {
+      const f = startOfDay(anchor);
+      const t = addDays(f, 1);
+      return { from: f, to: t, label: fmtLong(f) };
+    }
+    if (view === "week") {
+      const f = startOfWeek(anchor);
+      const t = addDays(f, 7);
+      return { from: f, to: t, label: `${fmtDate(f)} — ${fmtDate(addDays(f, 6))}` };
+    }
+    if (view === "month") {
+      const f = startOfMonth(anchor);
+      const t = endOfMonth(anchor);
+      return {
+        from: f, to: t,
+        label: anchor.toLocaleDateString("pt-BR", { month: "long", year: "numeric" }),
+      };
+    }
+    const f = startOfDay(rangeStart);
+    const t = addDays(startOfDay(rangeEnd), 1);
+    return { from: f, to: t, label: `${fmtLong(f)} — ${fmtLong(rangeEnd)}` };
+  }, [view, anchor, rangeStart, rangeEnd]);
 
   const { data: appts = [], isLoading } = useQuery({
-    queryKey: ["appts", weekStart.toISOString()],
-    queryFn: () => listFn({ data: { from: weekStart.toISOString(), to: weekEnd.toISOString() } }),
+    queryKey: ["appts", from.toISOString(), to.toISOString()],
+    queryFn: () => listFn({ data: { from: from.toISOString(), to: to.toISOString() } }),
   });
   const { data: pros = [] } = useQuery({ queryKey: ["pros"], queryFn: () => prosFn() });
   const { data: services = [] } = useQuery({ queryKey: ["services"], queryFn: () => svcsFn() });
@@ -169,27 +225,76 @@ function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
       const k = new Date(a.starts_at).toDateString();
       (map[k] ??= []).push(a);
     }
+    for (const k of Object.keys(map)) {
+      map[k].sort((a, b) => new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime());
+    }
     return map;
   }, [appts]);
+
+  function shift(dir: -1 | 1) {
+    if (view === "day") setAnchor(addDays(anchor, dir));
+    else if (view === "week") setAnchor(addDays(anchor, 7 * dir));
+    else if (view === "month") setAnchor(new Date(anchor.getFullYear(), anchor.getMonth() + dir, 1));
+    else {
+      const days = Math.max(1, Math.round((rangeEnd.getTime() - rangeStart.getTime()) / 86400000) + 1);
+      setRangeStart(addDays(rangeStart, days * dir));
+      setRangeEnd(addDays(rangeEnd, days * dir));
+    }
+  }
+
+  function quickRange(months: number) {
+    const start = startOfDay(new Date());
+    const end = new Date(start);
+    end.setMonth(end.getMonth() + months);
+    setView("range");
+    setRangeStart(start);
+    setRangeEnd(end);
+  }
 
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={() => setWeekStart(addDays(weekStart, -7))}>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" size="icon" onClick={() => shift(-1)} aria-label="Anterior">
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" onClick={() => setWeekStart(startOfWeek(new Date()))}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              const today = startOfDay(new Date());
+              setAnchor(today);
+              if (view === "range") {
+                setRangeStart(today);
+                setRangeEnd(addDays(today, 30));
+              }
+            }}
+          >
             Hoje
           </Button>
-          <Button variant="outline" size="icon" onClick={() => setWeekStart(addDays(weekStart, 7))}>
+          <Button variant="outline" size="icon" onClick={() => shift(1)} aria-label="Próximo">
             <ChevronRight className="h-4 w-4" />
           </Button>
-          <span className="ml-2 text-sm text-muted-foreground">
-            {fmtDate(weekStart)} — {fmtDate(addDays(weekStart, 6))}
-          </span>
+          <span className="ml-2 text-sm capitalize text-muted-foreground">{label}</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Select value={view} onValueChange={(v) => setView(v as ViewMode)}>
+            <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="day">Dia</SelectItem>
+              <SelectItem value="week">Semana</SelectItem>
+              <SelectItem value="month">Mês</SelectItem>
+              <SelectItem value="range">Período</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select onValueChange={(v) => quickRange(Number(v))}>
+            <SelectTrigger className="w-[150px]"><SelectValue placeholder="Próximos…" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">Próximo mês</SelectItem>
+              <SelectItem value="3">Próximos 3 meses</SelectItem>
+              <SelectItem value="6">Próximos 6 meses</SelectItem>
+              <SelectItem value="12">Próximos 12 meses</SelectItem>
+            </SelectContent>
+          </Select>
           {tenantSlug && (
             <a
               href={`/s/${tenantSlug}/agendar`}
@@ -197,7 +302,7 @@ function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
               rel="noreferrer"
               className="text-sm text-muted-foreground hover:text-foreground"
             >
-              Página pública de agendamento ↗
+              Página pública ↗
             </a>
           )}
           <Button
@@ -215,55 +320,45 @@ function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
         </div>
       </div>
 
+      {view === "range" && (
+        <div className="mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-border bg-surface-elevated p-3">
+          <div>
+            <Label className="text-xs">De</Label>
+            <Input
+              type="date"
+              value={toInputDate(rangeStart)}
+              onChange={(e) => setRangeStart(parseInputDate(e.target.value))}
+              className="w-44"
+            />
+          </div>
+          <div>
+            <Label className="text-xs">Até</Label>
+            <Input
+              type="date"
+              value={toInputDate(rangeEnd)}
+              min={toInputDate(rangeStart)}
+              onChange={(e) => setRangeEnd(parseInputDate(e.target.value))}
+              className="w-44"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {appts.length} agendamento{appts.length === 1 ? "" : "s"} no período.
+          </p>
+        </div>
+      )}
+
       {isLoading ? (
         <div className="flex h-64 items-center justify-center">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
+      ) : view === "day" ? (
+        <DayView date={from} items={apptsByDay[from.toDateString()] ?? []} onPick={(a) => { setEditing(a); setOpen(true); }} />
+      ) : view === "week" ? (
+        <DaysGrid start={from} count={7} apptsByDay={apptsByDay} onPick={(a) => { setEditing(a); setOpen(true); }} />
+      ) : view === "month" ? (
+        <MonthView monthAnchor={anchor} apptsByDay={apptsByDay} onPick={(a) => { setEditing(a); setOpen(true); }} />
       ) : (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-7">
-          {Array.from({ length: 7 }).map((_, i) => {
-            const d = addDays(weekStart, i);
-            const k = d.toDateString();
-            const items = apptsByDay[k] ?? [];
-            const isToday = k === new Date().toDateString();
-            return (
-              <div
-                key={k}
-                className={`rounded-xl border p-3 ${isToday ? "border-primary bg-primary/5" : "border-border bg-surface-elevated"}`}
-              >
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-xs font-semibold uppercase text-muted-foreground">
-                    {WEEKDAYS[d.getDay()]} {d.getDate()}
-                  </span>
-                  {items.length > 0 && (
-                    <Badge variant="secondary" className="text-[10px]">{items.length}</Badge>
-                  )}
-                </div>
-                <div className="space-y-1.5">
-                  {items.length === 0 && (
-                    <p className="text-xs text-muted-foreground">—</p>
-                  )}
-                  {items.map((a) => (
-                    <button
-                      key={a.id}
-                      onClick={() => { setEditing(a); setOpen(true); }}
-                      className="block w-full rounded-md border border-border/50 bg-background p-2 text-left text-xs hover:border-primary/50"
-                      style={{ borderLeftColor: a.professionals?.color ?? "#3B82F6", borderLeftWidth: 3 }}
-                    >
-                      <div className="font-medium">{fmtTime(a.starts_at)} · {a.patient_name}</div>
-                      <div className="truncate text-[10px] text-muted-foreground">
-                        {a.services?.name ?? "Consulta"} · {a.professionals?.full_name}
-                      </div>
-                      <div className="mt-1">
-                        <StatusBadge status={a.status} />
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <RangeList from={from} to={to} apptsByDay={apptsByDay} onPick={(a) => { setEditing(a); setOpen(true); }} />
       )}
 
       <AppointmentDialog
@@ -277,6 +372,160 @@ function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
         onChangeStatus={(id, s) => changeStatus.mutate({ id, status: s })}
         saving={save.isPending}
       />
+    </div>
+  );
+}
+
+function ApptCard({ a, onPick }: { a: any; onPick: (a: any) => void }) {
+  return (
+    <button
+      onClick={() => onPick(a)}
+      className="block w-full rounded-md border border-border/50 bg-background p-2 text-left text-xs hover:border-primary/50"
+      style={{ borderLeftColor: a.professionals?.color ?? "#3B82F6", borderLeftWidth: 3 }}
+    >
+      <div className="font-medium">{fmtTime(a.starts_at)} · {a.patient_name}</div>
+      <div className="truncate text-[10px] text-muted-foreground">
+        {a.services?.name ?? "Consulta"} · {a.professionals?.full_name}
+      </div>
+      <div className="mt-1"><StatusBadge status={a.status} /></div>
+    </button>
+  );
+}
+
+function DaysGrid({
+  start, count, apptsByDay, onPick,
+}: { start: Date; count: number; apptsByDay: Record<string, any[]>; onPick: (a: any) => void }) {
+  return (
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-7">
+
+
+      {Array.from({ length: count }).map((_, i) => {
+        const d = addDays(start, i);
+        const k = d.toDateString();
+        const items = apptsByDay[k] ?? [];
+        const isToday = k === new Date().toDateString();
+        return (
+          <div
+            key={k}
+            className={`rounded-xl border p-3 ${isToday ? "border-primary bg-primary/5" : "border-border bg-surface-elevated"}`}
+          >
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase text-muted-foreground">
+                {WEEKDAYS[d.getDay()]} {d.getDate()}
+              </span>
+              {items.length > 0 && (
+                <Badge variant="secondary" className="text-[10px]">{items.length}</Badge>
+              )}
+            </div>
+            <div className="space-y-1.5">
+              {items.length === 0 && <p className="text-xs text-muted-foreground">—</p>}
+              {items.map((a) => <ApptCard key={a.id} a={a} onPick={onPick} />)}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function DayView({ date, items, onPick }: { date: Date; items: any[]; onPick: (a: any) => void }) {
+  return (
+    <div className="rounded-xl border border-border bg-surface-elevated p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="font-display text-lg font-semibold capitalize">{fmtLong(date)}</h3>
+        <Badge variant="secondary">{items.length} agendamento{items.length === 1 ? "" : "s"}</Badge>
+      </div>
+      {items.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Nenhum agendamento neste dia.</p>
+      ) : (
+        <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+          {items.map((a) => <ApptCard key={a.id} a={a} onPick={onPick} />)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MonthView({
+  monthAnchor, apptsByDay, onPick,
+}: { monthAnchor: Date; apptsByDay: Record<string, any[]>; onPick: (a: any) => void }) {
+  const first = startOfMonth(monthAnchor);
+  const gridStart = startOfWeek(first);
+  const last = endOfMonth(monthAnchor);
+  const totalDays = Math.ceil((last.getTime() - gridStart.getTime()) / 86400000);
+  const weeks = Math.ceil(totalDays / 7);
+  const cells = weeks * 7;
+  const today = new Date().toDateString();
+  return (
+    <div className="overflow-hidden rounded-xl border border-border bg-surface-elevated">
+      <div className="grid grid-cols-7 border-b border-border bg-surface text-center text-[11px] font-semibold uppercase text-muted-foreground">
+        {WEEKDAYS.map((w) => <div key={w} className="py-2">{w}</div>)}
+      </div>
+      <div className="grid grid-cols-7">
+        {Array.from({ length: cells }).map((_, i) => {
+          const d = addDays(gridStart, i);
+          const k = d.toDateString();
+          const items = apptsByDay[k] ?? [];
+          const inMonth = d.getMonth() === monthAnchor.getMonth();
+          const isToday = k === today;
+          return (
+            <div
+              key={k}
+              className={`min-h-[110px] border-b border-r border-border p-1.5 ${inMonth ? "" : "bg-surface/50 text-muted-foreground"} ${isToday ? "bg-primary/5" : ""}`}
+            >
+              <div className="mb-1 flex items-center justify-between text-[11px] font-medium">
+                <span className={isToday ? "text-primary" : ""}>{d.getDate()}</span>
+                {items.length > 0 && <Badge variant="secondary" className="text-[10px]">{items.length}</Badge>}
+              </div>
+              <div className="space-y-0.5">
+                {items.slice(0, 3).map((a) => (
+                  <button
+                    key={a.id}
+                    onClick={() => onPick(a)}
+                    className="block w-full truncate rounded bg-background px-1 py-0.5 text-left text-[10px] hover:bg-primary/10"
+                    style={{ borderLeftColor: a.professionals?.color ?? "#3B82F6", borderLeftWidth: 2 }}
+                  >
+                    {fmtTime(a.starts_at)} {a.patient_name}
+                  </button>
+                ))}
+                {items.length > 3 && (
+                  <p className="text-[10px] text-muted-foreground">+{items.length - 3} mais</p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function RangeList({
+  from, to, apptsByDay, onPick,
+}: { from: Date; to: Date; apptsByDay: Record<string, any[]>; onPick: (a: any) => void }) {
+  const days: Date[] = [];
+  for (let d = new Date(from); d < to; d = addDays(d, 1)) {
+    if ((apptsByDay[d.toDateString()] ?? []).length > 0) days.push(new Date(d));
+  }
+  if (days.length === 0) {
+    return (
+      <div className="rounded-xl border border-border bg-surface-elevated p-8 text-center text-sm text-muted-foreground">
+        Nenhum agendamento neste período.
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-4">
+      {days.map((d) => (
+        <div key={d.toDateString()} className="rounded-xl border border-border bg-surface-elevated p-4">
+          <h3 className="mb-2 text-sm font-semibold capitalize">{fmtLong(d)}</h3>
+          <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+            {(apptsByDay[d.toDateString()] ?? []).map((a) => (
+              <ApptCard key={a.id} a={a} onPick={onPick} />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -714,7 +963,7 @@ function HoursTab() {
 
   const [draft, setDraft] = useState<Record<number, { start: string; end: string; on: boolean }>>({});
 
-  useMemo(() => {
+  useEffect(() => {
     const init: Record<number, { start: string; end: string; on: boolean }> = {};
     for (let i = 0; i < 7; i++) {
       const rule = myRules.find((r: any) => r.weekday === i);
