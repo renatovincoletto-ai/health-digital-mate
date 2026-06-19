@@ -707,16 +707,36 @@ function ProfessionalsTab() {
   const listFn = useServerFn(listProfessionals);
   const saveFn = useServerFn(saveProfessional);
   const delFn = useServerFn(deleteProfessional);
+  const integrationsFn = useServerFn(listIntegrations);
+  const assignFn = useServerFn(assignIntegrationToProfessional);
   const { data = [] } = useQuery({ queryKey: ["pros"], queryFn: () => listFn() });
+  const { data: integrations = [] } = useQuery({
+    queryKey: ["integrations"],
+    queryFn: () => integrationsFn(),
+  });
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const [form, setForm] = useState<any>({});
+  const [linkedIds, setLinkedIds] = useState<string[]>([]);
 
   const save = useMutation({
-    mutationFn: (d: any) => saveFn({ data: d }),
+    mutationFn: async (d: any) => {
+      const saved: any = await saveFn({ data: d });
+      // sync integration links
+      const proId = saved.id;
+      const current = (integrations as any[]).filter((i) => i.professional_id === proId).map((i) => i.id);
+      const toAttach = linkedIds.filter((id) => !current.includes(id));
+      const toDetach = current.filter((id) => !linkedIds.includes(id));
+      await Promise.all([
+        ...toAttach.map((id) => assignFn({ data: { integration_id: id, professional_id: proId } })),
+        ...toDetach.map((id) => assignFn({ data: { integration_id: id, professional_id: null } })),
+      ]);
+      return saved;
+    },
     onSuccess: () => {
       toast.success("Profissional salvo");
       queryClient.invalidateQueries({ queryKey: ["pros"] });
+      queryClient.invalidateQueries({ queryKey: ["integrations"] });
       setOpen(false);
     },
     onError: (e: any) => toast.error(e.message),
@@ -728,6 +748,7 @@ function ProfessionalsTab() {
       queryClient.invalidateQueries({ queryKey: ["pros"] });
     },
   });
+
 
   function openNew() {
     setEditing(null);
