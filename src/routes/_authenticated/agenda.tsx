@@ -354,7 +354,7 @@ function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
       ) : view === "day" ? (
         <DayView date={from} items={apptsByDay[from.toDateString()] ?? []} onPick={(a) => { setEditing(a); setOpen(true); }} />
       ) : view === "week" ? (
-        <DaysGrid start={from} count={7} apptsByDay={apptsByDay} onPick={(a) => { setEditing(a); setOpen(true); }} columns={7} />
+        <DaysGrid start={from} count={7} apptsByDay={apptsByDay} onPick={(a) => { setEditing(a); setOpen(true); }} />
       ) : view === "month" ? (
         <MonthView monthAnchor={anchor} apptsByDay={apptsByDay} onPick={(a) => { setEditing(a); setOpen(true); }} />
       ) : (
