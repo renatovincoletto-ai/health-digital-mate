@@ -225,12 +225,76 @@ export const deleteAppointment = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-// ---------- INTEGRATIONS (stubs) ----------
+// ---------- INTEGRATIONS ----------
 export const listIntegrations = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
-      .from("integration_accounts").select("*").order("created_at", { ascending: true });
+      .from("integration_accounts")
+      .select("*, professionals(id,full_name)")
+      .order("created_at", { ascending: true });
     if (error) throw error;
     return data ?? [];
   });
+
+const IntegrationInput = z.object({
+  id: z.string().uuid().optional(),
+  provider: z.enum(["google_calendar", "outlook", "whatsapp"]),
+  label: z.string().min(2).max(80),
+  account_email: z.string().max(200).optional().nullable().or(z.literal("")),
+  calendar_id: z.string().max(200).optional().nullable().or(z.literal("")),
+  professional_id: z.string().uuid().optional().nullable(),
+  status: z.enum(["pending", "connected", "expired", "revoked"]).default("pending"),
+});
+
+export const saveIntegration = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => IntegrationInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: tenant } = await context.supabase
+      .from("tenants").select("id").eq("owner_id", context.userId).maybeSingle();
+    if (!tenant) throw new Error("Consultório não encontrado");
+    const payload = {
+      ...data,
+      tenant_id: tenant.id,
+      account_email: data.account_email || null,
+      calendar_id: data.calendar_id || null,
+      professional_id: data.professional_id || null,
+    };
+    if (data.id) {
+      const { data: row, error } = await context.supabase
+        .from("integration_accounts").update(payload).eq("id", data.id).select().single();
+      if (error) throw error;
+      return row;
+    }
+    const { data: row, error } = await context.supabase
+      .from("integration_accounts").insert(payload).select().single();
+    if (error) throw error;
+    return row;
+  });
+
+export const deleteIntegration = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("integration_accounts").delete().eq("id", data.id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
+export const assignIntegrationToProfessional = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    integration_id: z.string().uuid(),
+    professional_id: z.string().uuid().nullable(),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("integration_accounts")
+      .update({ professional_id: data.professional_id })
+      .eq("id", data.integration_id);
+    if (error) throw error;
+    return { ok: true };
+  });
+
