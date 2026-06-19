@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Wallet, Plus, CheckCircle2, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Wallet, Plus, CheckCircle2, ArrowUpRight, ArrowDownRight, PiggyBank } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/app-shell";
 import {
@@ -11,6 +11,7 @@ import {
   listSplits, saveSplit,
   listPatients,
 } from "@/lib/wave6.functions";
+import { listWalletBalances } from "@/lib/wallet.functions";
 
 export const Route = createFileRoute("/_authenticated/financeiro")({ component: Page });
 
