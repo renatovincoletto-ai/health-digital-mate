@@ -358,6 +358,60 @@ function CalendarTab({ tenantSlug }: { tenantSlug?: string }) {
         </div>
       )}
 
+      {pros.length > 0 && (
+        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-border bg-surface-elevated p-3">
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Profissionais
+          </span>
+          <button
+            type="button"
+            onClick={() => setSelectedPros(null)}
+            className={`rounded-full border px-3 py-1 text-xs transition ${
+              !selectedPros || selectedPros.length === 0
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Todos
+          </button>
+          {pros.map((p: any) => {
+            const active = selectedPros?.includes(p.id) ?? false;
+            const color = p.color ?? "#3B82F6";
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() =>
+                  setSelectedPros((prev) => {
+                    const cur = prev ?? [];
+                    return cur.includes(p.id)
+                      ? cur.filter((x) => x !== p.id)
+                      : [...cur, p.id];
+                  })
+                }
+                className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition ${
+                  active ? "border-foreground/40 bg-background" : "border-border text-muted-foreground hover:text-foreground"
+                }`}
+                style={active ? { boxShadow: `inset 0 0 0 1px ${color}` } : undefined}
+              >
+                <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
+                {p.full_name}
+              </button>
+            );
+          })}
+          {selectedPros && selectedPros.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setSelectedPros(null)}
+              className="ml-1 text-xs text-muted-foreground underline-offset-2 hover:underline"
+            >
+              limpar
+            </button>
+          )}
+        </div>
+      )}
+
+
       {isLoading ? (
         <div className="flex h-64 items-center justify-center">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
