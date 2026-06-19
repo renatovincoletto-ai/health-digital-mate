@@ -78,7 +78,7 @@ function Page() {
   const kinds = Array.from(new Set(data.map((t) => t.kind)));
 
   return (
-    <SimplePage title="Tributos & obrigações" description="DAS, IRPJ, ISS, INSS e outras obrigações fiscais com vencimento e comprovantes.">
+    <SimplePage onboardingSection="tributos" title="Tributos & obrigações" description="DAS, IRPJ, ISS, INSS e outras obrigações fiscais com vencimento e comprovantes.">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <Kpi icon={AlertTriangle} label="Em atraso" value={String(totals.overdueCount)} tone={totals.overdueCount > 0 ? "danger" : "default"} />
         <Kpi icon={Calendar} label="Vencem em 7 dias" value={String(totals.due7Count)} tone={totals.due7Count > 0 ? "warn" : "default"} />

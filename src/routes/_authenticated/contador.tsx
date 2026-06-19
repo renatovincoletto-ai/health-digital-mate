@@ -13,7 +13,7 @@ const links = [
 
 function Page() {
   return (
-    <SimplePage title="Contábil" description="Painel para sua rotina contábil. Mantenha CNPJ, impostos e notas fiscais em dia — compartilhe documentos com seu contador.">
+    <SimplePage onboardingSection="contador" title="Contábil" description="Painel para sua rotina contábil. Mantenha CNPJ, impostos e notas fiscais em dia — compartilhe documentos com seu contador.">
       <div className="grid gap-4 md:grid-cols-3">
         {links.map((l) => (
           <Link key={l.to} to={l.to} className="group rounded-2xl border border-border bg-surface-elevated p-6 hover:border-primary transition">
