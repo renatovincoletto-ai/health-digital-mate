@@ -394,10 +394,10 @@ function ApptCard({ a, onPick }: { a: any; onPick: (a: any) => void }) {
 
 function DaysGrid({
   start, count, apptsByDay, onPick,
-}: { start: Date; count: number; apptsByDay: Record<string, any[]>; onPick: (a: any) => void; columns?: number }) {
-  void columns;
+}: { start: Date; count: number; apptsByDay: Record<string, any[]>; onPick: (a: any) => void }) {
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-7">
+
 
       {Array.from({ length: count }).map((_, i) => {
         const d = addDays(start, i);
