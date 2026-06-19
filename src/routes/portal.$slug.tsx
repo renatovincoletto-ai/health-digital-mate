@@ -1,7 +1,8 @@
 import { createFileRoute, useParams, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { Wallet } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { portalLoginByClinic, portalMe, portalRequestReset } from "@/lib/waveB.functions";
+import { portalWallet } from "@/lib/wallet.functions";
 
 export const Route = createFileRoute("/portal/$slug")({ component: PortalClinic });
 
@@ -34,7 +36,7 @@ function PortalClinic() {
 
   if (!token) return <PortalLogin slug={slug} onLogin={(t) => { localStorage.setItem(`${STORAGE_KEY}:${slug}`, t); setToken(t); }} />;
   if (!me) return <main className="mx-auto max-w-3xl p-8 text-center text-sm text-muted-foreground">Carregando…</main>;
-  return <PortalHome slug={slug} me={me} onLogout={() => { localStorage.removeItem(`${STORAGE_KEY}:${slug}`); setToken(null); setMe(null); }} />;
+  return <PortalHome slug={slug} me={me} token={token} onLogout={() => { localStorage.removeItem(`${STORAGE_KEY}:${slug}`); setToken(null); setMe(null); }} />;
 }
 
 function PortalLogin({ slug, onLogin }: { slug: string; onLogin: (t: string) => void }) {
@@ -82,7 +84,16 @@ function PortalLogin({ slug, onLogin }: { slug: string; onLogin: (t: string) => 
   );
 }
 
-function PortalHome({ slug, me, onLogout }: { slug: string; me: any; onLogout: () => void }) {
+function PortalHome({ slug, me, token, onLogout }: { slug: string; me: any; token: string; onLogout: () => void }) {
+  const walletFn = useServerFn(portalWallet);
+  const { data: wallet } = useQuery({
+    queryKey: ["portal-wallet", token],
+    queryFn: () => walletFn({ data: { token } }),
+  });
+  const balance = wallet?.balance ?? 0;
+  const positive = balance >= 0;
+  const kindLabel: Record<string, string> = { credit: "Crédito", debit: "Uso", refund: "Reembolso", adjustment: "Ajuste" };
+
   return (
     <main className="mx-auto max-w-3xl space-y-6 p-6">
       <header className="flex items-center justify-between">
@@ -92,6 +103,42 @@ function PortalHome({ slug, me, onLogout }: { slug: string; me: any; onLogout: (
         </div>
         <Button variant="outline" size="sm" onClick={onLogout}>Sair</Button>
       </header>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Wallet className="h-4 w-4" /> Minha carteira
+          </CardTitle>
+          <CardDescription>Créditos disponíveis para usar em consultas e procedimentos.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className={`rounded-lg p-4 text-center ${positive ? "bg-emerald-500/10" : "bg-rose-500/10"}`}>
+            <p className="text-xs uppercase tracking-wider text-muted-foreground">Saldo disponível</p>
+            <p className={`mt-1 text-3xl font-semibold ${positive ? "text-emerald-600" : "text-rose-600"}`}>
+              R$ {balance.toFixed(2)}
+            </p>
+          </div>
+          {(wallet?.transactions ?? []).length > 0 && (
+            <div className="mt-4 space-y-1.5">
+              <p className="text-xs font-semibold text-muted-foreground">Últimas movimentações</p>
+              {(wallet?.transactions ?? []).slice(0, 6).map((t: any) => {
+                const isIn = t.kind === "credit" || t.kind === "refund";
+                return (
+                  <div key={t.id} className="flex items-center justify-between rounded-md border p-2 text-xs">
+                    <div>
+                      <p className="font-medium">{t.description || kindLabel[t.kind]}</p>
+                      <p className="text-[10px] text-muted-foreground">{new Date(t.created_at).toLocaleDateString("pt-BR")}</p>
+                    </div>
+                    <span className={`font-semibold ${isIn ? "text-emerald-600" : "text-rose-600"}`}>
+                      {isIn ? "+" : "−"} R$ {Math.abs(Number(t.amount)).toFixed(2)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader><CardTitle className="text-base">Próximas consultas</CardTitle></CardHeader>
