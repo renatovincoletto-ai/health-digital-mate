@@ -493,10 +493,13 @@ function PatientDetail({ patientId, onEdit, onArchived }: {
           {data.attachments.length === 0 && (
             <p className="col-span-full text-sm text-muted-foreground text-center py-6">Nenhum anexo ainda.</p>
           )}
+        </div>
       </div>
 
       {/* Carteira do paciente */}
       <PatientWalletCard patientId={patientId} />
+
+
 
 
 
