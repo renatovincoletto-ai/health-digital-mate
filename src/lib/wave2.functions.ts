@@ -23,9 +23,9 @@ export const getDashboardKpis = createServerFn({ method: "GET" })
       sb.from("patients").select("id", { count: "exact", head: true }),
       sb.from("appointments").select("id", { count: "exact", head: true })
         .in("status", ["waiting_room", "in_service"]),
-      sb.from("financial_transactions").select("amount,type,status")
+      sb.from("financial_transactions").select("amount,direction,status")
         .gte("created_at", monthStart.toISOString()),
-      sb.from("financial_transactions").select("amount,type,status")
+      sb.from("financial_transactions").select("amount,direction,status")
         .gte("created_at", startToday.toISOString()).lte("created_at", endToday.toISOString()),
       sb.from("waitlist").select("id", { count: "exact", head: true }).eq("status", "waiting"),
       sb.from("nps_surveys").select("score,created_at")
@@ -33,11 +33,12 @@ export const getDashboardKpis = createServerFn({ method: "GET" })
     ]);
 
     const txs = (txMonth.data ?? []) as any[];
-    const receita = txs.filter(t => t.type === "income" && t.status === "paid").reduce((s, t) => s + Number(t.amount || 0), 0);
-    const despesa = txs.filter(t => t.type === "expense" && t.status === "paid").reduce((s, t) => s + Number(t.amount || 0), 0);
-    const aReceber = txs.filter(t => t.type === "income" && t.status === "pending").reduce((s, t) => s + Number(t.amount || 0), 0);
+    const txDirection = (t: any) => t.direction ?? (t.type === "income" ? "in" : t.type === "expense" ? "out" : t.type);
+    const receita = txs.filter(t => txDirection(t) === "in" && t.status === "paid").reduce((s, t) => s + Number(t.amount || 0), 0);
+    const despesa = txs.filter(t => txDirection(t) === "out" && t.status === "paid").reduce((s, t) => s + Number(t.amount || 0), 0);
+    const aReceber = txs.filter(t => txDirection(t) === "in" && t.status === "pending").reduce((s, t) => s + Number(t.amount || 0), 0);
     const todayTxs = (txToday.data ?? []) as any[];
-    const receitaHoje = todayTxs.filter(t => t.type === "income" && t.status === "paid").reduce((s, t) => s + Number(t.amount || 0), 0);
+    const receitaHoje = todayTxs.filter(t => txDirection(t) === "in" && t.status === "paid").reduce((s, t) => s + Number(t.amount || 0), 0);
 
     const monthData = (monthAppts.data ?? []) as any[];
     const totalMes = monthData.length;

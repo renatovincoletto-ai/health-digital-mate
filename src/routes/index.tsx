@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import {
   Sparkles, CheckCircle2, ArrowRight, Stethoscope, ShieldCheck,
   Wallet, Layers, Check, Megaphone, Calculator, Calendar,
@@ -7,6 +7,7 @@ import {
   Smartphone, CreditCard, Quote, Star,
 } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -47,6 +48,14 @@ const formatBRL = (v: number) =>
   v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", minimumFractionDigits: 0 });
 
 function LandingPage() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) navigate({ to: "/dashboard", replace: true });
+    });
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
